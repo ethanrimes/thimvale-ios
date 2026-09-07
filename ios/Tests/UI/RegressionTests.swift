@@ -1,9 +1,14 @@
 import XCTest
 
+private extension XCUIElement {
+    var disclosureValue: String { value as? String ?? "" }
+}
+
 @MainActor final class RegressionTests: XCTestCase {
-    private func makeApp(fixtures: Bool = false, wikipediaOnly: Bool = false) throws -> XCUIApplication {
+    private func makeApp(fixtures: Bool = false, wikipediaOnly: Bool = false, activityFixture: Bool = false) throws -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.ethanrimes.thimvale")
         app.launchEnvironment["THIMVALE_TEST_SESSION"] = UUID().uuidString
+        if activityFixture { app.launchEnvironment["THIMVALE_UI_ACTIVITY_FIXTURE"] = "1" }
         if wikipediaOnly { app.launchEnvironment["THIMVALE_UI_WIKI_ONLY"] = "1" }
         if fixtures {
             let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
@@ -318,9 +323,12 @@ import XCTest
         reveal(tool, in: app)
         XCTAssertTrue((tool.value as? String)?.contains("collapsed") == true)
         tool.tap()
+        XCTAssertTrue(tool.wait(for: \.disclosureValue, toEqual: "Completed, expanded", timeout: 5))
         XCTAssertTrue(app.staticTexts["eventOutput"].firstMatch.waitForExistence(timeout: 5))
+        reveal(tool, in: app)
         tool.tap()
-        XCTAssertFalse(app.staticTexts["eventOutput"].exists)
+        XCTAssertTrue(tool.wait(for: \.disclosureValue, toEqual: "Completed, collapsed", timeout: 5))
+        XCTAssertTrue(app.staticTexts["eventOutput"].firstMatch.waitForNonExistence(timeout: 5))
         capture(app, "Work answer with evidence")
         let sources = app.buttons["messageSources"]
         reveal(sources, in: app); sources.tap()
@@ -328,6 +336,31 @@ import XCTest
         reveal(app.buttons["citation_1"], in: app); app.buttons["citation_1"].tap()
         XCTAssertTrue(app.navigationBars["Evidence"].waitForExistence(timeout: 5))
         app.buttons["Done"].tap()
+    }
+
+    func testToolDisclosureSurvivesRepeatedTapsAndTranscriptScrolling() throws {
+        let app = try makeApp(activityFixture: true)
+        let tool = app.buttons["toolEvent_search_knowledge"]
+        reveal(tool, in: app)
+        for _ in 0..<3 {
+            tool.tap()
+            XCTAssertTrue(tool.wait(for: \.disclosureValue, toEqual: "Completed, expanded", timeout: 5))
+            XCTAssertTrue(app.staticTexts["eventOutput"].waitForExistence(timeout: 5))
+            XCTAssertTrue(app.staticTexts["eventOutput"].label.contains("Presentation fixture"))
+            reveal(tool, in: app); tool.tap()
+            XCTAssertTrue(tool.wait(for: \.disclosureValue, toEqual: "Completed, collapsed", timeout: 5))
+            XCTAssertTrue(app.staticTexts["eventOutput"].waitForNonExistence(timeout: 5))
+        }
+        tool.tap()
+        XCTAssertTrue(tool.wait(for: \.disclosureValue, toEqual: "Completed, expanded", timeout: 5))
+        for _ in 0..<6 { scrollTranscript(app, upward: true) }
+        XCTAssertFalse(tool.isHittable)
+        for _ in 0..<6 { scrollTranscript(app, upward: false) }
+        reveal(tool, in: app)
+        XCTAssertTrue(tool.wait(for: \.disclosureValue, toEqual: "Completed, expanded", timeout: 5))
+        tool.tap()
+        XCTAssertTrue(tool.wait(for: \.disclosureValue, toEqual: "Completed, collapsed", timeout: 5))
+        XCTAssertTrue(app.staticTexts["eventOutput"].waitForNonExistence(timeout: 5))
     }
 
     func testDownloadedModelSelectionAndDeletion() throws {
@@ -372,12 +405,25 @@ import XCTest
             // its center is behind the fixed chat composer. Bring the whole
             // control into the visible conversation before tapping it.
             let composer = app.textFields["messageInput"]
+            let transcript = app.scrollViews["chatTranscript"]
             let clearOfComposer = !element.exists || !composer.exists || element.frame.maxY < composer.frame.minY - 24
-            if element.exists && element.isHittable && clearOfComposer { return }
-            if element.exists, element.frame.midY < app.frame.midY { app.swipeDown() }
-            else { app.swipeUp() }
+            let clearOfHeader = !element.exists || !transcript.exists || element.frame.minY > transcript.frame.minY + 4
+            if element.exists && element.isHittable && clearOfComposer && clearOfHeader { return }
+            let upward = !element.exists || element.frame.midY >= app.frame.midY
+            if transcript.exists { scrollTranscript(app, upward: upward) }
+            else if upward { app.swipeUp() }
+            else { app.swipeDown() }
         }
         XCTAssertTrue(element.isHittable, "Could not reach \(element)")
+    }
+    private func scrollTranscript(_ app: XCUIApplication, upward: Bool) {
+        let top = app.scrollViews["chatTranscript"].frame.minY + 30
+        let bottom = app.textFields["messageInput"].frame.minY - 45
+        // Use the outer gutter, not a tool's independently scrolling output.
+        let origin = app.coordinate(withNormalizedOffset: .zero)
+        let high = origin.withOffset(CGVector(dx: 10, dy: top))
+        let low = origin.withOffset(CGVector(dx: 10, dy: bottom))
+        (upward ? low : high).press(forDuration: 0.05, thenDragTo: upward ? high : low)
     }
     private func dismissFiles(_ app: XCUIApplication) {
         let cancel = app.buttons["Cancel"].firstMatch

@@ -3,7 +3,7 @@ import SwiftUI
 /// Expanding a row reveals plain text; it never grants permission or executes it.
 struct AgentEventView: View {
     let event: AgentEvent
-    @State private var expanded = false
+    @Binding var expanded: Bool
     private var color: Color {
         switch event.state {
         case .failed: .red
@@ -27,7 +27,9 @@ struct AgentEventView: View {
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Button { withAnimation(.easeInOut(duration: 0.16)) { expanded.toggle() } } label: {
+            // Keep disclosure layout changes atomic inside the lazy transcript.
+            // Animating nested scroll views can leave a fading output over the reply.
+            Button { expanded.toggle() } label: {
                 HStack(alignment: .top, spacing: 10) {
                     statusIcon.frame(width: 16, height: 18).padding(.top, 2)
                     VStack(alignment: .leading, spacing: 5) {

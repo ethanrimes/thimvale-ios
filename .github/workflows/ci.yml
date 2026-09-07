@@ -26,12 +26,19 @@ jobs:
         run: xcodebuild -version
       - name: Install build tools
         run: brew install xcodegen cmake
-      - uses: actions/cache@v4
+      - uses: actions/cache/restore@v4
+        id: native-cache
         with:
           path: ios/Vendor
           key: native-layout2-b10830-kiwix14212-${{ runner.arch }}-${{ hashFiles('ios/scripts/bootstrap.sh', 'ios/scripts/build-simulator-runtime.sh') }}
       - name: Bootstrap native libraries
         run: ./scripts/bootstrap.sh
+      - name: Cache verified native dependencies before tests
+        if: steps.native-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ios/Vendor
+          key: ${{ steps.native-cache.outputs.cache-primary-key }}
       - name: Test permissions and retrieval
         run: swift test
       - name: Test release configuration validation
@@ -85,12 +92,19 @@ jobs:
         run: python3 scripts/release.py preflight
       - name: Install build tools
         run: brew install xcodegen cmake
-      - uses: actions/cache@v4
+      - uses: actions/cache/restore@v4
+        id: native-cache
         with:
           path: ios/Vendor
           key: native-layout2-b10830-kiwix14212-${{ runner.arch }}-${{ hashFiles('ios/scripts/bootstrap.sh', 'ios/scripts/build-simulator-runtime.sh') }}
       - name: Bootstrap native libraries
         run: ./scripts/bootstrap.sh
+      - name: Cache verified native dependencies before signing
+        if: steps.native-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ios/Vendor
+          key: ${{ steps.native-cache.outputs.cache-primary-key }}
       - name: Sign and upload this commit
         env:
           IOS_DISTRIBUTION_P12_BASE64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
