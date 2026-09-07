@@ -191,11 +191,20 @@ import XCTest
             if app.buttons["citation_1"].waitForExistence(timeout: 2) { break }
         }
         XCTAssertTrue(app.buttons["citation_1"].exists)
+        XCTAssertTrue(app.buttons["New conversation"].waitForExistence(timeout: 5))
+        let finished = NSPredicate(format: "enabled == true")
+        expectation(for: finished, evaluatedWith: app.buttons["New conversation"])
+        waitForExpectations(timeout: 10)
         XCTAssertFalse(answer.label.contains("couldn't complete"))
         XCTAssertTrue(answer.label.lowercased().contains("loop"), answer.label)
-        let citationRange = try XCTUnwrap(answer.label.range(of: "\\[[1-9][0-9]*\\]", options: .regularExpression), answer.label)
-        let citedNumber = String(answer.label[citationRange].dropFirst().dropLast())
-        XCTAssertTrue(app.buttons["citation_" + citedNumber].exists)
+        if let citationRange = answer.label.range(of: "\\[[1-9][0-9]*\\]", options: .regularExpression) {
+            let citedNumber = String(answer.label[citationRange].dropFirst().dropLast())
+            XCTAssertTrue(app.buttons["citation_" + citedNumber].exists)
+        } else {
+            // Small models can omit citation numbers. The UI must disclose that;
+            // it must not invent a citation or present retrieval as verification.
+            XCTAssertTrue(app.staticTexts["missingInlineCitations"].exists, answer.label)
+        }
         XCTAssertFalse(answer.label.contains("search_knowledge("), answer.label)
         capture(app, "Work answer with evidence")
         reveal(app.buttons["citation_1"], in: app); app.buttons["citation_1"].tap()
