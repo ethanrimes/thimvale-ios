@@ -3,11 +3,13 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 concurrency:
   group: ios-${{ github.ref }}
-  cancel-in-progress: true
+  # Do not interrupt an upload already running for main.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   build:
     runs-on: macos-latest
@@ -24,6 +26,8 @@ jobs:
         run: ./scripts/bootstrap.sh
       - name: Test permissions and retrieval
         run: swift test
+      - name: Test release configuration validation
+        run: python3 -m unittest discover -s Tests/Release -v
       - name: Build iPhone app
         run: xcodebuild -project Thimvale.xcodeproj -scheme Thimvale -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
       - name: Build simulator app
@@ -43,3 +47,44 @@ jobs:
           name: simulator-results
           path: TestResults/CI.xcresult
           retention-days: 7
+  testflight:
+    name: Archive and upload to TestFlight
+    needs: build
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      vars.TESTFLIGHT_ENABLED == 'true'
+    runs-on: macos-latest
+    timeout-minutes: 30
+    env:
+      APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check release credentials
+        env:
+          IOS_DISTRIBUTION_P12_BASE64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
+          IOS_DISTRIBUTION_P12_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+        run: python3 scripts/release.py preflight
+      - name: Install build tools
+        run: brew install xcodegen cmake
+      - uses: actions/cache@v4
+        with:
+          path: Vendor
+          key: native-b10830-kiwix14212-${{ runner.arch }}-${{ hashFiles('scripts/bootstrap.sh', 'scripts/build-simulator-runtime.sh') }}
+      - name: Bootstrap native libraries
+        run: ./scripts/bootstrap.sh
+      - name: Sign and upload this commit
+        env:
+          IOS_DISTRIBUTION_P12_BASE64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
+          IOS_DISTRIBUTION_P12_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+        run: python3 scripts/release.py upload

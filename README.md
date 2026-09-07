@@ -54,7 +54,9 @@ Tests cover capability denial, approval and revocation, path traversal, symlinks
 
 GitHub Actions builds the app, fetches the pinned test assets, and runs core, native integration, and simulator UI tests on each push. Test result bundles are saved as workflow artifacts. XcodeGen's `project.yml` is the project source of truth; regenerate the checked-in project after changing it.
 
-Simulator UI regressions use a fresh `THIMVALE_TEST_SESSION` UUID for separate app storage, preferences, and Keychain entries. They never reset the ordinary app library. Real chat and offline-search UI cases import the pinned fixtures through the app's normal import services. Test fixture loading is compiled out of physical-device and Release builds.
+For automatic signed builds and uploads from `main`, follow the [Apple Developer → GitHub → TestFlight setup](docs/testflight.md). Uploads are disabled until the Apple app record, signing secrets, and repository variables are configured. Passing local builds is not an App Store Connect validation or upload.
+
+Simulator UI regressions use a fresh `THIMVALE_TEST_SESSION` UUID for separate app storage, preferences, and Keychain entries. They never reset the ordinary app library. Real chat and offline-search UI cases import the pinned fixtures through the app's normal import services, with a fixed sampling seed for reproducibility. Test fixture loading and the fixed seed are compiled out of physical-device and Release builds.
 
 ## Implementation limits
 

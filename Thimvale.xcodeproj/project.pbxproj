@@ -343,6 +343,10 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
+					8BAD18D7E2BDEE0CC3AF01C9 = {
+						DevelopmentTeam = "$(THIMVALE_DEVELOPMENT_TEAM)";
+						ProvisioningStyle = "$(THIMVALE_CODE_SIGN_STYLE)";
+					};
 					EB0C2E14B88E144CC22623F5 = {
 						TestTargetID = 8BAD18D7E2BDEE0CC3AF01C9;
 					};
@@ -468,7 +472,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "$(THIMVALE_CODE_SIGN_IDENTITY)";
+				CODE_SIGN_STYLE = "$(THIMVALE_CODE_SIGN_STYLE)";
+				DEVELOPMENT_TEAM = "$(THIMVALE_DEVELOPMENT_TEAM)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"Vendor\"",
@@ -488,9 +494,14 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind;
+				PROVISIONING_PROFILE_SPECIFIER = "$(THIMVALE_PROVISIONING_PROFILE)";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = Sources/Native/PocketNative.h;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				THIMVALE_CODE_SIGN_IDENTITY = "Apple Development";
+				THIMVALE_CODE_SIGN_STYLE = Automatic;
+				THIMVALE_DEVELOPMENT_TEAM = "";
+				THIMVALE_PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -657,7 +668,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "$(THIMVALE_CODE_SIGN_IDENTITY)";
+				CODE_SIGN_STYLE = "$(THIMVALE_CODE_SIGN_STYLE)";
+				DEVELOPMENT_TEAM = "$(THIMVALE_DEVELOPMENT_TEAM)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"Vendor\"",
@@ -677,9 +690,14 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind;
+				PROVISIONING_PROFILE_SPECIFIER = "$(THIMVALE_PROVISIONING_PROFILE)";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = Sources/Native/PocketNative.h;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				THIMVALE_CODE_SIGN_IDENTITY = "Apple Development";
+				THIMVALE_CODE_SIGN_STYLE = Automatic;
+				THIMVALE_DEVELOPMENT_TEAM = "";
+				THIMVALE_PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

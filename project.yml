@@ -31,6 +31,15 @@ targets:
       base:
         # Keep the original installation identity so renaming preserves user data.
         PRODUCT_BUNDLE_IDENTIFIER: com.ethanrimes.pocketmind
+        # CI overrides only this app target, not Swift packages/framework targets.
+        THIMVALE_CODE_SIGN_STYLE: Automatic
+        THIMVALE_CODE_SIGN_IDENTITY: Apple Development
+        THIMVALE_DEVELOPMENT_TEAM: ''
+        THIMVALE_PROVISIONING_PROFILE: ''
+        CODE_SIGN_STYLE: '$(THIMVALE_CODE_SIGN_STYLE)'
+        CODE_SIGN_IDENTITY: '$(THIMVALE_CODE_SIGN_IDENTITY)'
+        DEVELOPMENT_TEAM: '$(THIMVALE_DEVELOPMENT_TEAM)'
+        PROVISIONING_PROFILE_SPECIFIER: '$(THIMVALE_PROVISIONING_PROFILE)'
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SWIFT_OBJC_BRIDGING_HEADER: Sources/Native/PocketNative.h
         HEADER_SEARCH_PATHS: '$(inherited) $(PROJECT_DIR)/Vendor'

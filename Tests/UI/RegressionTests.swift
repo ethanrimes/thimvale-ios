@@ -178,10 +178,16 @@ import XCTest
         app.buttons["sendMessage"].tap()
         XCTAssertTrue(app.buttons["allowTool"].waitForExistence(timeout: 10))
         app.buttons["allowTool"].tap()
+        // The dismissed sheet remains in the accessibility tree during animation.
+        // Do not mistake its old Deny button for a newly requested tool.
+        XCTAssertTrue(app.buttons["allowTool"].waitForNonExistence(timeout: 10))
         let deadline = Date().addingTimeInterval(120)
         while !app.buttons["citation_1"].exists && Date() < deadline {
             // Allow once is not blanket access; refuse any extra action the model proposes.
-            if app.buttons["denyTool"].exists { app.buttons["denyTool"].tap() }
+            if app.buttons["denyTool"].exists && app.buttons["denyTool"].isHittable {
+                app.buttons["denyTool"].tap()
+                XCTAssertTrue(app.buttons["denyTool"].waitForNonExistence(timeout: 10))
+            }
             if app.buttons["citation_1"].waitForExistence(timeout: 2) { break }
         }
         XCTAssertTrue(app.buttons["citation_1"].exists)
