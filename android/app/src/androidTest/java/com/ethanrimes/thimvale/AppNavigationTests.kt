@@ -32,7 +32,7 @@ class AppNavigationTests {
     @Test
     fun modelFiltersAndIndependentPermissionControls() {
         compose.onNodeWithContentDescription("Models", useUnmergedTree = true).performClick()
-        compose.onNodeWithText("4B").performClick()
+        compose.onAllNodesWithText("4B").onFirst().performClick()
         compose.onNodeWithText("Qwen 3.5", substring = false).assertExists()
         compose.onNodeWithText("0.8B", substring = false).assertDoesNotExist()
         compose.onNodeWithContentDescription("Permissions", useUnmergedTree = true).performClick()
@@ -138,6 +138,15 @@ class AppNavigationTests {
         assertEquals("search_knowledge", answer.events.first().name)
         assertEquals("Completed", answer.events.first().state)
         assertTrue("No answer: ${model.ui.value.error}", answer.text.isNotBlank())
+        assertFalse("Tool syntax leaked into the answer", ToolCall.looksLikeCall(answer.text))
+        assertTrue(
+            "Expected an actual answer about the retrieved article",
+            answer.text.contains("bowline", true) || answer.text.contains("fixed loop", true),
+        )
+        assertTrue(
+            "Expected a real inline source reference",
+            answer.sources.any { answer.text.contains("[${it.id}]") },
+        )
         assertNotNull(model.engine.loadedPath)
         compose.runOnIdle { model.library.setPermission(Capability.KNOWLEDGE, Permission.ASK) }
     }

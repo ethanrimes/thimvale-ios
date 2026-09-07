@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
+        <!-- Debug-only, undiscoverable fixture provider. No production/user folders are exposed. -->
         <provider android:name="com.ethanrimes.thimvale.FixtureDocumentsProvider"
-            android:authorities="com.ethanrimes.thimvale.debug.test.documents"
+            android:authorities="com.ethanrimes.thimvale.debug.fixtures"
             android:exported="true" android:grantUriPermissions="true"
-            android:permission="android.permission.MANAGE_DOCUMENTS">
-        </provider>
+            android:permission="android.permission.MANAGE_DOCUMENTS" />
     </application>
 </manifest>

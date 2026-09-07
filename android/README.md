@@ -47,7 +47,7 @@ adb -s emulator-5556 shell am instrument -w -r \
 python3 scripts/check-native-alignment.py app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Fixtures are the same checksum-pinned 230M Liquid GGUF and real July 2026 Wikipedia knots ZIM used by iOS. Native integration tests exercise actual streamed generation, reuse, cancellation, release/reload, full-article retrieval, and live download metadata. Isolated temporary stores test path boundaries and concurrent persistence. UI tests exercise inline citation presentation and collapsed source/tool details. No test clears production data. The debug package has a separate `.debug` application ID.
+Fixtures are the same checksum-pinned 230M Liquid GGUF and real July 2026 Wikipedia knots ZIM used by iOS. Native integration tests exercise actual streamed generation, reuse, cancellation, release/reload, full-article retrieval, and live download metadata. Device tests also cover scoped document read/create/index/disconnect, verified background downloads and checksum rejection, permission revocation, real offline Q&A, inline citations, and collapsed source/tool details. No test clears production data. The debug package has a separate `.debug` application ID; its test document provider is absent from release builds. See [validation notes](docs/validation.md).
 
 The root Android workflow builds on Linux and uploads APK/AAB artifacts. It does not publish to Google Play. Create a Play Console app and configure an upload signing key before Play distribution; the iOS TestFlight setup is unaffected.
 

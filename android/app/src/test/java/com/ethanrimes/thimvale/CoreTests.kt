@@ -6,6 +6,20 @@ import org.junit.Test
 
 class CoreTests {
     @Test
+    fun articleFactsStayOutsideTheirCollapsedSummary() {
+        val html =
+            WikiHTML.render(
+                "Example",
+                "<table><tr><td>Fact</td></tr></table><p>Text</p><script>bad()</script>",
+                "Example",
+            )
+        val document = org.jsoup.Jsoup.parse(html)
+        assertEquals("Article facts", document.selectFirst("details > summary")!!.text())
+        assertEquals("Fact", document.selectFirst("details > table")!!.text())
+        assertTrue(document.select("script").isEmpty())
+    }
+
+    @Test
     fun toolCallsAreStrictAndCapabilitiesIndependent() {
         assertEquals(
             Capability.WRITE,
@@ -19,6 +33,9 @@ class CoreTests {
             ToolCall.parse("""{"tool":"read_file","arguments":{}}""")!!.capability,
         )
         assertNull(ToolCall.parse("Ordinary answer"))
+        assertNull(ToolCall.parse("{\"count\":2}"))
+        assertTrue(ToolCall.looksLikeCall("[list_files(folder=\"\", path=\"/\")]"))
+        assertEquals("", streamedAnswer("[list_files(folder=\"\")", true))
         assertThrows(Exception::class.java) {
             ToolCall.parse("""{"tool":"shell","arguments":{}}""")
         }
@@ -35,6 +52,21 @@ class CoreTests {
         assertEquals("", streamedAnswer("{\"tool\":", true))
         assertEquals("{\"count\":2}", streamedAnswer("{\"count\":2}", false))
         assertEquals("Hello", streamedAnswer("Hello", true))
+    }
+
+    @Test
+    fun uncitedRecoveryUsesAnExactLabeledExcerptNotInventedAttribution() {
+        val source =
+            Evidence(
+                "7",
+                "Local note",
+                "note.txt",
+                "The first sentence is exact. " + "More text ".repeat(200),
+            )
+        assertEquals(
+            "From the retrieved source:\n\n“The first sentence is exact.” [7]",
+            sourceExcerpt(source),
+        )
     }
 
     @Test

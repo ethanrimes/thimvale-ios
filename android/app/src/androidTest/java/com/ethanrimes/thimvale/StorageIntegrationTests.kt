@@ -15,9 +15,6 @@ import org.junit.Test
 class StorageIntegrationTests {
     @Test
     fun actualDocumentProviderReadCreateIndexReplaceAndDisconnect() = runBlocking {
-        val automation = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().uiAutomation
-        automation.adoptShellPermissionIdentity("android.permission.MANAGE_DOCUMENTS")
-        try {
         val base = ApplicationProvider.getApplicationContext<Context>()
         val root = File(base.cacheDir, "storage-regression-${UUID.randomUUID()}").apply { mkdirs() }
         val context =
@@ -30,10 +27,7 @@ class StorageIntegrationTests {
         val library = Library(context)
         val knowledge = Knowledge(library)
         val tree =
-            DocumentsContract.buildTreeDocumentUri(
-                "com.ethanrimes.thimvale.debug.test.documents",
-                "root",
-            )
+            DocumentsContract.buildTreeDocumentUri("com.ethanrimes.thimvale.debug.fixtures", "root")
         val parent = DocumentsContract.buildDocumentUriUsingTree(tree, "root")
         val directory =
             DocumentsContract.createDocument(
@@ -47,6 +41,13 @@ class StorageIntegrationTests {
                 tree.authority,
                 DocumentsContract.getDocumentId(directory),
             )
+        base.grantUriPermission(
+            base.packageName,
+            scoped,
+            android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION or
+                android.content.Intent.FLAG_GRANT_PREFIX_URI_PERMISSION,
+        )
         library.state.change {
             it.put(
                 "folders",
@@ -86,7 +87,6 @@ class StorageIntegrationTests {
         assertTrue(knowledge.folders().isEmpty())
         DocumentsContract.deleteDocument(base.contentResolver, note)
         DocumentsContract.deleteDocument(base.contentResolver, directory)
-        } finally { automation.dropShellPermissionIdentity() }
         Unit
     }
 
@@ -96,6 +96,9 @@ class StorageIntegrationTests {
         val library = app.library
         val network = Network(library)
         val downloads = Downloads(library)
+        val originalCellular = library.state.read().optBoolean("cellular", false)
+        // Fresh emulators may expose their host connection as a metered cellular network.
+        library.state.change { it.put("cellular", true) }
         val pack =
             network.verifiedDownload(
                 network.wikipedia().first { it.name.startsWith("wikipedia_en_knots") }
@@ -132,6 +135,7 @@ class StorageIntegrationTests {
             downloads.cancel(id)
             // This UUID-named file was created by this test, not selected from user data.
             library.file(valid.name).delete()
+            library.state.change { it.put("cellular", originalCellular) }
         }
     }
 }
