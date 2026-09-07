@@ -1,9 +1,10 @@
 import XCTest
 
 @MainActor final class RegressionTests: XCTestCase {
-    private func makeApp(fixtures: Bool = false) throws -> XCUIApplication {
+    private func makeApp(fixtures: Bool = false, wikipediaOnly: Bool = false) throws -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.ethanrimes.thimvale")
         app.launchEnvironment["THIMVALE_TEST_SESSION"] = UUID().uuidString
+        if wikipediaOnly { app.launchEnvironment["THIMVALE_UI_WIKI_ONLY"] = "1" }
         if fixtures {
             let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
             guard FileManager.default.fileExists(atPath: root.appendingPathComponent("Vendor/smoke-model.gguf").path),
@@ -185,6 +186,71 @@ import XCTest
         XCTAssertTrue(app.textFields["knowledgeSearch"].exists)
     }
 
+    func testManualWikipediaBrowsingWithoutAModel() throws {
+        let app = try makeApp(fixtures: true, wikipediaOnly: true)
+        XCTAssertFalse(app.staticTexts["modelMemoryState"].exists)
+        app.selectMainTab("Knowledge")
+        let read = app.buttons["readWikipedia"]
+        reveal(read, in: app); read.tap()
+        let pack = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'wikiPack_'")).firstMatch
+        XCTAssertTrue(pack.waitForExistence(timeout: 10)); pack.tap()
+        XCTAssertTrue(app.staticTexts["Articles A–Z"].waitForExistence(timeout: 10))
+        let search = app.searchFields.firstMatch
+        search.tap(); search.typeText("bowline\n")
+        let bowline = app.buttons["wikiArticle_Bowline"]
+        XCTAssertTrue(bowline.waitForExistence(timeout: 10)); bowline.tap()
+        XCTAssertTrue(app.navigationBars["Bowline"].waitForExistence(timeout: 10))
+        let web = app.webViews.firstMatch
+        XCTAssertTrue(web.waitForExistence(timeout: 10))
+        XCTAssertTrue(web.staticTexts.containing(NSPredicate(format: "label CONTAINS[c] 'loop'")).firstMatch.waitForExistence(timeout: 10))
+        capture(app, "Wikipedia offline article reader")
+        let linked = web.links["sheet bend"].firstMatch
+        XCTAssertTrue(linked.exists)
+        for _ in 0..<4 { if linked.isHittable { break }; web.swipeUp() }
+        linked.tap()
+        XCTAssertTrue(app.navigationBars["Sheet bend"].waitForExistence(timeout: 10))
+        app.navigationBars.buttons["Bowline"].tap()
+        XCTAssertTrue(app.navigationBars["Bowline"].waitForExistence(timeout: 5))
+        app.buttons["Source & license"].tap()
+        XCTAssertTrue(app.buttons["Open in browser"].waitForExistence(timeout: 5))
+        app.buttons["Cancel"].tap()
+        app.navigationBars.buttons["Articles"].tap()
+        XCTAssertTrue(bowline.waitForExistence(timeout: 5))
+        XCTAssertEqual(search.value as? String, "bowline")
+    }
+
+    func testManualWikipediaEmptyState() throws {
+        let app = try makeApp()
+        app.selectMainTab("Knowledge")
+        let read = app.buttons["readWikipedia"]
+        reveal(read, in: app); read.tap()
+        XCTAssertTrue(app.staticTexts["No downloaded Wikipedia"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["Download Wikipedia packs"].exists)
+        app.buttons["Done"].tap()
+        XCTAssertTrue(read.exists)
+    }
+
+    func testUpdateAndReviewSettingsNeedNoNotificationPermissionAtLaunch() throws {
+        let app = try makeApp()
+        XCTAssertFalse(app.alerts.firstMatch.exists)
+        app.selectMainTab("Knowledge")
+        let updates = app.buttons["wikipediaUpdates"]
+        reveal(updates, in: app); updates.tap()
+        XCTAssertTrue(app.staticTexts["No packs to update"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["Check for updates"].isEnabled)
+        app.buttons["Done"].tap()
+        app.selectMainTab("Chat"); app.buttons["Settings"].tap()
+        let reviews = app.switches["I've already reviewed this app"]
+        reveal(reviews, in: app)
+        reviews.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
+        XCTAssertEqual(reviews.value as? String, "1")
+        XCTAssertFalse(app.buttons["Write an App Store review"].exists)
+        app.buttons["Done"].tap()
+        app.terminate(); app.launch(); app.buttons["Settings"].tap()
+        reveal(reviews, in: app)
+        XCTAssertEqual(reviews.value as? String, "1")
+    }
+
     func testWorkKnowledgeApprovalAndDenial() throws {
         let app = try makeApp(fixtures: true)
         app.selectMainTab("Permissions")
@@ -213,6 +279,7 @@ import XCTest
         XCTAssertTrue(app.buttons["allowTool"].waitForNonExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts["liveModelOutput"].waitForExistence(timeout: 120))
         XCTAssertFalse(app.buttons["New conversation"].isEnabled)
+        XCTAssertFalse(app.staticTexts["eventOutput"].exists, "Raw output stays collapsed; the reply streams in the conversation")
         capture(app, "Live Work model output and tool activity")
         // Hosted simulator runners can be much slower than a local Mac. This is
         // still a bounded wait for real inference, not a sleep or fixture answer.
@@ -225,7 +292,8 @@ import XCTest
             }
             if app.buttons["New conversation"].wait(for: \.isEnabled, toEqual: true, timeout: 2) { break }
         }
-        XCTAssertTrue(app.buttons["citation_1"].exists)
+        XCTAssertTrue(app.buttons["messageSources"].exists)
+        XCTAssertFalse(app.buttons["citation_1"].exists, "Full source list starts collapsed")
         XCTAssertTrue(app.buttons["New conversation"].waitForExistence(timeout: 5))
         let finished = NSPredicate(format: "enabled == true")
         expectation(for: finished, evaluatedWith: app.buttons["New conversation"])
@@ -234,7 +302,11 @@ import XCTest
         XCTAssertTrue(answer.label.lowercased().contains("loop"), answer.label)
         if let citationRange = answer.label.range(of: "\\[[1-9][0-9]*\\]", options: .regularExpression) {
             let citedNumber = String(answer.label[citationRange].dropFirst().dropLast())
-            XCTAssertTrue(app.buttons["citation_" + citedNumber].exists)
+            let inline = app.links["[" + citedNumber + "]"].firstMatch
+            XCTAssertTrue(inline.exists, "Citation should be a link inside the reply")
+            reveal(inline, in: app); inline.tap()
+            XCTAssertTrue(app.navigationBars["Evidence"].waitForExistence(timeout: 5))
+            app.buttons["Done"].tap()
         } else {
             // Small models can omit citation numbers. The UI must disclose that;
             // it must not invent a citation or present retrieval as verification.
@@ -242,7 +314,17 @@ import XCTest
         }
         XCTAssertFalse(answer.label.contains("search_knowledge("), answer.label)
         XCTAssertTrue(app.buttons["toolEvent_search_knowledge"].firstMatch.exists)
+        let tool = app.buttons["toolEvent_search_knowledge"].firstMatch
+        reveal(tool, in: app)
+        XCTAssertTrue((tool.value as? String)?.contains("collapsed") == true)
+        tool.tap()
+        XCTAssertTrue(app.staticTexts["eventOutput"].firstMatch.waitForExistence(timeout: 5))
+        tool.tap()
+        XCTAssertFalse(app.staticTexts["eventOutput"].exists)
         capture(app, "Work answer with evidence")
+        let sources = app.buttons["messageSources"]
+        reveal(sources, in: app); sources.tap()
+        XCTAssertTrue(app.buttons["citation_1"].waitForExistence(timeout: 5))
         reveal(app.buttons["citation_1"], in: app); app.buttons["citation_1"].tap()
         XCTAssertTrue(app.navigationBars["Evidence"].waitForExistence(timeout: 5))
         app.buttons["Done"].tap()
@@ -287,7 +369,8 @@ import XCTest
     private func reveal(_ element: XCUIElement, in app: XCUIApplication) {
         for _ in 0..<10 {
             if element.exists && element.isHittable { return }
-            app.swipeUp()
+            if element.exists, element.frame.midY < app.frame.midY { app.swipeDown() }
+            else { app.swipeUp() }
         }
         XCTAssertTrue(element.isHittable, "Could not reach \(element)")
     }

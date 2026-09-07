@@ -53,6 +53,7 @@ struct ChatView: View {
                         .onChange(of: state.current.messages.last?.content) { _, _ in proxy.scrollTo(state.current.messages.last?.id, anchor: .bottom) }
                         .onChange(of: state.isGenerating) { _, _ in proxy.scrollTo("status", anchor: .bottom) }
                         .onChange(of: state.current.messages.last?.events?.count) { _, _ in proxy.scrollTo("bottom", anchor: .bottom) }
+                        .onChange(of: state.current.messages.last?.events?.last?.text) { _, _ in proxy.scrollTo("bottom", anchor: .bottom) }
                     }
                 }
             }
@@ -135,7 +136,8 @@ struct ChatView: View {
         }.padding(.horizontal, 18).padding(.top, 8).padding(.bottom, 8).background(Palette.background)
     }
     private func messageView(_ message: ChatMessage) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        let liveAnswer = AppState.streamingAnswer(message, mode: state.current.mode)
+        return VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 if message.role == "assistant" { BrandMark(size: 24) }
                 Text(message.role == "user" ? "YOU" : AppIdentity.displayName.uppercased()).font(.system(size: 10, weight: .semibold, design: .monospaced)).tracking(1.5).foregroundStyle(Palette.muted)
@@ -149,10 +151,21 @@ struct ChatView: View {
             }
             if let events = message.events, !events.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(events) { AgentEventView(event: $0) }
+                    ForEach(events.filter { $0.kind == .tool }) { AgentEventView(event: $0) }
                 }
             }
-            if !message.content.isEmpty { Text(.init(AppState.visibleAnswer(message.content))).font(.system(size: 16)).lineSpacing(5).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).accessibilityIdentifier(message.role + "Message") }
+            if !liveAnswer.isEmpty {
+                // One continuous reply in the conversation, without a nested
+                // scroll view, card, or a second copy of the streamed answer.
+                CitationText(text: liveAnswer, sources: message.citations, identifier: "liveModelOutput") { source = $0 }
+            } else if !message.content.isEmpty {
+                CitationText(text: AppState.visibleAnswer(message.content), sources: message.citations, identifier: message.role + "Message") { source = $0 }
+            }
+            if let generations = message.events?.filter({ $0.kind == .generation }), !generations.isEmpty {
+                DisclosureGroup("Model details") {
+                    ForEach(generations) { AgentEventView(event: $0) }
+                }.font(.caption).foregroundStyle(Palette.muted).accessibilityIdentifier("modelDetails")
+            }
             if !message.citations.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
                     if !state.isGenerating && CitationValidator.cited(in: message.content, from: message.citations).isEmpty {
@@ -160,13 +173,7 @@ struct ChatView: View {
                             .font(.caption).foregroundStyle(Palette.muted)
                             .accessibilityIdentifier("missingInlineCitations")
                     }
-                    Eyebrow(text: "Evidence retrieved · tap to inspect")
-                    let unique = message.citations.reduce(into: [Citation]()) { list, citation in if !list.contains(where: { $0.id == citation.id }) { list.append(citation) } }
-                    ForEach(unique) { citation in
-                        Button { source = citation } label: {
-                            HStack(spacing: 8) { Image(systemName: "doc.text.magnifyingglass"); Text(citation.title).lineLimit(1); Spacer(); Text("[\(citation.id)]").font(.system(size: 9, design: .monospaced)) }.font(.caption).padding(11).background(Palette.tint, in: RoundedRectangle(cornerRadius: 10))
-                        }.accessibilityIdentifier("citation_" + citation.id)
-                    }
+                    MessageSourcesView(sources: message.citations) { source = $0 }
                 }
             }
         }.padding(message.role == "user" ? 16 : 0).background(message.role == "user" ? Palette.tint : .clear, in: RoundedRectangle(cornerRadius: 20))

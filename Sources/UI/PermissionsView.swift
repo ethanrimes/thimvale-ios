@@ -109,6 +109,26 @@ struct SettingsView: View {
                         catch { state.error = error.localizedDescription }
                     }
                 }
+                Section("Notifications") {
+                    Toggle("Wikipedia update alerts", isOn: Binding(get: { state.packNotifications.enabled }, set: { value in
+                        Task {
+                            await state.packNotifications.setEnabled(value)
+                            if value { await state.packNotifications.discovered(state.wikipediaUpdates.available) }
+                        }
+                    })).disabled(state.packNotifications.authorizing)
+                    Text("Optional alerts when a check finds a newer pack. Checks run when you reconnect while using Thimvale, or when you next open it. Downloading still needs your confirmation.").font(.caption).foregroundStyle(Palette.muted)
+                    if let error = state.packNotifications.error {
+                        Text(error).font(.caption).foregroundStyle(Palette.muted)
+                        Link("Open notification settings", destination: URL(string: UIApplication.openNotificationSettingsURLString)!)
+                    }
+                }
+                Section("App Store reviews") {
+                    Toggle("Allow occasional review requests", isOn: Binding(get: { state.reviews.enabled }, set: { state.reviews.enabled = $0 }))
+                    Toggle("I've already reviewed this app", isOn: Binding(get: { state.reviews.alreadyReviewed }, set: { state.reviews.alreadyReviewed = $0 }))
+                    if ReviewPrompter.isStoreBuild { Link("Write an App Store review", destination: ReviewPrompter.reviewURL) }
+                    Text(ReviewPrompter.isStoreBuild ? "Apple controls whether its review prompt appears. We can't see whether you submitted a review; mark it above to stop future requests." : "Review requests are disabled in TestFlight and development builds. Send beta feedback through TestFlight.")
+                        .font(.caption).foregroundStyle(Palette.muted)
+                }
                 Section("Your data") {
                     Label("No analytics or hosted inference", systemImage: "checkmark.shield")
                     Text("Conversations, models, and knowledge stay in app storage and are excluded from backups. Deleting the app removes them. Share important answers and export files you want to keep.").font(.caption).foregroundStyle(Palette.muted)

@@ -2,6 +2,22 @@ import XCTest
 @testable import ThimvaleCore
 
 final class CoreTests: XCTestCase {
+    func testReviewRequestsRespectAgeUseCooldownAndOptOut() {
+        let start = Date(timeIntervalSince1970: 1_000_000)
+        var cadence = ReviewCadence(firstUse: start, interactions: 5)
+        let later = start.addingTimeInterval(8 * 86_400)
+        XCTAssertTrue(cadence.eligible(now: later, version: "1", enabled: true, alreadyReviewed: false, storeBuild: true))
+        XCTAssertFalse(cadence.eligible(now: start, version: "1", enabled: true, alreadyReviewed: false, storeBuild: true))
+        XCTAssertFalse(cadence.eligible(now: later, version: "1", enabled: false, alreadyReviewed: false, storeBuild: true))
+        XCTAssertFalse(cadence.eligible(now: later, version: "1", enabled: true, alreadyReviewed: true, storeBuild: true))
+        XCTAssertFalse(cadence.eligible(now: later, version: "1", enabled: true, alreadyReviewed: false, storeBuild: false))
+        cadence.requested(now: later, version: "1")
+        XCTAssertFalse(cadence.eligible(now: later.addingTimeInterval(100 * 86_400), version: "2", enabled: true, alreadyReviewed: false, storeBuild: true))
+        XCTAssertTrue(cadence.eligible(now: later.addingTimeInterval(121 * 86_400), version: "2", enabled: true, alreadyReviewed: false, storeBuild: true))
+        XCTAssertFalse(cadence.eligible(now: later.addingTimeInterval(121 * 86_400), version: "1", enabled: true, alreadyReviewed: false, storeBuild: true))
+        cadence.interactions = 4
+        XCTAssertFalse(cadence.eligible(now: later.addingTimeInterval(121 * 86_400), version: "2", enabled: true, alreadyReviewed: false, storeBuild: true))
+    }
     func testActivityDecodesOldConversationsAndRoundTripsNewEvents() throws {
         let old = ChatMessage(role: "assistant", content: "Saved answer", activity: ["Read files"])
         let data = try JSONEncoder().encode(old)

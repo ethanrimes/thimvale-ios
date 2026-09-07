@@ -16,9 +16,10 @@ struct WikiPack: Identifiable, Codable, Sendable {
 }
 
 enum WikipediaCatalog {
-    static func fetch() async throws -> [WikiPack] {
+    static func fetch(includePictures: Bool = false) async throws -> [WikiPack] {
         let url = URL(string: "https://library.kiwix.org/catalog/v2/entries?lang=eng&q=wikipedia&count=100")!
-        let (data, response) = try await URLSession.shared.data(from: url)
+        var request = URLRequest(url: url); request.timeoutInterval = 30
+        let (data, response) = try await URLSession.shared.data(for: request)
         guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw PocketError.message("The Wikipedia catalog is unavailable. Try again later.") }
         let doc = try SwiftSoup.parse(String(decoding: data, as: UTF8.self), "", Parser.xmlParser())
         var result: [WikiPack] = []
@@ -26,7 +27,7 @@ enum WikipediaCatalog {
         for entry in try doc.select("entry") {
             let name = try entry.select("name").first()?.text() ?? ""
             let flavour = try entry.select("flavour").text()
-            guard allowed.contains(name), ["mini", "nopic"].contains(flavour), try entry.select("tags").text().contains("_ftindex:yes"), let link = try entry.select("link[type=application/x-zim]").first() else { continue }
+            guard allowed.contains(name), (includePictures ? ["mini", "nopic", "maxi"] : ["mini", "nopic"]).contains(flavour), try entry.select("tags").text().contains("_ftindex:yes"), let link = try entry.select("link[type=application/x-zim]").first() else { continue }
             let remote = try link.attr("href")
             guard let filename = URL(string: remote)?.lastPathComponent.replacingOccurrences(of: ".meta4", with: ""), filename.hasSuffix(".zim") else { continue }
             let title = name == "wikipedia_en_all" ? "English Wikipedia" : try entry.select("title").text()
@@ -54,6 +55,38 @@ actor KnowledgeService {
     func hasSemanticSearch() -> Bool { store.hasSemanticSearch }
     func remove(_ id: String) throws { try store.remove(id: id) }
     func closeArchive(_ filename: String) { archives[filename] = nil }
+
+    private func archive(_ filename: String) throws -> PMArchive {
+        guard !filename.isEmpty, filename == URL(fileURLWithPath: filename).lastPathComponent, filename.hasSuffix(".zim") else {
+            throw PocketError.message("Choose a downloaded Wikipedia pack.")
+        }
+        if let cached = archives[filename] { return cached }
+        let opened = try PMArchive(path: AppPaths.archives.appendingPathComponent(filename).path)
+        archives[filename] = opened
+        return opened
+    }
+
+    func wikipediaPage(in filename: String, query: String, offset: Int) throws -> WikipediaPage {
+        try Task.checkCancellation()
+        guard offset >= 0, offset <= Int(Int32.max) - 100 else { throw PocketError.message("This page number is out of range.") }
+        let opened = try archive(filename)
+        let rows = try opened.browse(String(query.trimmingCharacters(in: .whitespacesAndNewlines).prefix(400)), offset: Int32(offset), limit: 41)
+        let entries = try rows.prefix(40).map { row in
+            WikipediaEntry(path: row["path"] ?? "", title: row["title"] ?? "Untitled", snippet: try SwiftSoup.parse(row["snippet"] ?? "").text())
+        }
+        try Task.checkCancellation()
+        return WikipediaPage(entries: entries, hasMore: rows.count > 40, articleCount: Int(opened.articleCount))
+    }
+
+    func wikipediaArticle(in filename: String, path: String) throws -> WikipediaArticle {
+        try Task.checkCancellation()
+        let row = try archive(filename).article(atPath: path)
+        let title = row["title"] ?? "Wikipedia"
+        let canonicalPath = row["path"] ?? path
+        let html = try WikipediaHTML.render(row["html"] ?? "", title: title, path: canonicalPath)
+        try Task.checkCancellation()
+        return WikipediaArticle(title: title, path: canonicalPath, html: html)
+    }
 
     func importURL(_ url: URL, progress: @Sendable (String) -> Void) throws -> String {
         let access = url.startAccessingSecurityScopedResource()
@@ -114,10 +147,9 @@ actor KnowledgeService {
         var results = try store.search(query, limit: 5)
         let terms = KnowledgeStore.searchTerms(query)
         let keywords = Set(terms)
-        for filename in archiveFiles {
+        for filename in WikipediaEdition.preferredFiles(archiveFiles) {
             try Task.checkCancellation()
-            if archives[filename] == nil { archives[filename] = try PMArchive(path: AppPaths.archives.appendingPathComponent(filename).path) }
-            guard let archive = archives[filename] else { continue }
+            let archive = try archive(filename)
             var articles = try archive.search(query, limit: 6)
             if articles.isEmpty {
                 // Use plain search terms for libzim, not SQLite's quoted-OR expression.

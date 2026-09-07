@@ -64,8 +64,14 @@ No physical iPhone was connected for performance or background-transfer testing.
 
 No full English Wikipedia download was performed during development. Its real catalog entries, download sizes, and SHA-256 metadata are loaded by the app; actual offline search was exercised against the smaller real archive. Wikipedia uses its built-in compressed full-text index plus passage reranking, not a precomputed vector for every article.
 
-Only the small Liquid model was exercised for inference. Availability checks for the other 35 curated entries, including the [4B models](models-4b.md) and [benchmark-chart additions](model-expansion.md), do not prove runtime compatibility, quality, or memory fitness. No 4B or larger weights were downloaded or executed. Citation following and tool selection remain model-dependent; the app displays retrieved evidence and flags an answer that omits citations.
+Only the small Liquid model was exercised for inference. Availability checks for the other 38 curated entries, including the [4B models](models-4b.md) and [benchmark-chart additions](model-expansion.md), do not prove runtime compatibility, quality, or memory fitness. No 4B or larger weights were downloaded or executed. Citation following and tool selection remain model-dependent; the app displays retrieved evidence and flags an answer that omits citations.
 
 Web search's request and error paths are implemented, but no Brave API key was supplied, so a successful authenticated Brave search was not exercised. The signed cloud upload succeeded, but no signed physical-device installation was performed during these checks.
 
 Run the commands in the README to reproduce checks. Xcode test result bundles are written locally to `TestResults/` and excluded from Git.
+
+## September 7: reader, conversation presentation, and notices
+
+`Thimvale-ios-feature-complete.xcresult`: 37 native/integration tests and 20 simulator UI tests passed on iPhone 17 Pro / iOS 26.1. An additional 13 Swift package tests and 18 release tests passed (88 total). The unsigned iPhone Release build succeeded. All 39 catalog entries passed live Hugging Face metadata checks.
+
+New coverage includes real archived articles and local links without a model, external-link confirmation, malicious HTML sanitization, streamed answers outside activity blocks, compact expandable tools, tappable inline citations and collapsed sources, exact Wikipedia edition matching, reconnect throttling, cached update failures, and review-request eligibility/TestFlight exclusion. Pack notifications use the operating system and remain opt-in; actual App Store review-sheet display is controlled by Apple and cannot be validated in the simulator or TestFlight.
