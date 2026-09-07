@@ -68,7 +68,13 @@ def validate_profile(profile, team, now=None):
             or entitlement.get("get-task-allow", False)
             or not entitlement.get("beta-reports-active", False)):
         raise ValueError("Use an App Store Connect distribution profile, not development, Ad Hoc, or Enterprise.")
-    profile_uuid = str(uuid.UUID(profile.get("UUID", ""))).upper()
+    # Xcode matches the profile's identifier as a string, not a normalized UUID.
+    # Apple currently issues lowercase identifiers; keep the signed value intact.
+    profile_uuid = profile.get("UUID", "")
+    if not isinstance(profile_uuid, str) or not re.fullmatch(
+            r"[0-9A-Fa-f]{8}(?:-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}", profile_uuid):
+        raise ValueError("Provisioning profile must have a canonical UUID.")
+    uuid.UUID(profile_uuid)
     certs = profile.get("DeveloperCertificates", [])
     if len(certs) != 1 or not isinstance(certs[0], bytes):
         raise ValueError("The App Store Connect profile must contain one distribution certificate.")
