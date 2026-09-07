@@ -4,14 +4,14 @@ Environment: Apple Silicon Mac, Xcode 26.1.1, Swift 6.2.1, iPhone 17 Pro simulat
 
 | Check | Result |
 | --- | --- |
-| Swift core suite | 10 tests passed |
-| Native integration suite | 11 tests passed |
-| UI suite | 15 tests passed |
+| Swift core suite | 11 tests passed |
+| Native integration suite | 12 tests passed |
+| UI suite | 16 tests passed |
 | Release configuration suite | 9 tests passed |
 | Unsigned iPhone Release archive | Passed; app identity and privacy manifest checked |
 | Workflow and shell lint | Actionlint and ShellCheck passed |
-| Curated Hugging Face repository validation | All 22 contain single-file GGUFs |
-| Visual inspection | Chat, Models, 4B filter, Knowledge, and Permissions inspected; screenshots included |
+| Curated Hugging Face repository validation | All 36 contain single-file GGUFs at their preferred quantization |
+| Visual inspection | Chat, Models, 4B/Higher RAM filters, Knowledge, and Permissions inspected; screenshots included |
 
 The native suite uses actual external artifacts, not substitute responses:
 
@@ -23,9 +23,11 @@ The native suite uses actual external artifacts, not substitute responses:
 
 The core suite covers source numbering/deduplication, source filtering, unsupported tool syntax, corpus updates/deletion, compression, quantization, loop limits, traversal, symlinks, overwrite refusal, stable app identity, and 4B size classification/search. Native checks also verify full-question Wikipedia retrieval, rejection of unconnected folders before approval, the installed public name, and distinct catalog IDs with memory guidance. UI tests exercise the four tabs, family/4B filtering and search together, Chat/Work switching, cold launch/background return, draft preservation, all import pickers, permission and settings persistence, model selection/deletion, invalid repositories, live catalogs, real local chat/history, offline source inspection, and Work approval/denial. Work answers must expose their real retrieved evidence and either valid inline citations or an explicit visible warning that inline citations are missing; citations are never fabricated to satisfy the check. A separate native test requires a real model-generated numbered citation.
 
-All 45 tests passed locally in the final 4B validation pass. The combined native/UI result is `TestResults/Thimvale-4b.xcresult` (26 passed, zero failed or skipped); the standalone core and release-configuration suites contribute ten and nine. The unsigned Release archive is `TestResults/Thimvale-4b.xcarchive`. Release tests exercise credential/profile validation, build numbering, export options, and event guards without real Apple secrets. They do not establish that a signed upload succeeds.
+All 48 tests passed locally in the expanded-model validation pass. The combined native/UI result is `TestResults/Thimvale-expanded.xcresult` (28 passed, zero failed or skipped); the standalone core and release-configuration suites contribute eleven and nine. This pass uses the owner-registered `com.ethanrimes.thimvale` bundle identifier and covers the new Higher RAM filter, Nanbeige search, all catalog families, total-versus-active parameter labels, and retained 4B selection. Three pre-existing catalog defaults were subsequently corrected to Q8_0 because those publishers only expose Q8_0 files; all 36 preferred quantizations passed the live catalog check.
 
-After the rename, SHA-256 hashes of the existing installation's conversation, download, folder, model, and permission JSON records matched their pre-rename values. The public name is Thimvale; the bundle ID, storage directory, Keychain service, and background transfer identifier intentionally retain their existing identity. See [simulator regressions](simulator-regressions.md) for the reported red screen, reproduced bugs, and fixes. Tests use isolated storage and credentials rather than resetting the user's app. Simulator test sessions use a fixed inference seed; ordinary app sessions do not.
+The unsigned Release archive `TestResults/Thimvale-registered.xcarchive` also passed with `com.ethanrimes.thimvale`; its bundle identifier and privacy manifest were checked. Release tests exercise credential/profile validation, build numbering, export options, and event guards without real Apple secrets. They do not establish that a signed upload succeeds. The first signed cloud build of the registered bundle is tracked in GitHub Actions.
+
+After the initial cosmetic rename, SHA-256 hashes of the existing installation's conversation, download, folder, model, and permission JSON records matched their pre-rename values. The owner then selected a new App Store bundle ID, `com.ethanrimes.thimvale`; this installs separately from `com.ethanrimes.pocketmind`. The earlier installation is retained, but its files and Keychain data do not automatically migrate. See [simulator regressions](simulator-regressions.md) for the reported red screen, reproduced bugs, and fixes. Tests use isolated storage and credentials rather than resetting the user's app. Simulator test sessions use a fixed inference seed; ordinary app sessions do not.
 
 ## What these checks do not establish
 
@@ -33,7 +35,7 @@ No physical iPhone was connected for performance or background-transfer testing.
 
 No full English Wikipedia download was performed during development. Its real catalog entries, download sizes, and SHA-256 metadata are loaded by the app; actual offline search was exercised against the smaller real archive. Wikipedia uses its built-in compressed full-text index plus passage reranking, not a precomputed vector for every article.
 
-Only the small Liquid model was exercised for inference. Availability checks for the other 21 curated entries, including the four newly added [4B models](models-4b.md), do not prove runtime compatibility, quality, or memory fitness. No 4B weights were downloaded or executed. Citation following and tool selection remain model-dependent; the app displays retrieved evidence and flags an answer that omits citations.
+Only the small Liquid model was exercised for inference. Availability checks for the other 35 curated entries, including the [4B models](models-4b.md) and [benchmark-chart additions](model-expansion.md), do not prove runtime compatibility, quality, or memory fitness. No 4B or larger weights were downloaded or executed. Citation following and tool selection remain model-dependent; the app displays retrieved evidence and flags an answer that omits citations.
 
 Web search's request and error paths are implemented, but no Brave API key was supplied, so a successful authenticated Brave search was not exercised. No App Store/TestFlight upload or signed device installation was performed.
 
