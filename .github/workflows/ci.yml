@@ -11,8 +11,8 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_26.1.1.app/Contents/Developer
 concurrency:
   group: ios-${{ github.ref }}
-  # Do not interrupt an upload already running for main.
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  # Latest push wins, including main: stop superseded builds and uploads.
+  cancel-in-progress: true
 jobs:
   build:
     runs-on: macos-15
@@ -48,7 +48,8 @@ jobs:
             -parallel-testing-enabled NO -resultBundlePath TestResults/CI.xcresult \
             CODE_SIGNING_ALLOWED=NO
       - uses: actions/upload-artifact@v4
-        if: always()
+        # Keep failure diagnostics, but don't spend time exporting canceled runs.
+        if: ${{ !cancelled() }}
         with:
           name: simulator-results
           path: TestResults/CI.xcresult
