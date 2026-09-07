@@ -2,6 +2,23 @@ import XCTest
 @testable import ThimvaleCore
 
 final class CoreTests: XCTestCase {
+    func testActivityDecodesOldConversationsAndRoundTripsNewEvents() throws {
+        let old = ChatMessage(role: "assistant", content: "Saved answer", activity: ["Read files"])
+        let data = try JSONEncoder().encode(old)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        XCTAssertNil(object["events"])
+        let decoded = try JSONDecoder().decode(ChatMessage.self, from: data)
+        XCTAssertEqual(decoded.content, old.content)
+        XCTAssertEqual(decoded.activity, old.activity)
+        XCTAssertNil(decoded.events)
+        var streamed = decoded
+        streamed.events = [.init(kind: .tool, title: "Read files", state: .completed, text: "Source text", call: .init(tool: .readFile, folder: "exports", path: "note.txt"), finishedAt: Date())]
+        let restored = try JSONDecoder().decode(ChatMessage.self, from: JSONEncoder().encode(streamed))
+        XCTAssertEqual(restored.events, streamed.events)
+        XCTAssertFalse(AgentEvent.State.completed.isActive)
+        XCTAssertTrue(AgentEvent.State.awaitingApproval.isActive)
+    }
+
     func testFourBillionModelClassAndParameterSearch() {
         func model(_ size: String) -> ModelEntry {
             .init(id: size, name: "Example", family: "Family", repository: "owner/model", summary: "Text model", parameters: size, minimumMemoryGB: 8)

@@ -2,11 +2,13 @@
 
 A native iPhone workspace for local language models, permission-controlled agents, and offline knowledge.
 
-<img src="docs/screenshots/chat.png" width="230" alt="Chat with plain labels and Chat/Work toggle"> <img src="docs/screenshots/models.png" width="230" alt="Model selection"> <img src="docs/screenshots/knowledge.png" width="230" alt="Offline knowledge library">
+<img src="docs/screenshots/chat-streaming.png" width="230" alt="Live local model output and memory state"> <img src="docs/screenshots/work-streaming.png" width="230" alt="Streaming Work response with tool activity and evidence"> <img src="docs/screenshots/models.png" width="230" alt="Model selection">
 
 ## Product
 
 - **Chat:** private, streaming conversations with a downloaded GGUF model.
+- **Model memory:** selection preloads weights and reuses them across replies and new conversations. Backgrounding, memory pressure, or five idle minutes release them; the next send reloads automatically.
+- **Live activity:** streamed model output in both modes, plus individual Work tool inputs, approval states, results, and errors. See [memory and activity behavior](docs/model-session-and-activity.md).
 - **Work:** a bounded agent loop with independently controlled knowledge search, file listing/reading, file creation, and web search. Writes can require an explicit preview and approval.
 - **Models:** 36 curated GGUF models, plus Hugging Face search and local import. Families include Gemma, Qwen, Liquid, Granite, Phi, Llama, SmolLM, Mistral, MiniCPM, Nanbeige, AI9Stars, Ling, Falcon, and Ornith.
 - **Size filters:** 4B class includes Phi 4 Mini and Nanbeige alongside Gemma 3 and Qwen. Higher RAM separates larger models with roughly 12+ GB device-RAM guidance. See [4B downloads](docs/models-4b.md) and the [14 additions from the mobile benchmark chart](docs/model-expansion.md).
@@ -68,7 +70,7 @@ Simulator UI regressions use a fresh `THIMVALE_TEST_SESSION` UUID for separate a
 - Wikipedia uses the ZIM corpus's compressed article storage and full-text index, with semantic reranking of retrieved passages. It does **not** ship millions of precomputed Wikipedia vectors. Mini editions are abridged; full English text still requires tens of gigabytes. Nothing downloads automatically.
 - Import limits: 1,000 supported files per folder operation, 25 MB per file, 500 PDF pages, and 20 MB of extracted text per indexed document. Scanned PDFs need OCR before import. Imports are snapshots, not live folder sync.
 - Work executes at most six tool calls per request and blocks repeated loops. Small models may emit malformed tool calls or omit citations. When evidence exists, one answer-only retry can recover an answer; it cannot execute tools. Unconnected folders are rejected before approval. Retrieved sources remain inspectable, and omitted citations or tool failures are reported in the work activity. Tool results are treated as untrusted evidence; permissions are enforced in code.
-- Generation stops and the model is unloaded in the background or under memory pressure. App data is excluded from backups. Use Share and the Exports folder for material you want to keep. API tokens are kept in device-only Keychain entries.
+- Generation stops and the model is unloaded in the background or under memory pressure. Idle weights are also released after five minutes. Activity transcripts and tool previews stay in local conversation history. App data is excluded from backups. Use Share and the Exports folder for material you want to keep. API tokens are kept in device-only Keychain entries.
 
 See [architecture](docs/architecture.md) for storage and capability boundaries, and [validation](docs/validation.md) for the checks performed and their limits.
 

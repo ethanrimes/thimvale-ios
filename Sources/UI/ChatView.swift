@@ -23,7 +23,21 @@ struct ChatView: View {
                             Image(systemName: "chevron.down").font(.system(size: 8, weight: .bold))
                         }.font(.caption).foregroundStyle(Palette.accent)
                     }.accessibilityIdentifier("modelPicker")
-                }.padding(.horizontal, 22).padding(.vertical, 14)
+                }.padding(.horizontal, 22).padding(.top, 14).padding(.bottom, 8)
+                if state.selectedModel != nil {
+                    HStack(spacing: 7) {
+                        if state.modelSession.state == .loading { ProgressView().controlSize(.mini) }
+                        else { Image(systemName: state.modelSession.state == .ready ? "memorychip" : "moon") }
+                        Text(state.modelSession.label).accessibilityIdentifier("modelMemoryState")
+                        Spacer()
+                        if case .failed = state.modelSession.state {
+                            Button("Retry") { if let model = state.selectedModel { state.selectModel(model) } }.disabled(state.isGenerating)
+                        }
+                    }.font(.caption2).foregroundStyle(Palette.muted).padding(.horizontal, 22).padding(.bottom, 10)
+                    if case .failed(let reason) = state.modelSession.state {
+                        Text(reason).font(.caption).foregroundStyle(.red).padding(.horizontal, 22).padding(.bottom, 8)
+                    }
+                }
                 if state.current.messages.isEmpty { welcome }
                 else {
                     ScrollViewReader { proxy in
@@ -33,10 +47,12 @@ struct ChatView: View {
                                 if state.isGenerating {
                                     HStack(spacing: 10) { ProgressView().controlSize(.small); Text(state.status).font(.caption).foregroundStyle(Palette.muted) }.id("status")
                                 }
+                                Color.clear.frame(height: 1).id("bottom")
                             }.padding(22)
                         }
                         .onChange(of: state.current.messages.last?.content) { _, _ in proxy.scrollTo(state.current.messages.last?.id, anchor: .bottom) }
                         .onChange(of: state.isGenerating) { _, _ in proxy.scrollTo("status", anchor: .bottom) }
+                        .onChange(of: state.current.messages.last?.events?.count) { _, _ in proxy.scrollTo("bottom", anchor: .bottom) }
                     }
                 }
             }
@@ -101,6 +117,7 @@ struct ChatView: View {
             HStack(alignment: .bottom, spacing: 12) {
                 TextField(state.current.mode == .work ? "Describe a task" : "Message", text: $draft, axis: .vertical)
                     .font(.subheadline).lineLimit(1...5).focused($composing).padding(.vertical, 10).accessibilityIdentifier("messageInput")
+                    .onChange(of: draft) { _, _ in state.modelSession.touch() }
                 Button {
                     if state.isGenerating { state.stop() }
                     else {
@@ -129,6 +146,11 @@ struct ChatView: View {
                 DisclosureGroup("\(message.activity.count) work step\(message.activity.count == 1 ? "" : "s")") {
                     ForEach(Array(message.activity.enumerated()), id: \.offset) { _, item in Text(item).font(.caption).frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 3) }
                 }.font(.caption).foregroundStyle(Palette.muted)
+            }
+            if let events = message.events, !events.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(events) { AgentEventView(event: $0) }
+                }
             }
             if !message.content.isEmpty { Text(.init(AppState.visibleAnswer(message.content))).font(.system(size: 16)).lineSpacing(5).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).accessibilityIdentifier(message.role + "Message") }
             if !message.citations.isEmpty {

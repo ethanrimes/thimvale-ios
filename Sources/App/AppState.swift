@@ -40,9 +40,10 @@ struct ApprovalRequest: Identifiable {
     var notice: String?
     var approval: ApprovalRequest?
     var downloads: DownloadCenter
+    let modelSession: ModelSession
     let hub = ModelHub()
     @ObservationIgnored let knowledge: KnowledgeService
-    @ObservationIgnored private let inference = InferenceService()
+    @ObservationIgnored private let inference: any InferenceServing
     @ObservationIgnored private var generationTask: Task<Void, Never>?
     @ObservationIgnored private var importTask: Task<Void, Never>?
     @ObservationIgnored private var approvalContinuation: CheckedContinuation<Bool, Never>?
@@ -51,7 +52,9 @@ struct ApprovalRequest: Identifiable {
     var selectedModel: ModelEntry? { models.first { $0.id == selectedModelID && $0.isDownloaded } }
     var activeJobs: [DownloadJob] { downloads.jobs.filter { $0.state != .ready } }
 
-    init() throws {
+    init(inference: any InferenceServing = InferenceService(), idleTimeout: Duration = .seconds(300)) throws {
+        self.inference = inference
+        modelSession = ModelSession(inference: inference, idleTimeout: idleTimeout, isForeground: UIApplication.shared.applicationState != .background)
         try AppPaths.prepare()
         knowledge = try KnowledgeService()
         let saved = AppPaths.load([Conversation].self, name: "conversations.json") ?? []
@@ -84,6 +87,17 @@ struct ApprovalRequest: Identifiable {
         downloads.onReady = { [weak self] job in self?.install(job) }
         downloads.onError = { [weak self] message in self?.error = message }
         for job in downloads.jobs where job.state == .ready { install(job) }
+        modelSession.select(selectedModel?.localFilename.map { AppPaths.models.appendingPathComponent($0) }, preload: false)
+        // An interrupted process cannot leave a saved event claiming to be running.
+        for c in conversations.indices {
+            for m in conversations[c].messages.indices {
+                guard var events = conversations[c].messages[m].events else { continue }
+                for e in events.indices where events[e].state.isActive {
+                    events[e].state = .cancelled; events[e].finishedAt = Date()
+                }
+                conversations[c].messages[m].events = events
+            }
+        }
         Task { await refreshKnowledge() }
     }
 
@@ -114,9 +128,9 @@ struct ApprovalRequest: Identifiable {
         save()
     }
     func selectModel(_ model: ModelEntry) {
-        guard !isGenerating, model.isDownloaded else { return }
-        if selectedModelID != model.id { inference.unload() }
+        guard !isGenerating, let filename = model.localFilename else { return }
         selectedModelID = model.id; save()
+        modelSession.select(AppPaths.models.appendingPathComponent(filename))
     }
     func download(_ file: HubFile, model: ModelEntry, license: String?) throws {
         var entry = model; entry.license = license
@@ -134,7 +148,7 @@ struct ApprovalRequest: Identifiable {
             }
             entry.localFilename = job.filename
             if let i = models.firstIndex(where: { $0.id == entry.id }) { models[i] = entry } else { models.append(entry) }
-            if selectedModel == nil { selectedModelID = entry.id }
+            if selectedModel == nil { selectModel(entry) }
         }
         save()
         Task { await refreshKnowledge() }
@@ -157,7 +171,7 @@ struct ApprovalRequest: Identifiable {
     }
     func removeModel(_ model: ModelEntry) {
         guard !isGenerating, let filename = model.localFilename else { return }
-        inference.unload()
+        if modelSession.model == AppPaths.models.appendingPathComponent(filename) { modelSession.select(nil) }
         do {
             try FileManager.default.removeItem(at: AppPaths.models.appendingPathComponent(filename))
             if let i = models.firstIndex(where: { $0.id == model.id }) { models[i].localFilename = nil }
@@ -233,20 +247,22 @@ struct ApprovalRequest: Identifiable {
         continuation?.resume(returning: allowed)
     }
     func stop() {
-        generationTask?.cancel(); inference.cancel(); approve(false)
+        generationTask?.cancel(); inference.cancel(); modelSession.cancelLoading(); approve(false)
     }
     func suspend() {
         stop()
-        inference.unload()
+        modelSession.suspend()
         save()
     }
+    func activate() { modelSession.activate() }
+    func releaseForMemoryPressure() { stop(); modelSession.release(); save() }
     private func requestApproval(_ call: ToolCall) async -> Bool {
         await withCheckedContinuation { continuation in
             approvalContinuation = continuation
             approval = .init(call: call)
         }
     }
-    func execute(_ call: ToolCall, mode: ConversationMode) async throws -> (String, [Citation]) {
+    func execute(_ call: ToolCall, mode: ConversationMode, onState: (AgentEvent.State) -> Void = { _ in }) async throws -> (String, [Citation]) {
         try Task.checkCancellation()
         let needsApproval = try policy.requiresApproval(for: call.tool, mode: mode)
         if [.listFiles, .readFile, .writeFile].contains(call.tool) {
@@ -255,10 +271,12 @@ struct ApprovalRequest: Identifiable {
             }
         }
         if needsApproval {
+            onState(.awaitingApproval)
             guard await requestApproval(call) else { throw PocketError.message("The user declined this action.") }
         }
         try Task.checkCancellation()
         _ = try policy.requiresApproval(for: call.tool, mode: mode) // Recheck after the approval sheet.
+        onState(.running)
         switch call.tool {
         case .searchKnowledge:
             guard let query = call.query, query.count <= 500 else { throw PocketError.message("Supply a knowledge search query under 500 characters.") }
@@ -331,44 +349,44 @@ struct ApprovalRequest: Identifiable {
         let history = conversations[index].messages
         conversations[index].messages.append(.init(id: responseID, role: "assistant", content: ""))
         conversations[index].updatedAt = Date()
-        isGenerating = true; status = "Loading \(model.name)…"
-        inference.prepare()
+        isGenerating = true
+        modelSession.select(AppPaths.models.appendingPathComponent(filename), preload: false)
+        modelSession.beginUse()
+        status = modelSession.state == .ready ? "Preparing response…" : "Loading \(model.name)…"
         save()
         generationTask = Task {
-            defer { isGenerating = false; status = ""; generationTask = nil; save() }
+            defer { isGenerating = false; status = ""; generationTask = nil; modelSession.endUse(); save() }
             var registry = CitationRegistry()
             var messages = [ChatMessage(role: "system", content: systemPrompt(mode: mode))] + history
             var budget = AgentBudget()
             var toolFailure: String?
             do {
+                try await modelSession.ensureReady()
                 // Ground the first turn when a library is available, even for small models that struggle with tool syntax.
                 if mode == .work, policy[.searchKnowledge] != .deny, !documents.isEmpty || !archiveFiles.isEmpty {
                     let call = ToolCall(tool: .searchKnowledge, query: String(input.prefix(500)))
                     try budget.consume(call)
-                    activity("Searching offline knowledge", conversation, responseID)
-                    let (_, sources) = try await execute(call, mode: mode)
+                    let (_, sources) = try await executeObserved(call, mode: mode, conversation: conversation, message: responseID)
                     let numbered = registry.register(sources)
+                    updateMessage(conversation, responseID) { $0.citations = registry.citations }
                     messages[messages.count - 1].content += "\n\nRetrieved evidence:\n" + evidence(numbered) + "\nThese passages have already been read. Answer from them with numbered citations. Do not reopen their files unless needed for an additional task."
                 }
                 while true {
                     try Task.checkCancellation()
-                    status = mode == .work ? "Working on your iPhone…" : "Thinking on your iPhone…"
                     let answerOnly = toolFailure != nil && !registry.citations.isEmpty
                     let prompt = answerOnly ? groundedMessages(input, citations: registry.citations, failure: toolFailure) : messages
-                    let output = try await inference.generate(model: AppPaths.models.appendingPathComponent(filename), messages: prompt, maxTokens: answerOnly ? 384 : 768) { [weak self] token in
-                        guard mode == .chat else { return }
-                        Task { @MainActor in self?.append(token, conversation, responseID) }
-                    }
+                    let output = try await generateObserved(model: AppPaths.models.appendingPathComponent(filename), messages: prompt,
+                        maxTokens: answerOnly ? 384 : 768, title: answerOnly ? "Answering from sources" : "Model output", conversation: conversation, message: responseID)
                     try Task.checkCancellation()
                     guard mode == .work, !answerOnly, let call = ToolCall.parse(output) else {
                         var answer = Self.visibleAnswer(output)
                         // Retry once with evidence only. This completion cannot execute tools.
                         if mode == .work, !answerOnly, !registry.citations.isEmpty,
                            ToolCall.looksLikeCall(answer) || CitationValidator.cited(in: answer, from: registry.citations).isEmpty {
-                            activity("Answering from retrieved sources", conversation, responseID)
-                            answer = Self.visibleAnswer(try await inference.generate(
+                            answer = Self.visibleAnswer(try await generateObserved(
                                 model: AppPaths.models.appendingPathComponent(filename),
-                                messages: groundedMessages(input, citations: registry.citations), maxTokens: 384, onToken: { _ in }
+                                messages: groundedMessages(input, citations: registry.citations), maxTokens: 384,
+                                title: "Answering from sources", conversation: conversation, message: responseID
                             ))
                             try Task.checkCancellation()
                         }
@@ -385,18 +403,17 @@ struct ApprovalRequest: Identifiable {
                         break
                     }
                     try budget.consume(call)
-                    activity(call.tool.title, conversation, responseID)
                     messages.append(.init(role: "assistant", content: output))
                     do {
-                        let (result, sources) = try await execute(call, mode: mode)
+                        let (result, sources) = try await executeObserved(call, mode: mode, conversation: conversation, message: responseID)
                         toolFailure = nil
                         let numbered = registry.register(sources)
+                        updateMessage(conversation, responseID) { $0.citations = registry.citations }
                         let payload = sources.isEmpty ? result : evidence(numbered)
                         messages.append(.init(role: "user", content: "Original user request: \(input)\nTool result for \(call.tool.rawValue):\n\(payload)\nContinue the original task. Use numbered citations when answering."))
                     } catch is CancellationError { throw CancellationError() }
                     catch {
                         toolFailure = error.localizedDescription
-                        activity("Tool unavailable: \(error.localizedDescription)", conversation, responseID)
                         messages.append(.init(role: "user", content: "Tool error: \(error.localizedDescription) Do not repeat this action. Explain the limitation or continue with available evidence."))
                     }
                 }
@@ -404,7 +421,12 @@ struct ApprovalRequest: Identifiable {
                 let cancelled = Task.isCancelled
                 updateMessage(conversation, responseID) {
                     $0.citations = registry.citations
-                    if $0.content.isEmpty { $0.content = cancelled ? "Stopped." : "I couldn't complete this request. \(error.localizedDescription)" }
+                    if $0.content.isEmpty {
+                        let partial = Self.visibleAnswer($0.events?.last(where: { $0.kind == .generation })?.text ?? "")
+                        if cancelled, !partial.isEmpty, !ToolCall.looksLikeCall(partial), !partial.hasPrefix("{") {
+                            $0.content = partial; $0.activity.append("Generation stopped")
+                        } else { $0.content = cancelled ? "Stopped." : "I couldn't complete this request. \(error.localizedDescription)" }
+                    }
                     else { $0.activity.append(cancelled ? "Generation stopped" : error.localizedDescription) }
                 }
             }
@@ -419,6 +441,70 @@ struct ApprovalRequest: Identifiable {
         guard let c = conversations.firstIndex(where: { $0.id == conversation }), let m = conversations[c].messages.firstIndex(where: { $0.id == message }) else { return }
         body(&conversations[c].messages[m])
     }
-    private func append(_ token: String, _ conversation: UUID, _ message: UUID) { updateMessage(conversation, message) { $0.content += token } }
-    private func activity(_ text: String, _ conversation: UUID, _ message: UUID) { status = text; updateMessage(conversation, message) { $0.activity.append(text) } }
+    private func addEvent(_ event: AgentEvent, _ conversation: UUID, _ message: UUID) {
+        status = event.title
+        updateMessage(conversation, message) { if $0.events == nil { $0.events = [] }; $0.events?.append(event) }
+    }
+    private func updateEvent(_ id: UUID, _ conversation: UUID, _ message: UUID, _ body: (inout AgentEvent) -> Void) {
+        updateMessage(conversation, message) {
+            guard let index = $0.events?.firstIndex(where: { $0.id == id }) else { return }
+            body(&$0.events![index])
+        }
+    }
+    private func generateObserved(model: URL, messages: [ChatMessage], maxTokens: Int, title: String, conversation: UUID, message: UUID) async throws -> String {
+        let event = AgentEvent(kind: .generation, title: title)
+        addEvent(event, conversation, message)
+        let (tokens, continuation) = AsyncStream<String>.makeStream()
+        let inference = inference
+        let producer = Task {
+            defer { continuation.finish() }
+            return try await inference.generate(model: model, messages: messages, maxTokens: maxTokens) { continuation.yield($0) }
+        }
+        do {
+            let output = try await withTaskCancellationHandler {
+                // Drain the ordered stream before finalizing. No fire-and-forget UI tasks
+                // can append stale tokens after a tool call, retry, or cancellation.
+                for await token in tokens {
+                    if Task.isCancelled { break }
+                    status = "Generating…"
+                    updateEvent(event.id, conversation, message) { $0.text += token }
+                }
+                let output = try await producer.value
+                try Task.checkCancellation()
+                return output
+            } onCancel: { producer.cancel() }
+            updateEvent(event.id, conversation, message) { $0.text = output; $0.state = .completed; $0.finishedAt = Date() }
+            return output
+        } catch {
+            producer.cancel()
+            updateEvent(event.id, conversation, message) { $0.state = Task.isCancelled || error is CancellationError ? .cancelled : .failed; $0.finishedAt = Date() }
+            throw error
+        }
+    }
+    private func executeObserved(_ call: ToolCall, mode: ConversationMode, conversation: UUID, message: UUID) async throws -> (String, [Citation]) {
+        let event = AgentEvent(kind: .tool, title: call.tool.title, state: .pending, call: call)
+        addEvent(event, conversation, message)
+        do {
+            let result = try await execute(call, mode: mode) { phase in
+                self.status = phase == .awaitingApproval ? "Waiting for your approval…" : call.tool.title
+                self.updateEvent(event.id, conversation, message) { $0.state = phase }
+                self.save()
+            }
+            updateEvent(event.id, conversation, message) {
+                // Preserve a successful result even if Stop arrived on return:
+                // a completed file write cannot be undone by cancellation.
+                $0.state = .completed; $0.finishedAt = Date()
+                $0.text = result.0.isEmpty ? "No results." : String(result.0.prefix(6_000))
+            }
+            save()
+            return result
+        } catch {
+            updateEvent(event.id, conversation, message) {
+                $0.state = Task.isCancelled || error is CancellationError ? .cancelled : .failed
+                $0.text = Task.isCancelled ? "Stopped." : error.localizedDescription; $0.finishedAt = Date()
+            }
+            save()
+            throw error
+        }
+    }
 }

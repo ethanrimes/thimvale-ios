@@ -22,7 +22,26 @@ struct ChatMessage: Codable, Identifiable, Sendable {
     var content: String
     var citations: [Citation] = []
     var activity: [String] = []
+    // Optional so conversations saved before the live activity feed still decode.
+    var events: [AgentEvent]?
     var date = Date()
+}
+
+struct AgentEvent: Codable, Identifiable, Sendable, Equatable {
+    enum Kind: String, Codable, Sendable { case generation, tool }
+    enum State: String, Codable, Sendable {
+        case pending = "Checking permissions", running = "Running", awaitingApproval = "Awaiting approval", completed = "Completed"
+        case failed = "Failed", cancelled = "Stopped"
+        var isActive: Bool { self == .pending || self == .running || self == .awaitingApproval }
+    }
+    var id = UUID()
+    var kind: Kind
+    var title: String
+    var state: State = .running
+    var text = ""
+    var call: ToolCall?
+    var startedAt = Date()
+    var finishedAt: Date?
 }
 
 struct Conversation: Codable, Identifiable {
