@@ -2,6 +2,19 @@ import XCTest
 @testable import ThimvaleCore
 
 final class CoreTests: XCTestCase {
+    func testFourBillionModelClassAndParameterSearch() {
+        func model(_ size: String) -> ModelEntry {
+            .init(id: size, name: "Example", family: "Family", repository: "owner/model", summary: "Text model", parameters: size, minimumMemoryGB: 8)
+        }
+        for size in ["4B", "3.8B", "4b"] { XCTAssertTrue(model(size).isFourBillionClass) }
+        for size in ["230M", "1B", "3B", "8B", "E2B", "GGUF", "4.5B"] { XCTAssertFalse(model(size).isFourBillionClass) }
+        XCTAssertTrue(model("4B").matchesLibrarySearch("4b"))
+        XCTAssertTrue(model("3.8B").matchesLibrarySearch("3.8B"))
+        XCTAssertTrue(model("4B").matchesLibrarySearch(" family "))
+        XCTAssertTrue(model("4B").matchesLibrarySearch("  "))
+        XCTAssertFalse(model("1B").matchesLibrarySearch("4B"))
+    }
+
     func testBrandingDoesNotChangePersistedIdentity() {
         XCTAssertEqual(AppIdentity.displayName, "Thimvale")
         XCTAssertEqual(AppIdentity.repositoryURL.absoluteString, "https://github.com/ethanrimes/thimvale-ios")

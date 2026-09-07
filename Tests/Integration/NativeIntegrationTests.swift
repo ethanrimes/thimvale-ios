@@ -2,6 +2,15 @@ import XCTest
 @testable import Thimvale
 
 final class NativeIntegrationTests: XCTestCase {
+    func testFourBillionCatalogEntriesHaveDistinctIDsAndMemoryGuidance() {
+        let models = ModelCatalog.models
+        XCTAssertEqual(Set(models.map(\.id)).count, models.count)
+        let fourB = models.filter { $0.parameters == "4B" }
+        XCTAssertEqual(Set(fourB.map(\.id)), ["qwen35-4", "qwen3-4", "qwen3-4-instruct2507", "gemma3-4"])
+        XCTAssertTrue(fourB.allSatisfy { $0.minimumMemoryGB >= 8 && $0.preferredQuant == "Q4_K_M" })
+        XCTAssertTrue(models.first { $0.id == "phi4-mini" }?.isFourBillionClass == true)
+    }
+
     func testInstalledAppNameAndUpdateIdentity() {
         XCTAssertEqual(Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String, AppIdentity.displayName)
         XCTAssertEqual(Bundle.main.bundleIdentifier, AppIdentity.bundleIdentifier)

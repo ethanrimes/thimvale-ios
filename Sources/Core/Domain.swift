@@ -45,6 +45,15 @@ struct ModelEntry: Codable, Identifiable, Hashable, Sendable {
     var localFilename: String?
     var license: String?
     var isDownloaded: Bool { localFilename != nil }
+    var isFourBillionClass: Bool {
+        let label = parameters.uppercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        guard label.hasSuffix("B"), let billions = Double(label.dropLast()) else { return false }
+        return (3.5..<4.5).contains(billions)
+    }
+    func matchesLibrarySearch(_ query: String) -> Bool {
+        let query = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        return query.isEmpty || "\(name) \(family) \(parameters) \(summary)".localizedCaseInsensitiveContains(query)
+    }
 }
 
 struct HubFile: Identifiable, Sendable {

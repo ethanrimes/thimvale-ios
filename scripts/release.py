@@ -126,7 +126,8 @@ def upload(env):
         run(["security", "cms", "-D", "-i", profile_path, "-o", profile_plist])
         with profile_plist.open("rb") as handle:
             profile_uuid, fingerprint = validate_profile(plistlib.load(handle), env["APPLE_TEAM_ID"])
-        run(["openssl", "pkey", "-in", key_path, "-check", "-noout"], stdout=subprocess.DEVNULL)
+        # Parsing with -noout also works with macOS's LibreSSL; never emit key text.
+        run(["openssl", "pkey", "-in", key_path, "-noout"], stdout=subprocess.DEVNULL)
         # Xcode 16+ profile cache. It is disposable and restored even if signing fails.
         installed_profile = Path.home() / "Library/Developer/Xcode/UserData/Provisioning Profiles" / (profile_uuid + ".mobileprovision")
         previous_profile = installed_profile.read_bytes() if installed_profile.exists() else None
