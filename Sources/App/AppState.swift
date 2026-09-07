@@ -59,7 +59,14 @@ struct ApprovalRequest: Identifiable {
         conversations = initialConversations
         conversationID = initialConversations[0].id
         let storedModels = AppPaths.load([ModelEntry].self, name: "models.json") ?? []
-        var initialModels = ModelCatalog.models.map { catalog in storedModels.first { $0.id == catalog.id } ?? catalog }
+        var initialModels = ModelCatalog.models.map { catalog in
+            var entry = catalog
+            if let stored = storedModels.first(where: { $0.id == catalog.id }) {
+                entry.localFilename = stored.localFilename
+                entry.license = stored.license
+            }
+            return entry
+        }
         initialModels += storedModels.filter { saved in !ModelCatalog.models.contains { $0.id == saved.id } }
         for i in initialModels.indices {
             if let file = initialModels[i].localFilename, !FileManager.default.fileExists(atPath: AppPaths.models.appendingPathComponent(file).path) { initialModels[i].localFilename = nil }
@@ -115,6 +122,11 @@ struct ApprovalRequest: Identifiable {
     private func install(_ job: DownloadJob) {
         guard FileManager.default.fileExists(atPath: job.destination.path) else { return }
         if job.kind == .model, var entry = job.model {
+            if let catalog = ModelCatalog.models.first(where: { $0.id == entry.id }) {
+                let license = entry.license
+                entry = catalog
+                entry.license = license
+            }
             entry.localFilename = job.filename
             if let i = models.firstIndex(where: { $0.id == entry.id }) { models[i] = entry } else { models.append(entry) }
             if selectedModel == nil { selectedModelID = entry.id }
@@ -224,7 +236,7 @@ struct ApprovalRequest: Identifiable {
             approval = .init(call: call)
         }
     }
-    private func execute(_ call: ToolCall, mode: ConversationMode) async throws -> (String, [Citation]) {
+    func execute(_ call: ToolCall, mode: ConversationMode) async throws -> (String, [Citation]) {
         try Task.checkCancellation()
         let needsApproval = try policy.requiresApproval(for: call.tool, mode: mode)
         if needsApproval {

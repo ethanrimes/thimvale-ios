@@ -10,9 +10,9 @@ struct PermissionsView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 10) {
-                        Eyebrow(text: "A capable assistant. Clear boundaries.")
-                        Text("You're in control.").font(.system(size: 34, design: .serif)).tracking(-1)
-                        Text("Give your model the tools it needs. Every permission is yours to grant, limit, or take back.").font(.subheadline).foregroundStyle(Palette.muted).lineSpacing(4)
+                        Eyebrow(text: "Work mode")
+                        Text("Tool permissions").font(.system(size: 34, design: .serif)).tracking(-1)
+                        Text("Choose which tools models can use in Work mode.").font(.subheadline).foregroundStyle(Palette.muted).lineSpacing(4)
                     }
                     Card {
                         HStack(alignment: .top, spacing: 14) {
@@ -100,7 +100,7 @@ struct SettingsView: View {
                 }
                 Section("Web search") {
                     SecureField("Brave Search API key", text: $braveKey).autocorrectionDisabled().textInputAutocapitalization(.never)
-                    Text("Bring your own key. Search queries go directly to Brave; no PocketMind server is involved. Enable Search the web in Permissions after adding a key.").font(.caption).foregroundStyle(Palette.muted)
+                    Text("Requires a Brave API key. Queries are sent directly to Brave. After saving a key, enable Search the web in Permissions.").font(.caption).foregroundStyle(Palette.muted)
                     Link("Get a Brave Search API key", destination: URL(string: "https://api-dashboard.search.brave.com")!)
                 }
                 Section {

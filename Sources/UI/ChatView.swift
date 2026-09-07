@@ -66,22 +66,22 @@ struct ChatView: View {
             VStack(alignment: .leading, spacing: 26) {
                 HStack(spacing: 7) {
                     Circle().fill(Palette.accent).frame(width: 6, height: 6)
-                    Eyebrow(text: "Intelligence, on your terms")
+                    Eyebrow(text: "Local chat")
                 }.padding(.top, 30)
-                Text(state.current.mode == .chat ? "A little mind.\nA world of possibility." : "Your knowledge.\nReady for work.")
+                Text(state.current.mode == .chat ? "Start a conversation." : "Work with your files.")
                     .font(.system(size: 38, weight: .regular, design: .serif)).tracking(-1.5).fixedSize(horizontal: false, vertical: true)
-                Text(state.current.mode == .chat ? "Think, write, and explore with a model that lives on your iPhone. Yours to choose. Yours to keep." : "Give your local model useful tools. Find answers in your documents and Wikipedia, even beyond the reach of a signal.")
+                Text(state.current.mode == .chat ? "Choose a model, then send a message. Conversations run on your iPhone." : "Search your documents and offline Wikipedia, or create files. Set tool access in Permissions.")
                     .font(.subheadline).foregroundStyle(Palette.muted).lineSpacing(5).fixedSize(horizontal: false, vertical: true)
                 HStack(spacing: 12) {
                     Label("On-device", systemImage: "iphone")
                     Label("No account", systemImage: "person.crop.circle.badge.checkmark")
                 }.font(.caption).foregroundStyle(Palette.accent)
                 VStack(spacing: 10) {
-                    suggestion(state.current.mode == .chat ? "Help me think something through" : "Find an answer in my knowledge", subtitle: state.current.mode == .chat ? "A fresh perspective, wherever you are" : "Ask a question and inspect the sources", symbol: state.current.mode == .chat ? "sparkles" : "text.magnifyingglass", prompt: state.current.mode == .chat ? "Help me think through " : "Search my knowledge library for ")
-                    suggestion(state.current.mode == .chat ? "Make room for a new idea" : "Turn my notes into something useful", subtitle: state.current.mode == .chat ? "Write, brainstorm, and connect the dots" : "Read a connected folder and draft a file", symbol: "square.and.pencil", prompt: state.current.mode == .chat ? "Help me brainstorm ideas for " : "List my connected files and help me summarize ")
+                    suggestion(state.current.mode == .chat ? "Explain a topic" : "Search documents", subtitle: state.current.mode == .chat ? "Ask about a subject" : "Find passages in your offline library", symbol: state.current.mode == .chat ? "text.bubble" : "text.magnifyingglass", prompt: state.current.mode == .chat ? "Explain " : "Search my knowledge library for ")
+                    suggestion(state.current.mode == .chat ? "Draft a message" : "Summarize files", subtitle: state.current.mode == .chat ? "Choose the recipient and tone" : "Read files from a connected folder", symbol: "square.and.pencil", prompt: state.current.mode == .chat ? "Draft a message to " : "List my connected files and summarize ")
                 }
                 if state.current.mode == .work {
-                    Button { state.selectedTab = 3 } label: { Label("You decide what your model can access", systemImage: "hand.raised").font(.caption) }
+                    Button { state.selectedTab = 3 } label: { Label("Edit tool permissions", systemImage: "hand.raised").font(.caption) }
                 }
             }.padding(.horizontal, 26).padding(.bottom, 24)
         }
@@ -99,7 +99,7 @@ struct ChatView: View {
     private var composer: some View {
         VStack(spacing: 9) {
             HStack(alignment: .bottom, spacing: 12) {
-                TextField(state.current.mode == .work ? "What would you like to work on?" : "What's on your mind?", text: $draft, axis: .vertical)
+                TextField(state.current.mode == .work ? "Describe a task" : "Message", text: $draft, axis: .vertical)
                     .font(.subheadline).lineLimit(1...5).focused($composing).padding(.vertical, 10).accessibilityIdentifier("messageInput")
                 Button {
                     if state.isGenerating { state.stop() }

@@ -9,6 +9,7 @@
 #include <vector>
 #include <algorithm>
 #include <mutex>
+#include <os/proc.h>
 
 static void PMError(NSError **error, NSString *message) {
     if (error) *error = [NSError errorWithDomain:@"PocketMind.Native" code:1 userInfo:@{NSLocalizedDescriptionKey:message}];
@@ -42,6 +43,14 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
 - (void)resetCancellation { _cancelled.store(false); }
 - (BOOL)loadModelAtPath:(NSString *)path contextSize:(int)contextSize error:(NSError **)error {
     [self unload];
+#if TARGET_OS_IOS && !TARGET_OS_SIMULATOR
+    const uint64_t bytes = [[[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil] fileSize];
+    const size_t available = os_proc_available_memory();
+    if (available > 0 && bytes + 384 * 1024 * 1024 > available) {
+        PMError(error, @"This model needs more memory than iOS currently makes available. Close other apps or choose a smaller quantization.");
+        return NO;
+    }
+#endif
     static std::once_flag initialized;
     std::call_once(initialized, [] {
         llama_backend_init();

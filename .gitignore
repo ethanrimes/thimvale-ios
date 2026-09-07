@@ -1,6 +1,7 @@
 .DS_Store
 .build/
 build/
+build-device/
 DerivedData/
 Vendor/
 *.xcuserstate

@@ -25,9 +25,9 @@ struct ModelsView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     VStack(alignment: .leading, spacing: 10) {
-                        Eyebrow(text: "Your intelligence, your choice")
-                        Text("Find your mind.").font(.system(size: 34, design: .serif)).tracking(-1)
-                        Text("Small enough to go with you. Capable enough to make a difference.").font(.subheadline).foregroundStyle(Palette.muted)
+                        Eyebrow(text: "Local models")
+                        Text("Choose a model").font(.system(size: 34, design: .serif)).tracking(-1)
+                        Text("Download a model or import a GGUF file.").font(.subheadline).foregroundStyle(Palette.muted)
                     }
                     Picker("Model source", selection: $scope) { ForEach(["Discover", "Downloaded", "Hugging Face"], id: \.self) { Text($0) } }.pickerStyle(.segmented).onChange(of: scope) { _, _ in family = "All" }
                     HStack {
@@ -53,19 +53,19 @@ struct ModelsView: View {
                         Button { selected = recommended } label: {
                             Card {
                                 VStack(alignment: .leading, spacing: 14) {
-                                    HStack { Eyebrow(text: "A good place to start"); Spacer(); Image(systemName: "sparkles").foregroundStyle(Palette.accent) }
+                                    HStack { Eyebrow(text: "Suggested model"); Spacer(); Image(systemName: "iphone").foregroundStyle(Palette.accent) }
                                     HStack(spacing: 13) {
                                         FamilyIcon(family: recommended.family)
-                                        VStack(alignment: .leading, spacing: 5) { Text(recommended.name + " · " + recommended.parameters).font(.title3.weight(.semibold)); Text("Compact. Versatile. Ready to travel.").font(.caption).foregroundStyle(Palette.muted) }
+                                        VStack(alignment: .leading, spacing: 5) { Text(recommended.name + " · " + recommended.parameters).font(.title3.weight(.semibold)); Text("\(recommended.parameters) parameters · GGUF").font(.caption).foregroundStyle(Palette.muted) }
                                     }
-                                    HStack { Text(recommended.isDownloaded ? "Ready on this iPhone" : "Explore model").font(.subheadline.weight(.medium)); Spacer(); Image(systemName: "arrow.right") }.foregroundStyle(Palette.accent)
+                                    HStack { Text(recommended.isDownloaded ? "Downloaded" : "View model").font(.subheadline.weight(.medium)); Spacer(); Image(systemName: "arrow.right") }.foregroundStyle(Palette.accent)
                                 }
                             }
                         }.buttonStyle(.plain)
                     }
                     if hubSearching { ProgressView("Searching Hugging Face…").frame(maxWidth: .infinity).padding() }
                     else if visible.isEmpty {
-                        ContentUnavailableView(scope == "Hugging Face" && !searched ? "An open world of models" : "No models here yet", systemImage: "square.stack.3d.up", description: Text(scope == "Hugging Face" ? "Search the Hub or open an owner/model repository. Choose single-file text GGUFs that fit your iPhone." : "Try another filter, download a model, or import a GGUF from Files."))
+                        ContentUnavailableView(scope == "Hugging Face" && !searched ? "Search Hugging Face" : "No models found", systemImage: "square.stack.3d.up", description: Text(scope == "Hugging Face" ? "Search or enter an owner/model repository. Single-file text GGUFs are supported." : "Try another filter, download a model, or import a GGUF from Files."))
                     } else {
                         SectionHeading(title: scope == "Downloaded" ? "On this iPhone" : "Model library", detail: "\(visible.count) models")
                         LazyVStack(spacing: 10) { ForEach(visible) { model in modelRow(model) } }

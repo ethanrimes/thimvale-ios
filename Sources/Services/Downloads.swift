@@ -25,14 +25,23 @@ struct DownloadJob: Codable, Identifiable {
     var onError: ((String) -> Void)?
     @ObservationIgnored private var session: URLSession!
     @ObservationIgnored private var tasks: [String: URLSessionDownloadTask] = [:]
+    @ObservationIgnored private let ledger: String
     @ObservationIgnored var backgroundCompletion: (() -> Void)?
 
-    override init() {
+    init(identifier: String = "com.ethanrimes.pocketmind.downloads", ledger: String = "downloads.json") {
+        self.ledger = ledger
         super.init()
-        jobs = AppPaths.load([DownloadJob].self, name: "downloads.json") ?? []
-        let config = URLSessionConfiguration.background(withIdentifier: "com.ethanrimes.pocketmind.downloads")
+        jobs = AppPaths.load([DownloadJob].self, name: ledger) ?? []
+        let config: URLSessionConfiguration
+        #if targetEnvironment(simulator)
+        // Simulator runtimes may not provide nsurlsessiond. Exercise the same transfer
+        // delegate and durable ledger with a foreground session on the simulator.
+        config = .default
+        #else
+        config = .background(withIdentifier: identifier)
         config.sessionSendsLaunchEvents = true
         config.isDiscretionary = false
+        #endif
         config.httpMaximumConnectionsPerHost = 2
         session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
         session.getAllTasks { [weak self] pending in
@@ -107,7 +116,7 @@ struct DownloadJob: Codable, Identifiable {
         persist()
     }
     private func persist() {
-        do { try AppPaths.save(jobs, as: "downloads.json") }
+        do { try AppPaths.save(jobs, as: ledger) }
         catch { onError?(error.localizedDescription) }
     }
     nonisolated func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
