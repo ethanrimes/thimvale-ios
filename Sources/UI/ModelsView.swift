@@ -6,6 +6,7 @@ struct ModelsView: View {
     @State private var query = ""
     @State private var family = "All"
     @State private var scope = "Discover"
+    @State private var sizeFilter = "All sizes"
     @State private var selected: ModelEntry?
     @State private var importFile = false
     @State private var hubResults: [ModelEntry] = []
@@ -17,7 +18,10 @@ struct ModelsView: View {
     private var visible: [ModelEntry] {
         let all = scope == "Hugging Face" ? hubResults : state.models
         return all.filter { model in
-            (scope != "Downloaded" || model.isDownloaded) && (family == "All" || model.family == family || scope == "Hugging Face") && (scope == "Hugging Face" || query.isEmpty || "\(model.name) \(model.family) \(model.summary)".localizedCaseInsensitiveContains(query))
+            (scope != "Downloaded" || model.isDownloaded)
+                && (family == "All" || model.family == family || scope == "Hugging Face")
+                && (scope != "Discover" || sizeFilter != "4B class" || model.isFourBillionClass)
+                && (scope == "Hugging Face" || model.matchesLibrarySearch(query))
         }
     }
     var body: some View {
@@ -29,13 +33,21 @@ struct ModelsView: View {
                         Text("Choose a model").font(.system(size: 34, design: .serif)).tracking(-1)
                         Text("Download a model or import a GGUF file.").font(.subheadline).foregroundStyle(Palette.muted)
                     }
-                    Picker("Model source", selection: $scope) { ForEach(["Discover", "Downloaded", "Hugging Face"], id: \.self) { Text($0) } }.pickerStyle(.segmented).onChange(of: scope) { _, _ in family = "All" }
+                    Picker("Model source", selection: $scope) { ForEach(["Discover", "Downloaded", "Hugging Face"], id: \.self) { Text($0) } }.pickerStyle(.segmented).onChange(of: scope) { _, _ in family = "All"; sizeFilter = "All sizes" }
                     HStack {
                         Image(systemName: "magnifyingglass").foregroundStyle(Palette.muted)
                         TextField(scope == "Hugging Face" ? "Search Hugging Face GGUF models" : "Search models or families", text: $query).font(.subheadline).autocorrectionDisabled().textInputAutocapitalization(.never).focused($searchFocused).submitLabel(.search).onSubmit { searchFocused = false; if scope == "Hugging Face" { searchHub() } }.accessibilityIdentifier("modelSearch")
                         if scope == "Hugging Face" { Button { searchHub() } label: { Image(systemName: "arrow.right.circle.fill") }.disabled(hubSearching) }
                     }.padding(15).background(Palette.surface, in: RoundedRectangle(cornerRadius: 15))
                     if scope == "Discover" {
+                        Picker("Model size", selection: $sizeFilter) {
+                            Text("All sizes").tag("All sizes")
+                            Text("4B class").tag("4B class")
+                        }.pickerStyle(.segmented).accessibilityIdentifier("modelSizeFilter")
+                        if sizeFilter == "4B class" {
+                            Text("Includes Phi 4 Mini at 3.8B. For iPhones with roughly 8 GB RAM or more; start with a Q4 download. Free memory and context length still matter.")
+                                .font(.caption).foregroundStyle(Palette.muted)
+                        }
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
                                 ForEach(["All", "Gemma", "Qwen", "Liquid", "Granite", "Phi", "Llama", "SmolLM", "Mistral"], id: \.self) { item in
@@ -49,7 +61,7 @@ struct ModelsView: View {
                     if !state.activeJobs.isEmpty {
                         VStack(spacing: 10) { ForEach(state.activeJobs.filter { $0.kind == .model }) { job in DownloadRow(center: state.downloads, job: job) } }
                     }
-                    if scope == "Discover", family == "All", query.isEmpty, let recommended = state.models.first {
+                    if scope == "Discover", sizeFilter == "All sizes", family == "All", query.isEmpty, let recommended = state.models.first {
                         Button { selected = recommended } label: {
                             Card {
                                 VStack(alignment: .leading, spacing: 14) {
@@ -116,7 +128,7 @@ struct ModelsView: View {
                 if model.isDownloaded { Image(systemName: state.selectedModelID == model.id ? "checkmark.circle.fill" : "checkmark.circle").foregroundStyle(Palette.accent) }
                 else { Image(systemName: "arrow.down.circle").font(.title3).foregroundStyle(Palette.accent) }
             }.padding(16).background(Palette.surface, in: RoundedRectangle(cornerRadius: 18))
-        }.buttonStyle(.plain)
+        }.buttonStyle(.plain).accessibilityIdentifier("model_" + model.id)
     }
 }
 

@@ -9,6 +9,7 @@ A native iPhone workspace for local language models, permission-controlled agent
 - **Chat:** private, streaming conversations with a downloaded GGUF model.
 - **Work:** a bounded agent loop with independently controlled knowledge search, file listing/reading, file creation, and web search. Writes can require an explicit preview and approval.
 - **Models:** curated mobile-size Gemma, Qwen, Liquid, Granite, Phi, Llama and SmolLM models, plus Hugging Face repository search and local GGUF import.
+- **4B class:** Gemma 3, Qwen 3, Qwen 3 Instruct 2507, and Qwen 3.5 at 4B, alongside Phi 4 Mini at 3.8B. Use the size filter in Discover. See [download sizes and memory guidance](docs/models-4b.md).
 - **Knowledge:** import folders, text and PDFs; retrieve compressed passages with inspectable source citations. Download compressed Wikipedia ZIM archives directly from Kiwix, including English mini and full text editions.
 
 ## Development
@@ -61,7 +62,7 @@ Simulator UI regressions use a fresh `THIMVALE_TEST_SESSION` UUID for separate a
 ## Implementation limits
 
 - This is a working first version, not an App Store release. Physical-device speed, thermal behavior, memory limits, background download scheduling, and accessibility still need device testing. Both device and simulator targets compile locally.
-- Eighteen curated repositories were checked for GGUF availability. That does not establish that every architecture and quantization works on every iPhone. The runtime checks templates and model loading and rejects known memory overcommit. Only text generation is implemented; vision, audio, sharded GGUFs, and raw safetensors are not supported.
+- Twenty-two curated repositories were checked for GGUF availability. That does not establish that every architecture and quantization works on every iPhone. The runtime checks templates and model loading and rejects known memory overcommit. Only text generation is implemented; vision, audio, sharded GGUFs, and raw safetensors are not supported.
 - Imported English documents use Apple's on-device sentence embeddings when available, compressed to one bit per dimension, plus SQLite FTS5. Other languages still have Unicode keyword search. The app does not download the OS embedding resource itself. If it is unavailable, indexing/search use keywords. Reimport to add vectors after the resource becomes available.
 - Sign quantization reduces vector storage by 32x compared with Float32, at a retrieval-quality cost. It is not a 32x reduction of the whole library and is not a claim of optimal compression. Text uses LZFSE; the contentless FTS index avoids retaining another plaintext copy. Libraries over 20,000 passages use lexical candidate selection before vector reranking to bound search time.
 - Wikipedia uses the ZIM corpus's compressed article storage and full-text index, with semantic reranking of retrieved passages. It does **not** ship millions of precomputed Wikipedia vectors. Mini editions are abridged; full English text still requires tens of gigabytes. Nothing downloads automatically.

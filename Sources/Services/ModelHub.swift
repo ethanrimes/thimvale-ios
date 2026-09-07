@@ -4,9 +4,13 @@ enum ModelCatalog {
     static let models: [ModelEntry] = [
         .init(id: "qwen35-08", name: "Qwen 3.5", family: "Qwen", repository: "unsloth/Qwen3.5-0.8B-GGUF", summary: "Qwen 3.5 at 0.8B parameters. Text mode.", parameters: "0.8B", minimumMemoryGB: 4),
         .init(id: "qwen35-2", name: "Qwen 3.5", family: "Qwen", repository: "unsloth/Qwen3.5-2B-GGUF", summary: "Qwen 3.5 at 2B parameters. Text mode.", parameters: "2B", minimumMemoryGB: 6),
+        .init(id: "qwen35-4", name: "Qwen 3.5", family: "Qwen", repository: "unsloth/Qwen3.5-4B-GGUF", summary: "Qwen 3.5 at 4B parameters. Text mode; needs a higher-memory iPhone.", parameters: "4B", minimumMemoryGB: 8),
         .init(id: "qwen3-06", name: "Qwen 3", family: "Qwen", repository: "Qwen/Qwen3-0.6B-GGUF", summary: "Lightweight multilingual chat.", parameters: "0.6B", minimumMemoryGB: 4),
         .init(id: "qwen3-17", name: "Qwen 3", family: "Qwen", repository: "Qwen/Qwen3-1.7B-GGUF", summary: "Multilingual text generation at 1.7B parameters.", parameters: "1.7B", minimumMemoryGB: 6),
+        .init(id: "qwen3-4", name: "Qwen 3", family: "Qwen", repository: "Qwen/Qwen3-4B-GGUF", summary: "Qwen's 4B multilingual text model.", parameters: "4B", minimumMemoryGB: 8),
+        .init(id: "qwen3-4-instruct2507", name: "Qwen 3 Instruct 2507", family: "Qwen", repository: "unsloth/Qwen3-4B-Instruct-2507-GGUF", summary: "The July 2025 instruction-tuned 4B edition. Non-thinking text generation.", parameters: "4B", minimumMemoryGB: 8),
         .init(id: "gemma3-1", name: "Gemma 3", family: "Gemma", repository: "ggml-org/gemma-3-1b-it-GGUF", summary: "Google's 1B instruction model.", parameters: "1B", minimumMemoryGB: 4),
+        .init(id: "gemma3-4", name: "Gemma 3", family: "Gemma", repository: "ggml-org/gemma-3-4b-it-GGUF", summary: "Google's 4B instruction model. Text mode; image input is not enabled.", parameters: "4B", minimumMemoryGB: 8),
         .init(id: "gemma4-e2", name: "Gemma 4", family: "Gemma", repository: "google/gemma-4-E2B-it-qat-q4_0-gguf", summary: "The E2B edition. Text mode; needs a higher-memory iPhone.", parameters: "E2B", minimumMemoryGB: 8, preferredQuant: "Q4_0"),
         .init(id: "liquid25-230", name: "Liquid LFM 2.5", family: "Liquid", repository: "LiquidAI/LFM2.5-230M-GGUF", summary: "230M-parameter text model from Liquid AI.", parameters: "230M", minimumMemoryGB: 4),
         .init(id: "liquid2-12", name: "Liquid LFM 2", family: "Liquid", repository: "LiquidAI/LFM2-1.2B-GGUF", summary: "Designed for efficient inference on edge devices.", parameters: "1.2B", minimumMemoryGB: 4),

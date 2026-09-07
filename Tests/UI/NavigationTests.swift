@@ -1,6 +1,24 @@
 import XCTest
 
 final class NavigationTests: XCTestCase {
+    @MainActor func testFourBillionModelsFilterAndSearch() {
+        let app = makeApp(); app.launch()
+        XCTAssertTrue(app.buttons["modelPicker"].waitForExistence(timeout: 15))
+        app.tabBars.buttons["Models"].tap()
+        let size = app.segmentedControls["modelSizeFilter"]
+        XCTAssertTrue(size.waitForExistence(timeout: 5))
+        size.buttons["4B class"].tap()
+        XCTAssertTrue(app.buttons["model_qwen35-4"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["model_qwen35-08"].exists)
+        capture(app, name: "4B model library")
+        app.buttons["Gemma"].tap()
+        XCTAssertTrue(app.buttons["model_gemma3-4"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["model_gemma3-1"].exists)
+        app.textFields["modelSearch"].tap()
+        app.textFields["modelSearch"].typeText("4b\n")
+        XCTAssertTrue(app.buttons["model_gemma3-4"].waitForExistence(timeout: 5))
+    }
+
     @MainActor func testPrimaryNavigationAndModelFiltering() throws {
         let app = makeApp()
         app.launch()
