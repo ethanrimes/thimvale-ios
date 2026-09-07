@@ -112,15 +112,26 @@ actor KnowledgeService {
     }
     func search(_ query: String, archiveFiles: [String]) throws -> [Citation] {
         var results = try store.search(query, limit: 5)
-        let keywords = Set(query.lowercased().components(separatedBy: CharacterSet.alphanumerics.inverted).filter { $0.count > 2 })
+        let terms = KnowledgeStore.searchTerms(query)
+        let keywords = Set(terms)
         for filename in archiveFiles {
             try Task.checkCancellation()
             if archives[filename] == nil { archives[filename] = try PMArchive(path: AppPaths.archives.appendingPathComponent(filename).path) }
             guard let archive = archives[filename] else { continue }
             var articles = try archive.search(query, limit: 6)
             if articles.isEmpty {
-                let keywords = KnowledgeStore.lexicalQuery(query)
-                if !keywords.isEmpty { articles = try archive.search(keywords, limit: 6) }
+                // Use plain search terms for libzim, not SQLite's quoted-OR expression.
+                if !terms.isEmpty { articles = try archive.search(terms.joined(separator: " "), limit: 6) }
+                if articles.isEmpty {
+                    for term in terms.prefix(3) { articles += try archive.search(term, limit: 2) }
+                }
+            }
+            var seen = Set<String>()
+            articles = articles.filter { seen.insert($0["path"] ?? $0["title"] ?? "").inserted }
+            // A definition of a named article should not be diluted by similarly named variants.
+            if let exact = articles.first(where: { ($0["title"] ?? "").lowercased() == terms.joined(separator: " ") }),
+               query.lowercased().hasPrefix("what is") || terms.count == 1 {
+                articles = [exact]
             }
             for article in articles {
                 let title = article["title"] ?? "Wikipedia"
@@ -130,7 +141,15 @@ actor KnowledgeService {
                     let words = Set(passage.text.lowercased().components(separatedBy: CharacterSet.alphanumerics.inverted))
                     return (passage, Double(keywords.intersection(words).count))
                 }.sorted { $0.1 > $1.1 }.prefix(12)
-                let best = ranked.map { ($0.0, $0.1 + store.semanticScore(query: query, passage: $0.0.text) * 2) }.max { $0.1 < $1.1 }?.0
+                let definition = query.lowercased().hasPrefix("what is") || terms.joined(separator: " ") == title.lowercased()
+                let scored: [(chunk: TextChunker.Chunk, score: Double)] = ranked.map { chunk, lexical in
+                    let semantic = store.semanticScore(query: query, passage: chunk.text) * 2
+                    let introductionBonus: Double = definition && chunk.offset == 0 ? 1 : 0
+                    return (chunk, lexical + semantic + introductionBonus)
+                }
+                let best = scored.max { left, right in
+                    left.score == right.score ? left.chunk.offset > right.chunk.offset : left.score < right.score
+                }?.chunk
                 guard let best else { continue }
                 let link = URL(string: "https://en.wikipedia.org/wiki/")!.appendingPathComponent(title.replacingOccurrences(of: " ", with: "_"))
                 results.append(Citation(id: "W" + String(StableID.hash("\(filename):\(title):\(best.offset)").prefix(8)), title: title, location: "Wikipedia · \(filename) · character \(best.offset)", excerpt: best.text, sourceURL: link.absoluteString))
