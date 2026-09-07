@@ -357,6 +357,18 @@ fun ChatScreen(model: AppModel, state: ScreenState) {
                             Subtitle("✦  THIMVALE")
                             message.events.forEach { ToolRow(it) }
                             AnswerText(message.text, message.sources) { evidence = it }
+                            if (!state.busy && message.sources.isNotEmpty()) {
+                                val references =
+                                    Regex("\\[([0-9]+)]")
+                                        .findAll(message.text)
+                                        .map { it.groupValues[1] }
+                                        .toSet()
+                                val known = message.sources.map { it.id }.toSet()
+                                if (references.isEmpty())
+                                    Subtitle("This answer didn't include source references.")
+                                else if ((references - known).isNotEmpty())
+                                    Subtitle("Some references don't match the retrieved sources.")
+                            }
                             if (message.raw.isNotBlank())
                                 Expandable("Model details") {
                                     Text(

@@ -75,7 +75,10 @@ object WikiHTML {
             link(a.attr("href"), path)?.let { a.attr("href", it) } ?: a.removeAttr("href")
         }
         clean.select("table").forEach { table ->
-            table.wrap("<details><summary>Article facts</summary></details>")
+            val details = org.jsoup.nodes.Element("details")
+            table.before(details)
+            details.appendElement("summary").text("Article facts")
+            details.appendChild(table)
         }
         if (clean.select("h1").isEmpty()) clean.body().prependElement("h1").text(title)
         return """<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; script-src 'none'"><style>body{font:17px/1.6 sans-serif;padding:12px 20px;background:#f7f6f0;color:#222923;overflow-wrap:break-word}h1,h2,h3{font-family:serif;line-height:1.2}h1{font-size:36px}a{color:#32554a}table{display:block;overflow:auto}td,th{min-width:5em;padding:6px}details{margin:20px 0}pre{white-space:pre-wrap}</style></head><body>${clean.body().html()}<hr><p>Wikipedia contributors · CC BY-SA. This is an offline text edition.</p></body></html>"""
@@ -154,7 +157,12 @@ class Wikipedia(private val library: Library) {
             item.path,
             item.title,
             WikiHTML.render(item.title, raw, item.path),
-            Jsoup.parse(raw).apply { select("script,style").remove() }.text(),
+            Jsoup.parse(raw)
+                .apply {
+                    select("script,style,table,sup.reference,.reflist,.mw-references-wrap,nav")
+                        .remove()
+                }
+                .text(),
         )
     }
 
@@ -193,7 +201,9 @@ class Wikipedia(private val library: Library) {
         return preferred
             .take(8)
             .flatMap { filename ->
-                browse(filename, lookup, 0).take(3).map { entry ->
+                val hits = browse(filename, lookup, 0)
+                val exact = hits.firstOrNull { it.title.equals(lookup, ignoreCase = true) }
+                (exact?.let { listOf(it) } ?: hits.take(3)).map { entry ->
                     val article = article(filename, entry.path)
                     Evidence(
                         "",

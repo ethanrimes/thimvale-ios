@@ -146,6 +146,18 @@ data class ToolCall(val tool: String, val args: JSONObject) {
             }
 
     companion object {
+        fun looksLikeCall(text: String): Boolean {
+            val clean = visibleAnswer(text).trimStart()
+            return Regex(
+                    "^(?:\\[\\s*)?(?:search_knowledge|list_files|read_file|write_file|web_search)\\s*\\("
+                )
+                .containsMatchIn(clean) ||
+                clean.startsWith("<tool_call") ||
+                clean.startsWith("<|tool_call") ||
+                clean.startsWith("<function") ||
+                (clean.startsWith("{") && clean.contains("\"tool\""))
+        }
+
         fun parse(text: String): ToolCall? {
             val clean =
                 visibleAnswer(text)
@@ -171,6 +183,13 @@ data class ToolCall(val tool: String, val args: JSONObject) {
     }
 }
 
+fun sourceExcerpt(source: Evidence): String {
+    val excerpt = source.text.take(600)
+    val boundary = Regex("[.!?](?:\\s|$)").findAll(excerpt).lastOrNull()?.range?.first
+    val quoted = if (boundary != null) excerpt.take(boundary + 1) else excerpt
+    return "From the retrieved source:\n\n“$quoted” [${source.id}]"
+}
+
 fun visibleAnswer(raw: String): String {
     val start = raw.indexOf("<think>")
     if (start < 0) return if ("<think>".startsWith(raw.trim()) && raw.isNotBlank()) "" else raw
@@ -182,6 +201,7 @@ fun visibleAnswer(raw: String): String {
 fun streamedAnswer(raw: String, work: Boolean): String {
     val text = visibleAnswer(raw)
     val start = text.trimStart()
+    if (work && (ToolCall.looksLikeCall(text) || start == "[")) return ""
     if (
         work &&
             (start.startsWith("{") ||

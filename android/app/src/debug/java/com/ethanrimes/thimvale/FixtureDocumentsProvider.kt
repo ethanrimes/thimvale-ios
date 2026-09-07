@@ -35,21 +35,19 @@ class FixtureDocumentsProvider : DocumentsProvider() {
         )
 
     private fun row(cursor: MatrixCursor, document: File) {
-        cursor.newRow().apply {
-            add(Document.COLUMN_DOCUMENT_ID, id(document))
-            add(Document.COLUMN_DISPLAY_NAME, document.name)
-            add(
-                Document.COLUMN_MIME_TYPE,
-                if (document.isDirectory) Document.MIME_TYPE_DIR else "text/plain",
+        val values: Map<String, Any> =
+            mapOf(
+                Document.COLUMN_DOCUMENT_ID to id(document),
+                Document.COLUMN_DISPLAY_NAME to document.name,
+                Document.COLUMN_MIME_TYPE to
+                    if (document.isDirectory) Document.MIME_TYPE_DIR else "text/plain",
+                Document.COLUMN_FLAGS to
+                    if (document.isDirectory) Document.FLAG_DIR_SUPPORTS_CREATE
+                    else Document.FLAG_SUPPORTS_WRITE or Document.FLAG_SUPPORTS_DELETE,
+                Document.COLUMN_SIZE to document.length(),
+                Document.COLUMN_LAST_MODIFIED to document.lastModified(),
             )
-            add(
-                Document.COLUMN_FLAGS,
-                if (document.isDirectory) Document.FLAG_DIR_SUPPORTS_CREATE
-                else Document.FLAG_SUPPORTS_WRITE or Document.FLAG_SUPPORTS_DELETE,
-            )
-            add(Document.COLUMN_SIZE, document.length())
-            add(Document.COLUMN_LAST_MODIFIED, document.lastModified())
-        }
+        cursor.addRow(cursor.columnNames.map { values[it] }.toTypedArray())
     }
 
     override fun onCreate() = true
@@ -58,14 +56,16 @@ class FixtureDocumentsProvider : DocumentsProvider() {
         MatrixCursor(arrayOf("root_id", "document_id", "title", "flags"))
 
     override fun queryDocument(documentId: String, projection: Array<out String>?): Cursor =
-        MatrixCursor(columns).also { row(it, file(documentId)) }
+        MatrixCursor(projection?.map { it }?.toTypedArray() ?: columns).also {
+            row(it, file(documentId))
+        }
 
     override fun queryChildDocuments(
         parentDocumentId: String,
         projection: Array<out String>?,
         sortOrder: String?,
     ): Cursor =
-        MatrixCursor(columns).also { cursor ->
+        MatrixCursor(projection?.map { it }?.toTypedArray() ?: columns).also { cursor ->
             file(parentDocumentId).listFiles().orEmpty().forEach { row(cursor, it) }
         }
 
@@ -81,7 +81,13 @@ class FixtureDocumentsProvider : DocumentsProvider() {
         mimeType: String,
         displayName: String,
     ): String {
-        require(displayName.isNotBlank() && displayName != "." && displayName != ".." && !displayName.contains('/') && !displayName.contains('\\'))
+        require(
+            displayName.isNotBlank() &&
+                displayName != "." &&
+                displayName != ".." &&
+                !displayName.contains('/') &&
+                !displayName.contains('\\')
+        )
         val target = File(file(parentDocumentId), displayName)
         check(if (mimeType == Document.MIME_TYPE_DIR) target.mkdir() else target.createNewFile())
         return id(target)

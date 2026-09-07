@@ -47,4 +47,4 @@ jobs:
             android/app/build/outputs/bundle/release/*.aab
             android/app/build/reports/tests/
             android/app/build/reports/lint-results-debug.html
-          retention-days: 14
+          retention-days: 3

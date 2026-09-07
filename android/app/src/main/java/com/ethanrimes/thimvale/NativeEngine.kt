@@ -57,11 +57,12 @@ class NativeEngine(context: Context) {
 
     private fun ensureLoaded(file: File) {
         if (loadedPath == file.absolutePath) return
+        unload(handle)
+        loadedPath = null
         val memory = ActivityManager.MemoryInfo().also(activity::getMemoryInfo)
         require(file.length() + 384L * 1024 * 1024 < memory.availMem) {
             "Not enough available memory. Choose a smaller quantization."
         }
-        loadedPath = null
         load(handle, file.absolutePath.toByteArray())
         loadedPath = file.absolutePath
     }
