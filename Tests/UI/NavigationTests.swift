@@ -5,6 +5,8 @@ final class NavigationTests: XCTestCase {
         let app = makeApp()
         app.launch()
         XCTAssertTrue(app.buttons["modelPicker"].waitForExistence(timeout: 15))
+        XCTAssertEqual(app.staticTexts["appWordmark"].label, "thimvale")
+        XCTAssertFalse(app.staticTexts["pocketmind"].exists)
         XCTAssertTrue(app.textFields["messageInput"].exists)
         capture(app, name: "Chat")
         app.tabBars.buttons["Models"].tap()
@@ -35,7 +37,7 @@ final class NavigationTests: XCTestCase {
     }
     @MainActor private func makeApp() -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.ethanrimes.pocketmind")
-        app.launchEnvironment["POCKETMIND_TEST_SESSION"] = UUID().uuidString
+        app.launchEnvironment["THIMVALE_TEST_SESSION"] = UUID().uuidString
         return app
     }
 }

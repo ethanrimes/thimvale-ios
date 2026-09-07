@@ -3,14 +3,14 @@ import XCTest
 @MainActor final class RegressionTests: XCTestCase {
     private func makeApp(fixtures: Bool = false) throws -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.ethanrimes.pocketmind")
-        app.launchEnvironment["POCKETMIND_TEST_SESSION"] = UUID().uuidString
+        app.launchEnvironment["THIMVALE_TEST_SESSION"] = UUID().uuidString
         if fixtures {
             let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
             guard FileManager.default.fileExists(atPath: root.appendingPathComponent("Vendor/smoke-model.gguf").path),
                   FileManager.default.fileExists(atPath: root.appendingPathComponent("Vendor/smoke-wikipedia.zim").path) else {
                 throw XCTSkip("Run scripts/fetch-test-assets.sh for the real model and Wikipedia UI tests.")
             }
-            app.launchEnvironment["POCKETMIND_UI_FIXTURES"] = root.path
+            app.launchEnvironment["THIMVALE_UI_FIXTURES"] = root.path
         }
         app.launch()
         XCTAssertTrue(app.buttons["modelPicker"].waitForExistence(timeout: 30))
@@ -216,7 +216,7 @@ import XCTest
     }
 
     func testLiveModelDetailsAndWikipediaCatalog() throws {
-        guard ProcessInfo.processInfo.environment["POCKETMIND_NETWORK_TESTS"] == "1" else { throw XCTSkip("Network tests disabled") }
+        guard ProcessInfo.processInfo.environment["THIMVALE_NETWORK_TESTS"] == "1" else { throw XCTSkip("Network tests disabled") }
         let app = try makeApp()
         app.tabBars.buttons["Models"].tap()
         let search = app.textFields["modelSearch"]

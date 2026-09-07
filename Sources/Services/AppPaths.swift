@@ -5,16 +5,16 @@ enum AppPaths {
     // Simulator regression runs must never change the user's library or credentials.
     static var testSession: String? {
         #if DEBUG && targetEnvironment(simulator)
-        return ProcessInfo.processInfo.environment["POCKETMIND_TEST_SESSION"].flatMap(UUID.init(uuidString:))?.uuidString
+        return ProcessInfo.processInfo.environment["THIMVALE_TEST_SESSION"].flatMap(UUID.init(uuidString:))?.uuidString
         #else
         return nil
         #endif
     }
-    static let preferences: UserDefaults = testSession.flatMap { UserDefaults(suiteName: "com.ethanrimes.pocketmind.tests." + $0) } ?? .standard
+    static let preferences: UserDefaults = testSession.flatMap { UserDefaults(suiteName: AppIdentity.bundleIdentifier + ".tests." + $0) } ?? .standard
     static var root: URL {
         let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-        if let testSession { return support.appendingPathComponent("PocketMindTests", isDirectory: true).appendingPathComponent(testSession, isDirectory: true) }
-        return support.appendingPathComponent("PocketMind", isDirectory: true)
+        if let testSession { return support.appendingPathComponent("ThimvaleTests", isDirectory: true).appendingPathComponent(testSession, isDirectory: true) }
+        return support.appendingPathComponent(AppIdentity.storageDirectory, isDirectory: true)
     }
     static var models: URL { root.appendingPathComponent("Models", isDirectory: true) }
     static var archives: URL { root.appendingPathComponent("Archives", isDirectory: true) }
@@ -42,7 +42,7 @@ enum AppPaths {
 }
 
 enum Keychain {
-    private static var service: String { "com.ethanrimes.pocketmind" + (AppPaths.testSession.map { ".tests." + $0 } ?? "") }
+    private static var service: String { AppIdentity.keychainService + (AppPaths.testSession.map { ".tests." + $0 } ?? "") }
     static func read(_ account: String) -> String {
         let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: service, kSecAttrAccount as String: account, kSecReturnData as String: true]
         var value: CFTypeRef?

@@ -28,7 +28,7 @@ struct DownloadJob: Codable, Identifiable {
     @ObservationIgnored private let ledger: String
     @ObservationIgnored var backgroundCompletion: (() -> Void)?
 
-    init(identifier: String = "com.ethanrimes.pocketmind.downloads", ledger: String = "downloads.json") {
+    init(identifier: String = AppIdentity.downloadSessionIdentifier, ledger: String = "downloads.json") {
         self.ledger = ledger
         super.init()
         jobs = AppPaths.load([DownloadJob].self, name: ledger) ?? []

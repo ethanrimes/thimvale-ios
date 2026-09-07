@@ -1,0 +1,764 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		017584AA614C1648DF76D085 /* KnowledgeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9618F02104E0102C12BFD087 /* KnowledgeStore.swift */; };
+		01CE44F74457F35FFE7209D1 /* ThimvaleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E7A776C2921A96B5CFC373D /* ThimvaleApp.swift */; };
+		09C0BD9F35BE036DC28DEBD9 /* Design.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719124325B4C34650AFB5BA3 /* Design.swift */; };
+		128171F3ED72F46F5C2DAD66 /* NativeIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A1BDC320026EAD1B1CCD56 /* NativeIntegrationTests.swift */; };
+		136CF8A0BCBB625161769A4B /* AppIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9542E361F5976D1F9CC2278E /* AppIdentity.swift */; };
+		16B88DE1F3C3A39BA8D9D719 /* llama.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCBCAB99D251C969E4C52435 /* llama.xcframework */; };
+		1E5A234BF41352B089A3F3A3 /* LICENSES in Resources */ = {isa = PBXBuildFile; fileRef = 31028C82AA37E45AC573A9ED /* LICENSES */; };
+		3BBB68758BE61EAA5710DF6C /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 7166F1142F3D760A68787128 /* SwiftSoup */; };
+		51E787F71DDBC5C8744E2D27 /* Acknowledgments.txt in Resources */ = {isa = PBXBuildFile; fileRef = D8ADEE46B14B95FC8DC06AA1 /* Acknowledgments.txt */; };
+		529ADA47ACAEBA62CEC402B3 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24974DB58320A6275614AF6 /* Permissions.swift */; };
+		564BCBFA4F610AF0FDD736D8 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DB03CF18C9B2F0BF0D6DBF /* AppState.swift */; };
+		5DF0FC6E7A78D669E87F6CF8 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6253D593DAF82B23921DCFBA /* ChatView.swift */; };
+		6473A8C94BAB8E613E5CA702 /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E86637CAFBCA4757E53E81B /* PermissionsView.swift */; };
+		66329FF06BCD5BBA4E081F52 /* PocketNative.mm in Sources */ = {isa = PBXBuildFile; fileRef = CD20EB2896B4E451BC31795C /* PocketNative.mm */; };
+		68790E9012B6429028CCBA48 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CD305C9E0F424ADF690F0164 /* libsqlite3.tbd */; };
+		714D43EF00F6B7CB4DACDBB3 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 053C3F9080EB36B7E4DF961D /* Metal.framework */; };
+		7FD5C9F666ACD6E396AB6F6C /* InferenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FECAAE4D7FB0F96F7F67EE /* InferenceService.swift */; };
+		83099413F0C1C7939B988363 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 98F90D1BAFF720477930E814 /* libz.tbd */; };
+		88D85E5A551E0E47E778863F /* KnowledgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CF209069C4E8357772FDC6 /* KnowledgeView.swift */; };
+		937D40969F660B148AFE7DB7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF77756BFA5D937486BD4BAB /* Accelerate.framework */; };
+		9E45272FF9E05A52265DFD51 /* RegressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C397F5A5FFFB1B1106466AE /* RegressionTests.swift */; };
+		A26F78BFB1B22FC88E8C7B3B /* NaturalLanguage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B530C020F7FC7DA6E3D19E24 /* NaturalLanguage.framework */; };
+		AB75D618DC92BE58FED597DD /* SecureWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517AD785AE11E50416C7FFB4 /* SecureWorkspace.swift */; };
+		B32F16606DC041F7EDEE2556 /* UITestFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C207699C99A875193347D66 /* UITestFixtures.swift */; };
+		BAE17EDB9B02D141E7229945 /* KnowledgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DEC295E5CE3BF0222AB00B3 /* KnowledgeService.swift */; };
+		BAEF36566C68FA224EEB16C3 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1875DEFDEAC8968B4914DB84 /* libc++.tbd */; };
+		C0B1370C1F3E7EA5744EEDC6 /* llama.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CCBCAB99D251C969E4C52435 /* llama.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C11950A7F5B49BFEFA27B7E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9D40E84D3F9CA8EB8012F9BD /* Assets.xcassets */; };
+		C758DA912A3775068904A46D /* ModelHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C269832E889657954C23231 /* ModelHub.swift */; };
+		C9EC1CD7444859D1B9B0B16A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B7AC691D18ECC38E3D1D9EF7 /* PrivacyInfo.xcprivacy */; };
+		CCCCBF14B838D53874FEFB4C /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DC86216F17A76AB258A60 /* Domain.swift */; };
+		CE4B7D725E3314E74AD064C1 /* ModelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0FCF291A58466FE3B6E696 /* ModelsView.swift */; };
+		CF8090F947E668BC5F4943C4 /* CoreKiwix.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A44C74D1648428BFDA710B9 /* CoreKiwix.xcframework */; };
+		EADEC2F25BC54E710A838D79 /* AppPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0FEA8A1215DF3AED84DC1A /* AppPaths.swift */; };
+		F6982C9D4C6BADFEF894D68D /* Downloads.swift in Sources */ = {isa = PBXBuildFile; fileRef = E38E5B758C66CB4DBC099D2C /* Downloads.swift */; };
+		F81354AE3557E44AC75C9EE8 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 4295FA30E542F269B2A9FC22 /* LICENSE */; };
+		FBC2759FFCA7B2DD8B7282A6 /* NavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93EF4DC07071C760DA35FED /* NavigationTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2B1E08E3419A5CA219AE32B0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E07F4CD19E3BC7A3160B4C04 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8BAD18D7E2BDEE0CC3AF01C9;
+			remoteInfo = Thimvale;
+		};
+		AF457406FF4ED9B3EB9F3077 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E07F4CD19E3BC7A3160B4C04 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8BAD18D7E2BDEE0CC3AF01C9;
+			remoteInfo = Thimvale;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2E281141149F94F9502FF753 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C0B1370C1F3E7EA5744EEDC6 /* llama.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		053C3F9080EB36B7E4DF961D /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		0E7A776C2921A96B5CFC373D /* ThimvaleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThimvaleApp.swift; sourceTree = "<group>"; };
+		0F0FEA8A1215DF3AED84DC1A /* AppPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPaths.swift; sourceTree = "<group>"; };
+		1875DEFDEAC8968B4914DB84 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		1C207699C99A875193347D66 /* UITestFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestFixtures.swift; sourceTree = "<group>"; };
+		2E0FCF291A58466FE3B6E696 /* ModelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsView.swift; sourceTree = "<group>"; };
+		31028C82AA37E45AC573A9ED /* LICENSES */ = {isa = PBXFileReference; lastKnownFileType = folder; path = LICENSES; sourceTree = SOURCE_ROOT; };
+		3D337AE3A5EBEE2CBB63C4C6 /* ThimvaleIntegrationTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ThimvaleIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4295FA30E542F269B2A9FC22 /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
+		431DC86216F17A76AB258A60 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
+		46DB03CF18C9B2F0BF0D6DBF /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		4A44C74D1648428BFDA710B9 /* CoreKiwix.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CoreKiwix.xcframework; path = "Vendor/libkiwix_xcframework-14.2.1-2/lib/CoreKiwix.xcframework"; sourceTree = "<group>"; };
+		4DEC295E5CE3BF0222AB00B3 /* KnowledgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeService.swift; sourceTree = "<group>"; };
+		517AD785AE11E50416C7FFB4 /* SecureWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureWorkspace.swift; sourceTree = "<group>"; };
+		5C397F5A5FFFB1B1106466AE /* RegressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegressionTests.swift; sourceTree = "<group>"; };
+		603CB79672805AA1734A034D /* Thimvale.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Thimvale.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6253D593DAF82B23921DCFBA /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		719124325B4C34650AFB5BA3 /* Design.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Design.swift; sourceTree = "<group>"; };
+		81CF209069C4E8357772FDC6 /* KnowledgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeView.swift; sourceTree = "<group>"; };
+		8C269832E889657954C23231 /* ModelHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelHub.swift; sourceTree = "<group>"; };
+		8E86637CAFBCA4757E53E81B /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
+		9542E361F5976D1F9CC2278E /* AppIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIdentity.swift; sourceTree = "<group>"; };
+		9618F02104E0102C12BFD087 /* KnowledgeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeStore.swift; sourceTree = "<group>"; };
+		98F90D1BAFF720477930E814 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		9D40E84D3F9CA8EB8012F9BD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A0A1BDC320026EAD1B1CCD56 /* NativeIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeIntegrationTests.swift; sourceTree = "<group>"; };
+		A48EBE4B3AC78E66344EE9AE /* ThimvaleUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ThimvaleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A93EF4DC07071C760DA35FED /* NavigationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTests.swift; sourceTree = "<group>"; };
+		B4FECAAE4D7FB0F96F7F67EE /* InferenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InferenceService.swift; sourceTree = "<group>"; };
+		B530C020F7FC7DA6E3D19E24 /* NaturalLanguage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NaturalLanguage.framework; path = System/Library/Frameworks/NaturalLanguage.framework; sourceTree = SDKROOT; };
+		B7AC691D18ECC38E3D1D9EF7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		CCBCAB99D251C969E4C52435 /* llama.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = llama.xcframework; path = Vendor/llama.xcframework; sourceTree = "<group>"; };
+		CD20EB2896B4E451BC31795C /* PocketNative.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PocketNative.mm; sourceTree = "<group>"; };
+		CD305C9E0F424ADF690F0164 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		D8ADEE46B14B95FC8DC06AA1 /* Acknowledgments.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Acknowledgments.txt; sourceTree = "<group>"; };
+		E24974DB58320A6275614AF6 /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
+		E38E5B758C66CB4DBC099D2C /* Downloads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Downloads.swift; sourceTree = "<group>"; };
+		E3C9BDEF2D0458641A26200B /* PocketNative.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PocketNative.h; sourceTree = "<group>"; };
+		FF77756BFA5D937486BD4BAB /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		959832AA94E48E3F4F3A0C5A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16B88DE1F3C3A39BA8D9D719 /* llama.xcframework in Frameworks */,
+				CF8090F947E668BC5F4943C4 /* CoreKiwix.xcframework in Frameworks */,
+				3BBB68758BE61EAA5710DF6C /* SwiftSoup in Frameworks */,
+				68790E9012B6429028CCBA48 /* libsqlite3.tbd in Frameworks */,
+				83099413F0C1C7939B988363 /* libz.tbd in Frameworks */,
+				BAEF36566C68FA224EEB16C3 /* libc++.tbd in Frameworks */,
+				937D40969F660B148AFE7DB7 /* Accelerate.framework in Frameworks */,
+				714D43EF00F6B7CB4DACDBB3 /* Metal.framework in Frameworks */,
+				A26F78BFB1B22FC88E8C7B3B /* NaturalLanguage.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		06E3F33096B73855D47F27CE /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				0F0FEA8A1215DF3AED84DC1A /* AppPaths.swift */,
+				E38E5B758C66CB4DBC099D2C /* Downloads.swift */,
+				B4FECAAE4D7FB0F96F7F67EE /* InferenceService.swift */,
+				4DEC295E5CE3BF0222AB00B3 /* KnowledgeService.swift */,
+				8C269832E889657954C23231 /* ModelHub.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		0925D6595C72E3C26606F525 /* Native */ = {
+			isa = PBXGroup;
+			children = (
+				E3C9BDEF2D0458641A26200B /* PocketNative.h */,
+				CD20EB2896B4E451BC31795C /* PocketNative.mm */,
+			);
+			path = Native;
+			sourceTree = "<group>";
+		};
+		0E5169A6500B8ACD43891B9D /* Integration */ = {
+			isa = PBXGroup;
+			children = (
+				A0A1BDC320026EAD1B1CCD56 /* NativeIntegrationTests.swift */,
+			);
+			name = Integration;
+			path = Tests/Integration;
+			sourceTree = "<group>";
+		};
+		22B0A0A4416C942E1CD12EF0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				603CB79672805AA1734A034D /* Thimvale.app */,
+				3D337AE3A5EBEE2CBB63C4C6 /* ThimvaleIntegrationTests.xctest */,
+				A48EBE4B3AC78E66344EE9AE /* ThimvaleUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		26D2D8AA070960D3A2AD6BC7 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				46DB03CF18C9B2F0BF0D6DBF /* AppState.swift */,
+				0E7A776C2921A96B5CFC373D /* ThimvaleApp.swift */,
+				1C207699C99A875193347D66 /* UITestFixtures.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		4004058BA8C9573C5759D1ED = {
+			isa = PBXGroup;
+			children = (
+				4295FA30E542F269B2A9FC22 /* LICENSE */,
+				31028C82AA37E45AC573A9ED /* LICENSES */,
+				0E5169A6500B8ACD43891B9D /* Integration */,
+				4B59957AD4963CB70266F655 /* Resources */,
+				5116A263ECF386088F713C2D /* Sources */,
+				CFE01ED9FD204705CCCC07E7 /* UI */,
+				FC1A4DB9891E73E49544E73F /* Frameworks */,
+				22B0A0A4416C942E1CD12EF0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4B59957AD4963CB70266F655 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D8ADEE46B14B95FC8DC06AA1 /* Acknowledgments.txt */,
+				9D40E84D3F9CA8EB8012F9BD /* Assets.xcassets */,
+				B7AC691D18ECC38E3D1D9EF7 /* PrivacyInfo.xcprivacy */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		5116A263ECF386088F713C2D /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				26D2D8AA070960D3A2AD6BC7 /* App */,
+				FD43170207C0EE6C92A73088 /* Core */,
+				0925D6595C72E3C26606F525 /* Native */,
+				06E3F33096B73855D47F27CE /* Services */,
+				78A3321CEB844F20993F8609 /* UI */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		78A3321CEB844F20993F8609 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				6253D593DAF82B23921DCFBA /* ChatView.swift */,
+				719124325B4C34650AFB5BA3 /* Design.swift */,
+				81CF209069C4E8357772FDC6 /* KnowledgeView.swift */,
+				2E0FCF291A58466FE3B6E696 /* ModelsView.swift */,
+				8E86637CAFBCA4757E53E81B /* PermissionsView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		CFE01ED9FD204705CCCC07E7 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				A93EF4DC07071C760DA35FED /* NavigationTests.swift */,
+				5C397F5A5FFFB1B1106466AE /* RegressionTests.swift */,
+			);
+			name = UI;
+			path = Tests/UI;
+			sourceTree = "<group>";
+		};
+		FC1A4DB9891E73E49544E73F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FF77756BFA5D937486BD4BAB /* Accelerate.framework */,
+				4A44C74D1648428BFDA710B9 /* CoreKiwix.xcframework */,
+				1875DEFDEAC8968B4914DB84 /* libc++.tbd */,
+				CD305C9E0F424ADF690F0164 /* libsqlite3.tbd */,
+				98F90D1BAFF720477930E814 /* libz.tbd */,
+				CCBCAB99D251C969E4C52435 /* llama.xcframework */,
+				053C3F9080EB36B7E4DF961D /* Metal.framework */,
+				B530C020F7FC7DA6E3D19E24 /* NaturalLanguage.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FD43170207C0EE6C92A73088 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				9542E361F5976D1F9CC2278E /* AppIdentity.swift */,
+				431DC86216F17A76AB258A60 /* Domain.swift */,
+				9618F02104E0102C12BFD087 /* KnowledgeStore.swift */,
+				E24974DB58320A6275614AF6 /* Permissions.swift */,
+				517AD785AE11E50416C7FFB4 /* SecureWorkspace.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		449914FA40E5E153716B3A42 /* ThimvaleIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07894582A92B69C64D308F55 /* Build configuration list for PBXNativeTarget "ThimvaleIntegrationTests" */;
+			buildPhases = (
+				C9763A8BEA2B128670B66006 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				94B87E4ABDD25AF4F68ED507 /* PBXTargetDependency */,
+			);
+			name = ThimvaleIntegrationTests;
+			packageProductDependencies = (
+			);
+			productName = ThimvaleIntegrationTests;
+			productReference = 3D337AE3A5EBEE2CBB63C4C6 /* ThimvaleIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		8BAD18D7E2BDEE0CC3AF01C9 /* Thimvale */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 243607F60C2F3FA5A536C212 /* Build configuration list for PBXNativeTarget "Thimvale" */;
+			buildPhases = (
+				12DD64D4FC039095C425AC5F /* Sources */,
+				BAC5DEDFCD89DD1B2500C486 /* Resources */,
+				959832AA94E48E3F4F3A0C5A /* Frameworks */,
+				2E281141149F94F9502FF753 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Thimvale;
+			packageProductDependencies = (
+				7166F1142F3D760A68787128 /* SwiftSoup */,
+			);
+			productName = Thimvale;
+			productReference = 603CB79672805AA1734A034D /* Thimvale.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EB0C2E14B88E144CC22623F5 /* ThimvaleUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9C1CD65F849B24BB01C58950 /* Build configuration list for PBXNativeTarget "ThimvaleUITests" */;
+			buildPhases = (
+				D47373498B28BAFD5486B6FC /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				00D9E334D535792F66C3E143 /* PBXTargetDependency */,
+			);
+			name = ThimvaleUITests;
+			packageProductDependencies = (
+			);
+			productName = ThimvaleUITests;
+			productReference = A48EBE4B3AC78E66344EE9AE /* ThimvaleUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E07F4CD19E3BC7A3160B4C04 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2610;
+				TargetAttributes = {
+					EB0C2E14B88E144CC22623F5 = {
+						TestTargetID = 8BAD18D7E2BDEE0CC3AF01C9;
+					};
+				};
+			};
+			buildConfigurationList = C39DC1932BCE2FC9BDBB704F /* Build configuration list for PBXProject "Thimvale" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 4004058BA8C9573C5759D1ED;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B869D608A073C0EC178464DC /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 22B0A0A4416C942E1CD12EF0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8BAD18D7E2BDEE0CC3AF01C9 /* Thimvale */,
+				449914FA40E5E153716B3A42 /* ThimvaleIntegrationTests */,
+				EB0C2E14B88E144CC22623F5 /* ThimvaleUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BAC5DEDFCD89DD1B2500C486 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				51E787F71DDBC5C8744E2D27 /* Acknowledgments.txt in Resources */,
+				C11950A7F5B49BFEFA27B7E7 /* Assets.xcassets in Resources */,
+				F81354AE3557E44AC75C9EE8 /* LICENSE in Resources */,
+				1E5A234BF41352B089A3F3A3 /* LICENSES in Resources */,
+				C9EC1CD7444859D1B9B0B16A /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		12DD64D4FC039095C425AC5F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				136CF8A0BCBB625161769A4B /* AppIdentity.swift in Sources */,
+				EADEC2F25BC54E710A838D79 /* AppPaths.swift in Sources */,
+				564BCBFA4F610AF0FDD736D8 /* AppState.swift in Sources */,
+				5DF0FC6E7A78D669E87F6CF8 /* ChatView.swift in Sources */,
+				09C0BD9F35BE036DC28DEBD9 /* Design.swift in Sources */,
+				CCCCBF14B838D53874FEFB4C /* Domain.swift in Sources */,
+				F6982C9D4C6BADFEF894D68D /* Downloads.swift in Sources */,
+				7FD5C9F666ACD6E396AB6F6C /* InferenceService.swift in Sources */,
+				BAE17EDB9B02D141E7229945 /* KnowledgeService.swift in Sources */,
+				017584AA614C1648DF76D085 /* KnowledgeStore.swift in Sources */,
+				88D85E5A551E0E47E778863F /* KnowledgeView.swift in Sources */,
+				C758DA912A3775068904A46D /* ModelHub.swift in Sources */,
+				CE4B7D725E3314E74AD064C1 /* ModelsView.swift in Sources */,
+				529ADA47ACAEBA62CEC402B3 /* Permissions.swift in Sources */,
+				6473A8C94BAB8E613E5CA702 /* PermissionsView.swift in Sources */,
+				66329FF06BCD5BBA4E081F52 /* PocketNative.mm in Sources */,
+				AB75D618DC92BE58FED597DD /* SecureWorkspace.swift in Sources */,
+				01CE44F74457F35FFE7209D1 /* ThimvaleApp.swift in Sources */,
+				B32F16606DC041F7EDEE2556 /* UITestFixtures.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9763A8BEA2B128670B66006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				128171F3ED72F46F5C2DAD66 /* NativeIntegrationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D47373498B28BAFD5486B6FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FBC2759FFCA7B2DD8B7282A6 /* NavigationTests.swift in Sources */,
+				9E45272FF9E05A52265DFD51 /* RegressionTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		00D9E334D535792F66C3E143 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8BAD18D7E2BDEE0CC3AF01C9 /* Thimvale */;
+			targetProxy = AF457406FF4ED9B3EB9F3077 /* PBXContainerItemProxy */;
+		};
+		94B87E4ABDD25AF4F68ED507 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8BAD18D7E2BDEE0CC3AF01C9 /* Thimvale */;
+			targetProxy = 2B1E08E3419A5CA219AE32B0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		2B4E4DF43D53A230C3097FED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind.integrationtests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Thimvale.app/Thimvale";
+			};
+			name = Debug;
+		};
+		365A2291C772FEEECCC5F73F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"Vendor\"",
+					"\"Vendor/libkiwix_xcframework-14.2.1-2/lib\"",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited) $(PROJECT_DIR)/Vendor";
+				INFOPLIST_KEY_CFBundleDisplayName = Thimvale;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIFileSharingEnabled = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind;
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = Sources/Native/PocketNative.h;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		384140798F67DB5E97850C3C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		4761AA35C39731D313B3A5E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		4A73617884211FBAB1C751D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Thimvale;
+			};
+			name = Debug;
+		};
+		4E18F0830EB8051AEA6D7147 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind.integrationtests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Thimvale.app/Thimvale";
+			};
+			name = Release;
+		};
+		A83C1C0CCF9A7C5581442D6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"Vendor\"",
+					"\"Vendor/libkiwix_xcframework-14.2.1-2/lib\"",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited) $(PROJECT_DIR)/Vendor";
+				INFOPLIST_KEY_CFBundleDisplayName = Thimvale;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIFileSharingEnabled = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind;
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = Sources/Native/PocketNative.h;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CB6D141EDB3F7D8EF5593B22 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Thimvale;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		07894582A92B69C64D308F55 /* Build configuration list for PBXNativeTarget "ThimvaleIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B4E4DF43D53A230C3097FED /* Debug */,
+				4E18F0830EB8051AEA6D7147 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		243607F60C2F3FA5A536C212 /* Build configuration list for PBXNativeTarget "Thimvale" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				365A2291C772FEEECCC5F73F /* Debug */,
+				A83C1C0CCF9A7C5581442D6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		9C1CD65F849B24BB01C58950 /* Build configuration list for PBXNativeTarget "ThimvaleUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4A73617884211FBAB1C751D3 /* Debug */,
+				CB6D141EDB3F7D8EF5593B22 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C39DC1932BCE2FC9BDBB704F /* Build configuration list for PBXProject "Thimvale" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4761AA35C39731D313B3A5E3 /* Debug */,
+				384140798F67DB5E97850C3C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B869D608A073C0EC178464DC /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scinfu/SwiftSoup";
+			requirement = {
+				kind = exactVersion;
+				version = 2.8.8;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7166F1142F3D760A68787128 /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B869D608A073C0EC178464DC /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = E07F4CD19E3BC7A3160B4C04 /* Project object */;
+}

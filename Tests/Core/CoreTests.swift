@@ -1,7 +1,16 @@
 import XCTest
-@testable import PocketMindCore
+@testable import ThimvaleCore
 
 final class CoreTests: XCTestCase {
+    func testBrandingDoesNotChangePersistedIdentity() {
+        XCTAssertEqual(AppIdentity.displayName, "Thimvale")
+        XCTAssertEqual(AppIdentity.repositoryURL.absoluteString, "https://github.com/ethanrimes/thimvale-ios")
+        XCTAssertEqual(AppIdentity.bundleIdentifier, "com.ethanrimes.pocketmind")
+        XCTAssertEqual(AppIdentity.storageDirectory, "PocketMind")
+        XCTAssertEqual(AppIdentity.keychainService, "com.ethanrimes.pocketmind")
+        XCTAssertEqual(AppIdentity.downloadSessionIdentifier, "com.ethanrimes.pocketmind.downloads")
+    }
+
     func temporaryDirectory() throws -> URL {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)

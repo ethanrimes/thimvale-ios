@@ -1,6 +1,6 @@
 # Architecture and constraints
 
-PocketMind is a SwiftUI iOS app. Native inference runs off the main actor through a llama.cpp bridge. A model is downloaded and validated before it becomes selectable; the app never replaces inference with a canned response.
+Thimvale is a SwiftUI iOS app. Native inference runs off the main actor through a llama.cpp bridge. A model is downloaded and validated before it becomes selectable; the app never replaces inference with a canned response.
 
 ## Capabilities
 

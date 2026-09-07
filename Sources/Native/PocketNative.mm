@@ -12,7 +12,7 @@
 #include <os/proc.h>
 
 static void PMError(NSError **error, NSString *message) {
-    if (error) *error = [NSError errorWithDomain:@"PocketMind.Native" code:1 userInfo:@{NSLocalizedDescriptionKey:message}];
+    if (error) *error = [NSError errorWithDomain:@"Thimvale.Native" code:1 userInfo:@{NSLocalizedDescriptionKey:message}];
 }
 
 static std::string piece(const llama_vocab *vocab, llama_token token, bool special = false) {

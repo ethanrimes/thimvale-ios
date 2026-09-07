@@ -9,7 +9,7 @@ import SwiftUI
     }
 }
 
-@main struct PocketMindApp: App {
+@main struct ThimvaleApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     @State private var state: AppState?
     @State private var startupError: String?
@@ -23,7 +23,7 @@ import SwiftUI
                             if let completion = delegate.pendingCompletion { state.downloads.backgroundCompletion = completion; delegate.pendingCompletion = nil }
                         }
                 } else if let startupError {
-                    ContentUnavailableView("Couldn't open PocketMind", systemImage: "externaldrive.badge.exclamationmark", description: Text(startupError))
+                    ContentUnavailableView("Couldn't open \(AppIdentity.displayName)", systemImage: "externaldrive.badge.exclamationmark", description: Text(startupError))
                 } else { ProgressView("Opening your workspace…") }
             }
             .task {

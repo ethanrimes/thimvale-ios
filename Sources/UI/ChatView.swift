@@ -47,7 +47,7 @@ struct ChatView: View {
                     Button { history = true } label: { Image(systemName: "line.3.horizontal") }.accessibilityLabel("Conversation history")
                 }
                 ToolbarItem(placement: .principal) {
-                    HStack(spacing: 8) { BrandMark(size: 26); Text("pocketmind").font(.system(.headline, design: .rounded)) }
+                    HStack(spacing: 8) { BrandMark(size: 26); Text(AppIdentity.displayName.lowercased()).font(.system(.headline, design: .rounded)).accessibilityIdentifier("appWordmark") }
                 }
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button { state.newConversation() } label: { Image(systemName: "square.and.pencil") }.disabled(state.isGenerating).accessibilityLabel("New conversation")
@@ -121,7 +121,7 @@ struct ChatView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 if message.role == "assistant" { BrandMark(size: 24) }
-                Text(message.role == "user" ? "YOU" : "POCKETMIND").font(.system(size: 10, weight: .semibold, design: .monospaced)).tracking(1.5).foregroundStyle(Palette.muted)
+                Text(message.role == "user" ? "YOU" : AppIdentity.displayName.uppercased()).font(.system(size: 10, weight: .semibold, design: .monospaced)).tracking(1.5).foregroundStyle(Palette.muted)
                 Spacer()
                 if !message.content.isEmpty { ShareLink(item: message.content) { Image(systemName: "square.and.arrow.up").font(.caption) }.accessibilityLabel("Share message") }
             }
