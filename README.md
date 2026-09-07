@@ -10,6 +10,6 @@ This repository contains both native apps:
 
 The GitHub repository URL is unchanged, so existing clones, secrets, and App Store Connect registration continue to work. The production application identifier remains `com.ethanrimes.thimvale` on both platforms; Android debug builds use a `.debug` suffix.
 
-Every push to `main` runs the iOS checks and, with the existing release secrets, uploads to TestFlight. Superseded iOS runs are cancelled. Android has a separate Linux build workflow and downloadable APK artifact; Google Play publication requires a separate Play Console registration and release signing setup.
+Every push to `main` runs the iOS checks and, with the existing release secrets, uploads to TestFlight. Superseded iOS runs are cancelled. Android's separate Linux workflow runs for Android/shared-catalog changes or manual dispatch, avoiding another Android build for iOS-only fixes. It produces a downloadable APK artifact; Google Play publication requires a separate Play Console registration and release signing setup.
 
 Source: GPL-3.0-or-later. Model weights and Wikipedia content retain their own licenses. See each platform's README for build instructions, tested behavior, and limitations.
