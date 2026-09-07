@@ -10,6 +10,28 @@ SPEC.loader.exec_module(release)
 
 
 class ReleaseTests(unittest.TestCase):
+    def app_info(self):
+        return {"CFBundleIdentifier": release.BUNDLE_ID, "CFBundleDisplayName": "Thimvale",
+                "CFBundleVersion": "12.1", "UIDeviceFamily": [1, 2],
+                "UISupportedInterfaceOrientations~ipad": ["UIInterfaceOrientation" + suffix for suffix in (
+                    "Portrait", "PortraitUpsideDown", "LandscapeLeft", "LandscapeRight")]}
+
+    def test_valid_archive_metadata(self):
+        release.validate_app_info(self.app_info(), "12.1")
+
+    def test_archive_identity_and_build_number_must_match(self):
+        for key in ("CFBundleIdentifier", "CFBundleDisplayName", "CFBundleVersion"):
+            info = self.app_info()
+            info[key] = "wrong"
+            with self.assertRaises(ValueError):
+                release.validate_app_info(info, "12.1")
+
+    def test_ipad_archive_requires_all_orientations(self):
+        info = self.app_info()
+        info["UISupportedInterfaceOrientations~ipad"].remove("UIInterfaceOrientationPortraitUpsideDown")
+        with self.assertRaisesRegex(ValueError, "all four"):
+            release.validate_app_info(info, "12.1")
+
     def profile(self):
         return {
             "UUID": "6DF6BA6A-146B-42C1-986B-6122B09464F7", "TeamIdentifier": ["ABCDE12345"],

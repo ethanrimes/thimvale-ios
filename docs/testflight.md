@@ -129,6 +129,8 @@ The app includes GPL-licensed Kiwix libraries. Before distributing to others, pr
 - **Missing configuration:** the preflight lists missing names, never secret values. Recheck Secrets versus Variables.
 - **Certificate does not match:** export the certificate with its private key and regenerate the profile selecting that same certificate. Do not use an Apple Development certificate.
 - **Wrong profile:** use App Store Connect distribution with the explicit bundle ID and correct team; not an Ad Hoc/device profile.
+- **Profile installed but not found:** preserve the exact UUID from Apple's signed profile, including letter case. Do not uppercase or otherwise normalize it for Xcode's profile selector.
+- **Invalid iPad orientations:** the app supports iPad multitasking and must declare all four orientations. The native test and pre-upload archive check guard this setting. [Apple's multitasking configuration](https://developer.apple.com/library/archive/documentation/WindowsViews/Conceptual/AdoptingMultitaskingOniPad/QuickStartForSlideOverAndSplitView.html).
 - **Upload unauthorized/app not found:** check team Key ID/Issuer ID/raw `.p8`, key role, active agreements, and the pre-created app record's bundle ID.
 - **Build number already used or lower:** dispatch a new run on current `main`; don't rerun an old commit after newer builds have shipped. If you upload manually too, coordinate build numbers with CI.
 - **Build remains unavailable:** check Apple's processing error email, export compliance, and the internal group's build membership.
