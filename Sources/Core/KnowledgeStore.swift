@@ -195,10 +195,13 @@ final class KnowledgeStore: @unchecked Sendable {
         return result
     }
 
-    static func lexicalQuery(_ query: String) -> String {
-        let stop = Set(["the", "a", "an", "is", "are", "was", "what", "why", "how", "does", "do", "of", "to", "and", "in", "for", "it", "me", "about"])
+    static func searchTerms(_ query: String) -> [String] {
+        let stop = Set(["the", "a", "an", "is", "are", "was", "what", "why", "how", "does", "do", "of", "to", "and", "in", "for", "it", "me", "about", "answer", "briefly", "using", "sources", "source", "please", "tell", "explain", "could", "would", "should", "can", "you", "my", "from", "with", "this", "that", "these", "those"])
         let words = query.lowercased().components(separatedBy: CharacterSet.alphanumerics.inverted).filter { !$0.isEmpty && !stop.contains($0) }
-        return NSOrderedSet(array: Array(words.prefix(20))).array.compactMap { $0 as? String }.map { "\"\($0)\"" }.joined(separator: " OR ")
+        return NSOrderedSet(array: Array(words.prefix(20))).array.compactMap { $0 as? String }
+    }
+    static func lexicalQuery(_ query: String) -> String {
+        searchTerms(query).map { "\"\($0)\"" }.joined(separator: " OR ")
     }
 
     func search(_ query: String, limit: Int = 6) throws -> [Citation] {

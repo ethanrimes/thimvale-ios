@@ -4,9 +4,9 @@ Environment: Apple Silicon Mac, Xcode 26.1.1, Swift 6.2.1, iPhone 17 Pro simulat
 
 | Check | Result |
 | --- | --- |
-| Swift core suite | 7 tests passed |
-| Native integration suite | 6 tests passed |
-| UI suite | 2 tests passed |
+| Swift core suite | 8 tests passed |
+| Native integration suite | 9 tests passed |
+| UI suite | 14 tests passed |
 | Unsigned iPhone build | Passed |
 | Curated Hugging Face repository validation | All 18 contain single-file GGUFs |
 | Visual inspection | Chat, Models, Knowledge, and Permissions inspected; screenshots included |
@@ -19,7 +19,9 @@ The native suite uses actual external artifacts, not substitute responses:
 - A real model transfer through the app's download manager, SHA-256 verification, and recovery from a completed staging file with an intentionally unusable network URL.
 - File writes tested before approval, after approval, after denial, and after revoking the permission while an approval was pending. Reads remain separately permissioned; Chat cannot execute tools.
 
-The core suite covers source numbering/deduplication, source filtering, corpus updates/deletion, compression, quantization, loop limits, traversal, symlinks, and overwrite refusal. UI tests exercise the four tabs, local model filtering, and Chat/Work switching. Screenshots reflect the revised plain-language copy.
+The core suite covers source numbering/deduplication, source filtering, unsupported tool syntax, corpus updates/deletion, compression, quantization, loop limits, traversal, symlinks, and overwrite refusal. Native checks also verify full-question Wikipedia retrieval and rejection of unconnected folders before approval. UI tests exercise the four tabs, filtering, Chat/Work switching, cold launch/background return, draft preservation, all import pickers, permission and settings persistence, model selection/deletion, invalid repositories, live catalogs, real local chat/history, offline source inspection, and approval/denial followed by a cited Work answer.
+
+All 31 tests passed locally during the simulator regression pass. The combined native/UI result is `TestResults/Regression-complete.xcresult` (23 tests); the standalone core suite contributes eight. See [simulator regressions](simulator-regressions.md) for the reported red screen, reproduced bugs, and fixes. Tests use isolated storage and credentials rather than resetting the user's app.
 
 ## What these checks do not establish
 

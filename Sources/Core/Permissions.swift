@@ -84,6 +84,18 @@ struct ToolCall: Codable, Equatable, Sendable {
         guard text.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("{") else { return nil }
         return try? JSONDecoder().decode(ToolCall.self, from: Data(text.utf8))
     }
+
+    /// Detect unsupported call syntax for recovery, never for execution.
+    static func looksLikeCall(_ output: String) -> Bool {
+        var text = output.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let end = text.range(of: "</think>", options: .backwards) { text = String(text[end.upperBound...]).trimmingCharacters(in: .whitespacesAndNewlines) }
+        if text.hasPrefix("```"), let newline = text.firstIndex(of: "\n") { text = String(text[text.index(after: newline)...]).trimmingCharacters(in: .whitespacesAndNewlines) }
+        if text.hasPrefix("<tool_call>") || text.hasPrefix("<|tool_call") { return true }
+        let namedTool = text.contains("\"name\"") && ToolName.allCases.contains { text.contains("\"" + $0.rawValue + "\"") }
+        if text.hasPrefix("{"), text.contains("\"tool\"") || namedTool { return true }
+        if text.hasPrefix("[") { text = String(text.dropFirst()).trimmingCharacters(in: .whitespacesAndNewlines) }
+        return ToolName.allCases.contains { text.hasPrefix($0.rawValue + "(") }
+    }
 }
 
 struct AgentBudget {

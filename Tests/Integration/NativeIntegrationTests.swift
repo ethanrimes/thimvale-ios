@@ -49,6 +49,22 @@ final class NativeIntegrationTests: XCTestCase {
         XCTAssertFalse(body.contains("<script"))
     }
 
+    func testNaturalLanguageWikipediaQueryRetrievesTheNamedArticle() async throws {
+        let source = projectRoot.appendingPathComponent("Vendor/smoke-wikipedia.zim")
+        guard FileManager.default.fileExists(atPath: source.path) else { throw XCTSkip("Fetch the test assets first.") }
+        try AppPaths.prepare()
+        let filename = "query-test-" + UUID().uuidString + ".zim"
+        let destination = AppPaths.archives.appendingPathComponent(filename)
+        try FileManager.default.copyItem(at: source, to: destination)
+        defer { try? FileManager.default.removeItem(at: destination) }
+        let knowledge = try KnowledgeService()
+        let results = try await knowledge.search("What is a bowline? Answer briefly using the sources.", archiveFiles: [filename])
+        let article = try XCTUnwrap(results.first { $0.title == "Bowline" })
+        XCTAssertTrue(article.excerpt.lowercased().contains("loop"))
+        XCTAssertTrue(article.sourceURL?.contains("/wiki/Bowline") == true)
+        await knowledge.closeArchive(filename)
+    }
+
     func testCitedAnswerFromOfflineWikipedia() async throws {
         let model = projectRoot.appendingPathComponent("Vendor/smoke-model.gguf")
         let zim = projectRoot.appendingPathComponent("Vendor/smoke-wikipedia.zim")
@@ -100,6 +116,16 @@ final class NativeIntegrationTests: XCTestCase {
         state.approve(true)
         do { _ = try await revoked.value; XCTFail("Permissions must be rechecked after approval") } catch {}
         XCTAssertFalse(FileManager.default.fileExists(atPath: folder.appendingPathComponent("denied.txt").path))
+    }
+
+    @MainActor func testUnknownFolderDoesNotRequestApproval() async throws {
+        let state = try AppState()
+        state.policy[.readFile] = .ask
+        do {
+            _ = try await state.execute(.init(tool: .readFile, folder: "folder ID", path: "relative/file.txt"), mode: .work)
+            XCTFail("An unconnected folder must be rejected")
+        } catch { XCTAssertTrue(error.localizedDescription.contains("not connected")) }
+        XCTAssertNil(state.approval)
     }
 
     @MainActor private func waitForApproval(_ state: AppState) async throws {

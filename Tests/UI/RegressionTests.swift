@@ -72,7 +72,10 @@ import XCTest
         app.buttons["Settings"].tap()
         XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
         let cellular = app.switches["Allow cellular downloads"]
-        cellular.tap()
+        // SwiftUI exposes the whole Form row as a switch; tap its trailing control.
+        cellular.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
+        XCTAssertEqual(cellular.value as? String, "1")
+        capture(app, "Cellular setting after toggle")
         let save = app.buttons["Save keys"]
         reveal(save, in: app); save.tap()
         XCTAssertTrue(app.buttons["Keys saved"].exists)
@@ -122,8 +125,8 @@ import XCTest
         app.buttons["sendMessage"].tap()
         let answer = app.staticTexts["assistantMessage"]
         XCTAssertTrue(answer.waitForExistence(timeout: 90))
+        XCTAssertTrue(app.buttons["New conversation"].wait(for: \.isEnabled, toEqual: true, timeout: 90))
         XCTAssertTrue(answer.label.contains("4") || answer.label.lowercased().contains("four"), answer.label)
-        XCTAssertTrue(app.buttons["New conversation"].wait(for: \.isEnabled, toEqual: true, timeout: 30))
         app.buttons["New conversation"].tap()
         XCTAssertTrue(app.staticTexts["Start a conversation."].exists)
         app.buttons["Conversation history"].tap()
@@ -175,8 +178,19 @@ import XCTest
         app.buttons["sendMessage"].tap()
         XCTAssertTrue(app.buttons["allowTool"].waitForExistence(timeout: 10))
         app.buttons["allowTool"].tap()
-        XCTAssertTrue(app.buttons["citation_1"].waitForExistence(timeout: 90))
+        let deadline = Date().addingTimeInterval(120)
+        while !app.buttons["citation_1"].exists && Date() < deadline {
+            // Allow once is not blanket access; refuse any extra action the model proposes.
+            if app.buttons["denyTool"].exists { app.buttons["denyTool"].tap() }
+            if app.buttons["citation_1"].waitForExistence(timeout: 2) { break }
+        }
+        XCTAssertTrue(app.buttons["citation_1"].exists)
         XCTAssertFalse(answer.label.contains("couldn't complete"))
+        XCTAssertTrue(answer.label.lowercased().contains("loop"), answer.label)
+        let citationRange = try XCTUnwrap(answer.label.range(of: "\\[[1-9][0-9]*\\]", options: .regularExpression), answer.label)
+        let citedNumber = String(answer.label[citationRange].dropFirst().dropLast())
+        XCTAssertTrue(app.buttons["citation_" + citedNumber].exists)
+        XCTAssertFalse(answer.label.contains("search_knowledge("), answer.label)
         capture(app, "Work answer with evidence")
         reveal(app.buttons["citation_1"], in: app); app.buttons["citation_1"].tap()
         XCTAssertTrue(app.navigationBars["Evidence"].waitForExistence(timeout: 5))

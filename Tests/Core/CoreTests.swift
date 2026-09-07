@@ -84,6 +84,17 @@ final class CoreTests: XCTestCase {
         XCTAssertThrowsError(try budget.consume(ToolCall(tool: .readFile, path: "a")))
     }
 
+    func testUnsupportedToolSyntaxIsDetectedButNeverExecuted() {
+        for text in ["[search_knowledge(query=\"bowline\")]", "read_file(path=\"secret\")", "<tool_call>{}</tool_call>", "{\"tool\":\"unknown\"}"] {
+            XCTAssertTrue(ToolCall.looksLikeCall(text))
+            XCTAssertNil(ToolCall.parse(text))
+        }
+        XCTAssertFalse(ToolCall.looksLikeCall("A bowline forms a fixed loop [1]."))
+        XCTAssertFalse(ToolCall.looksLikeCall("The article mentions read_file(path)."))
+        XCTAssertFalse(ToolCall.looksLikeCall("{\"name\":\"Bowline\"}"))
+        XCTAssertEqual(KnowledgeStore.searchTerms("What is a bowline? Answer briefly using the sources."), ["bowline"])
+    }
+
     func testCitationNumbersPreserveSourceIdentityAcrossToolCalls() {
         let first = Citation(id: "stable-one", title: "One", location: "a.txt", excerpt: "First source")
         let second = Citation(id: "stable-two", title: "Two", location: "b.txt", excerpt: "Second source")
