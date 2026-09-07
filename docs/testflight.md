@@ -4,7 +4,7 @@ Instructions checked against Apple and GitHub documentation on September 6, 2026
 
 The repository already has the cloud workflow. After the one-time setup below, a push to `main` runs tests on GitHub, builds a signed Release archive, and uploads it to your registered App Store Connect app. Pull requests never upload. A failed test blocks release. Apple still has to process each uploaded build; uploading does not publish the app on the App Store or submit it for review.
 
-**Setup status (September 6, 2026):** the owner registered the Thimvale app and its Personal internal-testing group. The supplied API key and distribution identity were validated, all six GitHub Secrets and the Team ID were configured, and a separate App Store provisioning profile was created for `com.ethanrimes.thimvale`. `TESTFLIGHT_ENABLED` is now `true`. The first signed cloud upload is being verified; an unsigned local archive is not a distribution-signed build.
+**Setup status (September 6, 2026):** the owner registered the Thimvale app and its Personal internal-testing group. The supplied API key and distribution identity were validated, all six GitHub Secrets and the Team ID were configured, and a separate App Store provisioning profile was created for `com.ethanrimes.thimvale`. `TESTFLIGHT_ENABLED` is `true`. The first signed cloud upload succeeded: **0.1.0 (12.1)**, [run 34083008401](https://github.com/ethanrimes/thimvale-ios/actions/runs/34083008401). All 54 cloud tests passed. Apple must still finish processing and export-compliance checks before installation. The Personal group has automatic access to eligible builds; the owner's existing testers do not need to be recreated.
 
 ## 1. Enroll and record your Team ID
 
