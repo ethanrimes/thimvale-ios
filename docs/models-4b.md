@@ -2,6 +2,8 @@
 
 Added September 6, 2026. The Models → Discover → **4B class** filter includes the four 4B models below plus the existing Phi 4 Mini (3.8B). Family filters and text search compose with this filter; typing `4b` also searches the parameter label.
 
+![The 4B model filter in the iPhone simulator](screenshots/models-4b.png)
+
 | Model | GGUF publisher/repository | Q4_K_M bytes checked | Upstream license |
 | --- | --- | ---: | --- |
 | Qwen 3.5 4B | [unsloth/Qwen3.5-4B-GGUF](https://huggingface.co/unsloth/Qwen3.5-4B-GGUF) | 2,740,937,888 | Apache-2.0 |
