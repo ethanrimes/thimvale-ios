@@ -25,6 +25,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ethanrimes.pocketmind
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SWIFT_OBJC_BRIDGING_HEADER: Sources/Native/PocketNative.h
         HEADER_SEARCH_PATHS: '$(inherited) $(PROJECT_DIR)/Vendor'
         GENERATE_INFOPLIST_FILE: YES
@@ -37,7 +38,7 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: 'UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight'
         TARGETED_DEVICE_FAMILY: '1,2'
     dependencies:
-      - framework: Vendor/build-apple/llama.xcframework
+      - framework: Vendor/llama.xcframework
         embed: true
       - framework: Vendor/libkiwix_xcframework-14.2.1-2/lib/CoreKiwix.xcframework
         embed: false
@@ -48,6 +49,16 @@ targets:
       - sdk: Accelerate.framework
       - sdk: Metal.framework
       - sdk: NaturalLanguage.framework
+  PocketMindIntegrationTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: Tests/Integration
+    dependencies:
+      - target: PocketMind
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.ethanrimes.pocketmind.integrationtests
   PocketMindUITests:
     type: bundle.ui-testing
     platform: iOS
@@ -65,4 +76,7 @@ schemes:
         PocketMind: all
     test:
       targets:
+        - PocketMindIntegrationTests
         - PocketMindUITests
+      environmentVariables:
+        POCKETMIND_NETWORK_TESTS: '1'
