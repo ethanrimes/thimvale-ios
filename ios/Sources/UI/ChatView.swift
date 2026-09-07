@@ -6,6 +6,7 @@ struct ChatView: View {
     @State private var history = false
     @State private var settings = false
     @State private var source: Citation?
+    @State private var expandedEvents: Set<UUID> = []
     @FocusState private var composing: Bool
 
     var body: some View {
@@ -49,7 +50,7 @@ struct ChatView: View {
                                 }
                                 Color.clear.frame(height: 1).id("bottom")
                             }.padding(22)
-                        }
+                        }.accessibilityIdentifier("chatTranscript")
                         .onChange(of: state.current.messages.last?.content) { _, _ in proxy.scrollTo(state.current.messages.last?.id, anchor: .bottom) }
                         .onChange(of: state.isGenerating) { _, _ in proxy.scrollTo("status", anchor: .bottom) }
                         .onChange(of: state.current.messages.last?.events?.count) { _, _ in proxy.scrollTo("bottom", anchor: .bottom) }
@@ -75,6 +76,7 @@ struct ChatView: View {
             .sheet(isPresented: $history) { historySheet }
             .sheet(isPresented: $settings) { SettingsView(state: state) }
             .sheet(item: $source) { CitationView(citation: $0) }
+            .onChange(of: state.conversationID) { _, _ in expandedEvents.removeAll() }
         }
     }
 
@@ -151,7 +153,7 @@ struct ChatView: View {
             }
             if let events = message.events, !events.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(events.filter { $0.kind == .tool }) { AgentEventView(event: $0) }
+                    ForEach(events.filter { $0.kind == .tool }) { AgentEventView(event: $0, expanded: eventExpansion($0.id)) }
                 }
             }
             if !liveAnswer.isEmpty {
@@ -163,7 +165,7 @@ struct ChatView: View {
             }
             if let generations = message.events?.filter({ $0.kind == .generation }), !generations.isEmpty {
                 DisclosureGroup("Model details") {
-                    ForEach(generations) { AgentEventView(event: $0) }
+                    ForEach(generations) { AgentEventView(event: $0, expanded: eventExpansion($0.id)) }
                 }.font(.caption).foregroundStyle(Palette.muted).accessibilityIdentifier("modelDetails")
             }
             if !message.citations.isEmpty {
@@ -177,6 +179,11 @@ struct ChatView: View {
                 }
             }
         }.padding(message.role == "user" ? 16 : 0).background(message.role == "user" ? Palette.tint : .clear, in: RoundedRectangle(cornerRadius: 20))
+    }
+    private func eventExpansion(_ id: UUID) -> Binding<Bool> {
+        Binding(get: { expandedEvents.contains(id) }, set: { expanded in
+            if expanded { expandedEvents.insert(id) } else { expandedEvents.remove(id) }
+        })
     }
     private var historySheet: some View {
         NavigationStack {
