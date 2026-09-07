@@ -1,6 +1,25 @@
 import XCTest
 
 final class NavigationTests: XCTestCase {
+    @MainActor func testExpandedCatalogSearchAndHigherMemoryFilter() {
+        let app = makeApp(); app.launch()
+        XCTAssertTrue(app.buttons["modelPicker"].waitForExistence(timeout: 15))
+        app.tabBars.buttons["Models"].tap()
+        let size = app.segmentedControls["modelSizeFilter"]
+        XCTAssertTrue(size.waitForExistence(timeout: 5))
+        size.buttons["Higher RAM"].tap()
+        XCTAssertTrue(app.staticTexts["higherRAMGuidance"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["model_qwen35-9"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["model_qwen35-08"].exists)
+        capture(app, name: "Higher RAM model library")
+        size.buttons["All sizes"].tap()
+        app.textFields["modelSearch"].tap()
+        app.textFields["modelSearch"].typeText("Nanbeige\n")
+        XCTAssertTrue(app.buttons["model_nanbeige42-3"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["model_qwen35-9"].exists)
+        capture(app, name: "Nanbeige model search")
+    }
+
     @MainActor func testFourBillionModelsFilterAndSearch() {
         let app = makeApp(); app.launch()
         XCTAssertTrue(app.buttons["modelPicker"].waitForExistence(timeout: 15))
@@ -54,7 +73,7 @@ final class NavigationTests: XCTestCase {
         app.segmentedControls["modePicker"].buttons["Chat"].tap()
     }
     @MainActor private func makeApp() -> XCUIApplication {
-        let app = XCUIApplication(bundleIdentifier: "com.ethanrimes.pocketmind")
+        let app = XCUIApplication(bundleIdentifier: "com.ethanrimes.thimvale")
         app.launchEnvironment["THIMVALE_TEST_SESSION"] = UUID().uuidString
         return app
     }

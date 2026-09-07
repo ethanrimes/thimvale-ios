@@ -2,6 +2,28 @@ import XCTest
 @testable import Thimvale
 
 final class NativeIntegrationTests: XCTestCase {
+    func testExpandedCatalogUsesDistinctModelsAndHonestMemoryLabels() throws {
+        let models = ModelCatalog.models
+        XCTAssertEqual(models.count, 36)
+        XCTAssertEqual(Set(models.map(\.repository)).count, models.count)
+        XCTAssertEqual(Set(ModelCatalog.families), Set(models.map(\.family)))
+        XCTAssertEqual(ModelCatalog.families.count, Set(ModelCatalog.families).count)
+        for id in ["liquid25-350", "liquid25-12-instruct", "liquid2-26-exp", "granite4-350", "minicpm5-1", "g9v3-3"] {
+            let model = try XCTUnwrap(models.first { $0.id == id })
+            XCTAssertFalse(model.needsHigherMemory)
+            XCTAssertEqual(model.preferredQuant, "Q4_K_M")
+        }
+        let larger = models.filter(\.needsHigherMemory)
+        XCTAssertEqual(Set(larger.map(\.id)), ["qwen35-9", "gemma4-e4", "liquid25-8-a1", "granite41-8", "ling3-tiny", "falcon-h1r-7", "ornith1-9"])
+        XCTAssertTrue(larger.allSatisfy { !$0.isFourBillionClass })
+        let nanbeige = try XCTUnwrap(models.first { $0.id == "nanbeige42-3" })
+        XCTAssertEqual(nanbeige.parameters, "4.2B")
+        XCTAssertTrue(nanbeige.isFourBillionClass)
+        XCTAssertTrue(nanbeige.summary.contains("non-embedding"))
+        XCTAssertTrue(models.first { $0.id == "ling3-tiny" }?.parameters.contains("7.9B") == true)
+        XCTAssertTrue(models.first { $0.id == "liquid25-8-a1" }?.parameters.hasPrefix("8B") == true)
+    }
+
     func testFourBillionCatalogEntriesHaveDistinctIDsAndMemoryGuidance() {
         let models = ModelCatalog.models
         XCTAssertEqual(Set(models.map(\.id)).count, models.count)

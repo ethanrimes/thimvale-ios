@@ -2,7 +2,7 @@ import XCTest
 
 @MainActor final class RegressionTests: XCTestCase {
     private func makeApp(fixtures: Bool = false) throws -> XCUIApplication {
-        let app = XCUIApplication(bundleIdentifier: "com.ethanrimes.pocketmind")
+        let app = XCUIApplication(bundleIdentifier: "com.ethanrimes.thimvale")
         app.launchEnvironment["THIMVALE_TEST_SESSION"] = UUID().uuidString
         if fixtures {
             let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()

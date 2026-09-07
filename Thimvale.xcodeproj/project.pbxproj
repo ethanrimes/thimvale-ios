@@ -461,7 +461,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind.integrationtests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.thimvale.integrationtests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Thimvale.app/Thimvale";
@@ -493,7 +493,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.thimvale;
 				PROVISIONING_PROFILE_SPECIFIER = "$(THIMVALE_PROVISIONING_PROFILE)";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = Sources/Native/PocketNative.h;
@@ -640,7 +640,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind.uitests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.thimvale.uitests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Thimvale;
@@ -657,7 +657,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind.integrationtests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.thimvale.integrationtests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Thimvale.app/Thimvale";
@@ -689,7 +689,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.thimvale;
 				PROVISIONING_PROFILE_SPECIFIER = "$(THIMVALE_PROVISIONING_PROFILE)";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = Sources/Native/PocketNative.h;
@@ -711,7 +711,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.pocketmind.uitests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ethanrimes.thimvale.uitests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Thimvale;

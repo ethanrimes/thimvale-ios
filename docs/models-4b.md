@@ -1,6 +1,6 @@
 # 4B model tier
 
-Added September 6, 2026. The Models → Discover → **4B class** filter includes the four 4B models below plus the existing Phi 4 Mini (3.8B). Family filters and text search compose with this filter; typing `4b` also searches the parameter label.
+Added September 6, 2026. The Models → Discover → **4B class** filter includes the four 4B models below plus Phi 4 Mini (3.8B) and Nanbeige 4.2-3B (about 4.2B including embeddings). Family filters and text search compose with this filter; typing `4b` also searches the parameter label. The screenshot records the initial five-model tier before Nanbeige was added.
 
 ![The 4B model filter in the iPhone simulator](screenshots/models-4b.png)
 

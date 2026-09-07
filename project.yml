@@ -29,8 +29,8 @@ targets:
         buildPhase: resources
     settings:
       base:
-        # Keep the original installation identity so renaming preserves user data.
-        PRODUCT_BUNDLE_IDENTIFIER: com.ethanrimes.pocketmind
+        # Match the app record registered by the owner in App Store Connect.
+        PRODUCT_BUNDLE_IDENTIFIER: com.ethanrimes.thimvale
         # CI overrides only this app target, not Swift packages/framework targets.
         THIMVALE_CODE_SIGN_STYLE: Automatic
         THIMVALE_CODE_SIGN_IDENTITY: Apple Development
@@ -73,7 +73,7 @@ targets:
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
-        PRODUCT_BUNDLE_IDENTIFIER: com.ethanrimes.pocketmind.integrationtests
+        PRODUCT_BUNDLE_IDENTIFIER: com.ethanrimes.thimvale.integrationtests
   ThimvaleUITests:
     type: bundle.ui-testing
     platform: iOS
@@ -83,7 +83,7 @@ targets:
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
-        PRODUCT_BUNDLE_IDENTIFIER: com.ethanrimes.pocketmind.uitests
+        PRODUCT_BUNDLE_IDENTIFIER: com.ethanrimes.thimvale.uitests
 schemes:
   Thimvale:
     build:

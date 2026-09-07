@@ -5,26 +5,46 @@ enum ModelCatalog {
         .init(id: "qwen35-08", name: "Qwen 3.5", family: "Qwen", repository: "unsloth/Qwen3.5-0.8B-GGUF", summary: "Qwen 3.5 at 0.8B parameters. Text mode.", parameters: "0.8B", minimumMemoryGB: 4),
         .init(id: "qwen35-2", name: "Qwen 3.5", family: "Qwen", repository: "unsloth/Qwen3.5-2B-GGUF", summary: "Qwen 3.5 at 2B parameters. Text mode.", parameters: "2B", minimumMemoryGB: 6),
         .init(id: "qwen35-4", name: "Qwen 3.5", family: "Qwen", repository: "unsloth/Qwen3.5-4B-GGUF", summary: "Qwen 3.5 at 4B parameters. Text mode; needs a higher-memory iPhone.", parameters: "4B", minimumMemoryGB: 8),
-        .init(id: "qwen3-06", name: "Qwen 3", family: "Qwen", repository: "Qwen/Qwen3-0.6B-GGUF", summary: "Lightweight multilingual chat.", parameters: "0.6B", minimumMemoryGB: 4),
-        .init(id: "qwen3-17", name: "Qwen 3", family: "Qwen", repository: "Qwen/Qwen3-1.7B-GGUF", summary: "Multilingual text generation at 1.7B parameters.", parameters: "1.7B", minimumMemoryGB: 6),
+        .init(id: "qwen35-9", name: "Qwen 3.5", family: "Qwen", repository: "unsloth/Qwen3.5-9B-GGUF", summary: "9B text model. Q4 weights alone are about 5.7 GB; needs substantial free memory. Image input is not enabled.", parameters: "9B", minimumMemoryGB: 12),
+        .init(id: "qwen3-06", name: "Qwen 3", family: "Qwen", repository: "Qwen/Qwen3-0.6B-GGUF", summary: "Lightweight multilingual chat.", parameters: "0.6B", minimumMemoryGB: 4, preferredQuant: "Q8_0"),
+        .init(id: "qwen3-17", name: "Qwen 3", family: "Qwen", repository: "Qwen/Qwen3-1.7B-GGUF", summary: "Multilingual text generation at 1.7B parameters.", parameters: "1.7B", minimumMemoryGB: 6, preferredQuant: "Q8_0"),
         .init(id: "qwen3-4", name: "Qwen 3", family: "Qwen", repository: "Qwen/Qwen3-4B-GGUF", summary: "Qwen's 4B multilingual text model.", parameters: "4B", minimumMemoryGB: 8),
         .init(id: "qwen3-4-instruct2507", name: "Qwen 3 Instruct 2507", family: "Qwen", repository: "unsloth/Qwen3-4B-Instruct-2507-GGUF", summary: "The July 2025 instruction-tuned 4B edition. Non-thinking text generation.", parameters: "4B", minimumMemoryGB: 8),
         .init(id: "gemma3-1", name: "Gemma 3", family: "Gemma", repository: "ggml-org/gemma-3-1b-it-GGUF", summary: "Google's 1B instruction model.", parameters: "1B", minimumMemoryGB: 4),
         .init(id: "gemma3-4", name: "Gemma 3", family: "Gemma", repository: "ggml-org/gemma-3-4b-it-GGUF", summary: "Google's 4B instruction model. Text mode; image input is not enabled.", parameters: "4B", minimumMemoryGB: 8),
         .init(id: "gemma4-e2", name: "Gemma 4", family: "Gemma", repository: "google/gemma-4-E2B-it-qat-q4_0-gguf", summary: "The E2B edition. Text mode; needs a higher-memory iPhone.", parameters: "E2B", minimumMemoryGB: 8, preferredQuant: "Q4_0"),
+        .init(id: "gemma4-e4", name: "Gemma 4 E4B", family: "Gemma", repository: "google/gemma-4-E4B-it-qat-q4_0-gguf", summary: "Google's E4B edition with quantization-aware weights. E4B is an effective-size label, not total weight count: the Q4 download is about 5.2 GB. Text only.", parameters: "E4B", minimumMemoryGB: 12, preferredQuant: "Q4_0"),
         .init(id: "liquid25-230", name: "Liquid LFM 2.5", family: "Liquid", repository: "LiquidAI/LFM2.5-230M-GGUF", summary: "230M-parameter text model from Liquid AI.", parameters: "230M", minimumMemoryGB: 4),
+        .init(id: "liquid25-350", name: "Liquid LFM 2.5", family: "Liquid", repository: "LiquidAI/LFM2.5-350M-GGUF", summary: "Liquid AI's 350M text model. A small download for short text tasks.", parameters: "350M", minimumMemoryGB: 4),
+        .init(id: "liquid25-12-instruct", name: "Liquid LFM 2.5 Instruct", family: "Liquid", repository: "LiquidAI/LFM2.5-1.2B-Instruct-GGUF", summary: "The 1.2B instruction-tuned LFM 2.5 edition.", parameters: "1.2B", minimumMemoryGB: 4),
         .init(id: "liquid2-12", name: "Liquid LFM 2", family: "Liquid", repository: "LiquidAI/LFM2-1.2B-GGUF", summary: "Designed for efficient inference on edge devices.", parameters: "1.2B", minimumMemoryGB: 4),
         .init(id: "liquid25-26", name: "Liquid LFM 2.5", family: "Liquid", repository: "LiquidAI/LFM2.5-2.6B-GGUF", summary: "2.6B-parameter text model from Liquid AI.", parameters: "2.6B", minimumMemoryGB: 6),
+        .init(id: "liquid2-26-exp", name: "Liquid LFM 2 Experimental", family: "Liquid", repository: "LiquidAI/LFM2-2.6B-Exp-GGUF", summary: "The experimental 2.6B LFM 2 edition, separate from LFM 2.5.", parameters: "2.6B", minimumMemoryGB: 6),
+        .init(id: "liquid25-8-a1", name: "Liquid LFM 2.5 8B-A1B", family: "Liquid", repository: "LiquidAI/LFM2.5-8B-A1B-GGUF", summary: "Mixture-of-experts model with about 1B active parameters per token. All experts still need storage and memory; Q4 weights are about 5.2 GB.", parameters: "8B (1B active)", minimumMemoryGB: 12),
         .init(id: "liquid-rag", name: "Liquid LFM 2 RAG", family: "Liquid", repository: "LiquidAI/LFM2-1.2B-RAG-GGUF", summary: "Specialized for answering from retrieved documents.", parameters: "1.2B", minimumMemoryGB: 4),
         .init(id: "granite4-micro", name: "Granite 4 Micro", family: "Granite", repository: "ibm-granite/granite-4.0-micro-GGUF", summary: "IBM's Granite 4.0 Micro instruction model.", parameters: "3B", minimumMemoryGB: 6),
+        .init(id: "granite4-350", name: "Granite 4.0", family: "Granite", repository: "ibm-granite/granite-4.0-350m-GGUF", summary: "IBM's dense 350M instruction model; distinct from the hybrid H-350M edition.", parameters: "350M", minimumMemoryGB: 4),
+        .init(id: "granite41-8", name: "Granite 4.1", family: "Granite", repository: "ibm-granite/granite-4.1-8b-GGUF", summary: "IBM's 8B instruction model. Q4 weights are about 5.3 GB before runtime memory and context.", parameters: "8B", minimumMemoryGB: 12),
         .init(id: "granite42-3", name: "Granite 4.2", family: "Granite", repository: "ibm-granite/granite-4.2-3b-GGUF", summary: "A recent small Granite model for text tasks.", parameters: "3B", minimumMemoryGB: 6),
         .init(id: "phi4-mini", name: "Phi 4 Mini", family: "Phi", repository: "unsloth/Phi-4-mini-instruct-GGUF", summary: "Microsoft's Phi 4 Mini instruction model.", parameters: "3.8B", minimumMemoryGB: 8),
         .init(id: "llama32-1", name: "Llama 3.2", family: "Llama", repository: "bartowski/Llama-3.2-1B-Instruct-GGUF", summary: "Meta's lightweight instruction model.", parameters: "1B", minimumMemoryGB: 4),
         .init(id: "llama32-3", name: "Llama 3.2", family: "Llama", repository: "bartowski/Llama-3.2-3B-Instruct-GGUF", summary: "Meta's 3B instruction model.", parameters: "3B", minimumMemoryGB: 6),
-        .init(id: "smollm2-360", name: "SmolLM 2", family: "SmolLM", repository: "HuggingFaceTB/SmolLM2-360M-Instruct-GGUF", summary: "Hugging Face's 360M instruction model.", parameters: "360M", minimumMemoryGB: 4),
+        .init(id: "smollm2-360", name: "SmolLM 2", family: "SmolLM", repository: "HuggingFaceTB/SmolLM2-360M-Instruct-GGUF", summary: "Hugging Face's 360M instruction model.", parameters: "360M", minimumMemoryGB: 4, preferredQuant: "Q8_0"),
         .init(id: "smollm2-17", name: "SmolLM 2", family: "SmolLM", repository: "HuggingFaceTB/SmolLM2-1.7B-Instruct-GGUF", summary: "Hugging Face's 1.7B instruction model.", parameters: "1.7B", minimumMemoryGB: 4),
-        .init(id: "ministral3", name: "Ministral 3", family: "Mistral", repository: "unsloth/Ministral-3-3B-Instruct-2512-GGUF", summary: "Mistral's small instruction model, in text mode.", parameters: "3B", minimumMemoryGB: 6)
+        .init(id: "ministral3", name: "Ministral 3", family: "Mistral", repository: "unsloth/Ministral-3-3B-Instruct-2512-GGUF", summary: "Mistral's small instruction model, in text mode.", parameters: "3B", minimumMemoryGB: 6),
+        .init(id: "minicpm5-1", name: "MiniCPM 5", family: "MiniCPM", repository: "openbmb/MiniCPM5-1B-GGUF", summary: "OpenBMB's 1B text model, using its official GGUF release.", parameters: "1B", minimumMemoryGB: 4),
+        .init(id: "nanbeige42-3", name: "Nanbeige 4.2-3B", family: "Nanbeige", repository: "bartowski/Nanbeige_Nanbeige4.2-3B-GGUF", summary: "3B non-embedding parameters; about 4.2B total in the GGUF. Community quantization of Nanbeige's text model.", parameters: "4.2B", minimumMemoryGB: 8),
+        .init(id: "g9v3-3", name: "G9v3", family: "AI9Stars", repository: "bartowski/ai9stars_G9v3-3B-GGUF", summary: "AI9Stars' dense 3B text model. Community GGUF quantization.", parameters: "3B", minimumMemoryGB: 6),
+        .init(id: "ling3-tiny", name: "Ling 3.0 Tiny", family: "Ling", repository: "bartowski/Ling-3.0-tiny-GGUF", summary: "7.9B total parameters with 1.3B active per token. Tiny describes compute, not download size: Q4 weights are about 4.9 GB. Community GGUF quantization.", parameters: "7.9B (1.3B active)", minimumMemoryGB: 12),
+        .init(id: "falcon-h1r-7", name: "Falcon H1R", family: "Falcon", repository: "tiiuae/Falcon-H1R-7B-GGUF", summary: "TII's 7B hybrid reasoning model. Q4 weights are about 4.6 GB; generated reasoning also uses the token budget.", parameters: "7B", minimumMemoryGB: 12),
+        .init(id: "ornith1-9", name: "Ornith 1.0", family: "Ornith", repository: "ornith-ai/Ornith-1.0-9B-GGUF", summary: "Ornith AI's 9B text model. Q4 weights are about 5.6 GB before runtime memory and context.", parameters: "9B", minimumMemoryGB: 12)
     ]
+
+    static var families: [String] {
+        models.reduce(into: []) { result, model in
+            if !result.contains(model.family) { result.append(model.family) }
+        }
+    }
 }
 
 actor ModelHub {

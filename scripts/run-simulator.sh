@@ -9,5 +9,5 @@ xcodebuild -project Thimvale.xcodeproj -scheme Thimvale \
   -destination 'generic/platform=iOS Simulator' -derivedDataPath build \
   CODE_SIGNING_ALLOWED=NO build
 xcrun simctl install "$thimvale_device" build/Build/Products/Debug-iphonesimulator/Thimvale.app
-xcrun simctl launch --terminate-running-process "$thimvale_device" com.ethanrimes.pocketmind
-echo 'Launched Thimvale (com.ethanrimes.pocketmind). No JavaScript server is needed.'
+xcrun simctl launch --terminate-running-process "$thimvale_device" com.ethanrimes.thimvale
+echo 'Launched Thimvale (com.ethanrimes.thimvale). No JavaScript server is needed.'

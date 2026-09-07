@@ -8,8 +8,8 @@ A native iPhone workspace for local language models, permission-controlled agent
 
 - **Chat:** private, streaming conversations with a downloaded GGUF model.
 - **Work:** a bounded agent loop with independently controlled knowledge search, file listing/reading, file creation, and web search. Writes can require an explicit preview and approval.
-- **Models:** curated mobile-size Gemma, Qwen, Liquid, Granite, Phi, Llama and SmolLM models, plus Hugging Face repository search and local GGUF import.
-- **4B class:** Gemma 3, Qwen 3, Qwen 3 Instruct 2507, and Qwen 3.5 at 4B, alongside Phi 4 Mini at 3.8B. Use the size filter in Discover. See [download sizes and memory guidance](docs/models-4b.md).
+- **Models:** 36 curated GGUF models, plus Hugging Face search and local import. Families include Gemma, Qwen, Liquid, Granite, Phi, Llama, SmolLM, Mistral, MiniCPM, Nanbeige, AI9Stars, Ling, Falcon, and Ornith.
+- **Size filters:** 4B class includes Phi 4 Mini and Nanbeige alongside Gemma 3 and Qwen. Higher RAM separates larger models with roughly 12+ GB device-RAM guidance. See [4B downloads](docs/models-4b.md) and the [14 additions from the mobile benchmark chart](docs/model-expansion.md).
 - **Knowledge:** import folders, text and PDFs; retrieve compressed passages with inspectable source citations. Download compressed Wikipedia ZIM archives directly from Kiwix, including English mini and full text editions.
 
 ## Development
@@ -28,7 +28,7 @@ The app targets iOS 18+. There is no hosted inference service, account requireme
 
 With an iPhone simulator already booted, `./scripts/run-simulator.sh` builds, installs, and launches this exact app. Pass its simulator UUID if several are running. Thimvale is native Swift/C++; it does not use React Native, Expo, Metro, or a JavaScript bundle. See the [simulator incident notes](docs/simulator-regressions.md) for the earlier red-screen report.
 
-Thimvale was previously named PocketMind. The public name, project, and repository have changed; the bundle identifier, storage directory, Keychain service, and background-download identifier deliberately retain their original values so existing installations keep their data. See the dated [name screening and rename notes](docs/name-screening.md).
+Thimvale was previously named PocketMind. The owner registered `com.ethanrimes.thimvale` in App Store Connect; the app and release flow now use that bundle ID. It installs separately from the earlier `com.ethanrimes.pocketmind` simulator prototype, whose data has not been deleted or migrated. See the dated [name screening and rename notes](docs/name-screening.md).
 
 ## Use
 
@@ -62,7 +62,7 @@ Simulator UI regressions use a fresh `THIMVALE_TEST_SESSION` UUID for separate a
 ## Implementation limits
 
 - This is a working first version, not an App Store release. Physical-device speed, thermal behavior, memory limits, background download scheduling, and accessibility still need device testing. Both device and simulator targets compile locally.
-- Twenty-two curated repositories were checked for GGUF availability. That does not establish that every architecture and quantization works on every iPhone. The runtime checks templates and model loading and rejects known memory overcommit. Only text generation is implemented; vision, audio, sharded GGUFs, and raw safetensors are not supported.
+- Thirty-six curated repositories were checked for single-file GGUF availability and their default quantizations. That does not establish that every architecture and quantization works on every iPhone. The runtime checks templates and model loading and rejects known memory overcommit. Only text generation is implemented; vision, audio, sharded GGUFs, and raw safetensors are not supported.
 - Imported English documents use Apple's on-device sentence embeddings when available, compressed to one bit per dimension, plus SQLite FTS5. Other languages still have Unicode keyword search. The app does not download the OS embedding resource itself. If it is unavailable, indexing/search use keywords. Reimport to add vectors after the resource becomes available.
 - Sign quantization reduces vector storage by 32x compared with Float32, at a retrieval-quality cost. It is not a 32x reduction of the whole library and is not a claim of optimal compression. Text uses LZFSE; the contentless FTS index avoids retaining another plaintext copy. Libraries over 20,000 passages use lexical candidate selection before vector reranking to bound search time.
 - Wikipedia uses the ZIM corpus's compressed article storage and full-text index, with semantic reranking of retrieved passages. It does **not** ship millions of precomputed Wikipedia vectors. Mini editions are abridged; full English text still requires tens of gigabytes. Nothing downloads automatically.

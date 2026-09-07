@@ -13,7 +13,7 @@ import sys
 import tempfile
 import uuid
 
-BUNDLE_ID = "com.ethanrimes.pocketmind"  # Stable update identity, not the display name.
+BUNDLE_ID = "com.ethanrimes.thimvale"  # Must match the registered App Store Connect app.
 REQUIRED = (
     "APPLE_TEAM_ID", "IOS_DISTRIBUTION_P12_BASE64", "IOS_DISTRIBUTION_P12_PASSWORD",
     "IOS_PROVISIONING_PROFILE_BASE64", "APP_STORE_CONNECT_KEY_ID",
