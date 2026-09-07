@@ -33,8 +33,10 @@ Official GGUF releases are preferred. Bartowski and Unsloth entries are explicit
 
 Family filters are derived from the catalog, so the new publishers are selectable without a second hand-maintained list. The Higher RAM filter, row labels, live download sizes, and loading warning expose the heavier options without presenting them as universally suitable for iPhones.
 
+<img src="screenshots/models-higher-ram.png" width="260" alt="Higher RAM filter and download memory guidance"> <img src="screenshots/models-nanbeige.png" width="260" alt="Nanbeige found through library search">
+
 ## Validation limits
 
-All 14 reported architectures have handlers in the pinned runtime: `lfm2`, `lfm2moe`, `granite`, `llama`, `nanbeige`, `bailingmoe3`, `gemma4`, `qwen35`, and `falcon-h1`. A handler and a valid download do **not** prove that every tensor, template, quantization, tool format, or memory configuration works on device. These new weights have not yet been inference-tested in Thimvale. Memory guidance is approximate, not a supported-device guarantee; context and free RAM matter. The small Liquid fixture remains the model used in automated inference tests.
+All 14 models report architectures with handlers in the pinned runtime: `lfm2`, `lfm2moe`, `granite`, `llama`, `nanbeige`, `bailingmoe3`, `gemma4`, `qwen35`, and `falcon-h1`. A handler and a valid download do **not** prove that every tensor, template, quantization, tool format, or memory configuration works on device. These new weights have not yet been inference-tested in Thimvale. Memory guidance is approximate, not a supported-device guarantee; context and free RAM matter. The small Liquid fixture remains the model used in automated inference tests.
 
 Already present from the chart: LFM 2.5 230M/2.6B, Gemma 4 E2B, and Qwen 3.5 4B. Existing downloads and model IDs are retained; no weights download automatically.
