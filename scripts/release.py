@@ -101,6 +101,20 @@ def export_options(team, profile_uuid, certificate):
     }
 
 
+def validate_app_info(info, number):
+    if info.get("CFBundleIdentifier") != BUNDLE_ID or info.get("CFBundleDisplayName") != "Thimvale":
+        raise ValueError("The archive is not the expected Thimvale app.")
+    if info.get("CFBundleVersion") != number:
+        raise ValueError("The archive does not have the expected build number.")
+    if 2 in info.get("UIDeviceFamily", []) and not info.get("UIRequiresFullScreen", False):
+        orientations = set(info.get("UISupportedInterfaceOrientations~ipad",
+                                    info.get("UISupportedInterfaceOrientations", [])))
+        required = {"UIInterfaceOrientation" + suffix for suffix in (
+            "Portrait", "PortraitUpsideDown", "LandscapeLeft", "LandscapeRight")}
+        if not required.issubset(orientations):
+            raise ValueError("iPad multitasking requires all four interface orientations.")
+
+
 def run(args, **kwargs):
     # Build tools and dependency scripts do not need secrets in their environment.
     kwargs.setdefault("env", {key: value for key, value in os.environ.items() if key not in REQUIRED})
@@ -169,10 +183,9 @@ def upload(env):
             app = archive_path / "Products/Applications/Thimvale.app"
             with (app / "Info.plist").open("rb") as handle:
                 info = plistlib.load(handle)
-            if info.get("CFBundleIdentifier") != BUNDLE_ID or info.get("CFBundleDisplayName") != "Thimvale":
-                raise ValueError("The archive is not the expected Thimvale app.")
-            if info.get("CFBundleVersion") != number or not (app / "PrivacyInfo.xcprivacy").exists():
-                raise ValueError("The archive is missing the expected build number or privacy manifest.")
+            validate_app_info(info, number)
+            if not (app / "PrivacyInfo.xcprivacy").exists():
+                raise ValueError("The archive is missing the privacy manifest.")
             run(["codesign", "--verify", "--deep", "--strict", app])
             run(["xcodebuild", "-exportArchive", "-archivePath", archive_path,
                  "-exportOptionsPlist", export_path, "-exportPath", root / "Export",

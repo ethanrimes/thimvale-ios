@@ -38,6 +38,18 @@ final class NativeIntegrationTests: XCTestCase {
         XCTAssertEqual(Bundle.main.bundleIdentifier, AppIdentity.bundleIdentifier)
     }
 
+    func testBuiltAppSupportsAllIPadOrientations() throws {
+        // Bundle's lookup resolves device-specific variants for this iPhone;
+        // inspect the actual built plist to check the iPad declaration too.
+        let data = try Data(contentsOf: Bundle.main.bundleURL.appendingPathComponent("Info.plist"))
+        let info = try XCTUnwrap(PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any])
+        let orientations = try XCTUnwrap(info["UISupportedInterfaceOrientations~ipad"] as? [String])
+        XCTAssertEqual(Set(orientations), Set([
+            "UIInterfaceOrientationPortrait", "UIInterfaceOrientationPortraitUpsideDown",
+            "UIInterfaceOrientationLandscapeLeft", "UIInterfaceOrientationLandscapeRight"
+        ]))
+    }
+
     private var projectRoot: URL { URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent() }
 
     @MainActor func testRejectedMessagesAreNotAcceptedOrAddedToHistory() throws {

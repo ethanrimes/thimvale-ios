@@ -5,9 +5,9 @@ Environment: Apple Silicon Mac, Xcode 26.1.1, Swift 6.2.1, iPhone 17 Pro simulat
 | Check | Result |
 | --- | --- |
 | Swift core suite | 11 tests passed |
-| Native integration suite | 12 tests passed |
+| Native integration suite | 12 tests passed in full pass; additional built-plist orientation regression passed separately |
 | UI suite | 16 tests passed |
-| Release configuration suite | 11 tests passed, including profile-ID case preservation |
+| Release configuration suite | 14 tests passed, including profile-ID case preservation and archive metadata |
 | Unsigned iPhone Release archive | Passed; app identity and privacy manifest checked |
 | Workflow and shell lint | Actionlint and ShellCheck passed |
 | Curated Hugging Face repository validation | All 36 contain single-file GGUFs at their preferred quantization |
@@ -28,6 +28,8 @@ All 48 tests passed locally in the expanded-model validation pass. The combined 
 The unsigned Release archive `TestResults/Thimvale-registered.xcarchive` also passed with `com.ethanrimes.thimvale`; its bundle identifier and privacy manifest were checked. Release tests exercise credential/profile validation, build numbering, export options, and event guards without real Apple secrets. They do not establish that a signed upload succeeds.
 
 Cloud run [34081016795](https://github.com/ethanrimes/thimvale-ios/actions/runs/34081016795) passed the build and simulator gates but failed before upload: the release helper uppercased Apple's lowercase provisioning-profile UUID, and Xcode could not find that identifier. A local comparison reproduced the lookup failure with uppercase and passed profile lookup with Apple's exact original string. The helper now validates the UUID without changing its spelling; two added regression tests cover case preservation through export and rejection of malformed identifiers. All 11 release tests pass. A new cloud run must still confirm signed archiving and upload.
+
+A subsequent archive audit found a missing iPad portrait-upside-down declaration. The app supports iPad multitasking, so its generated plist now includes all four iPad orientations. The simulator regression reads the raw built plist (Bundle's ordinary lookup resolves orientation variants for the current iPhone) and passed in `TestResults/Thimvale-orientations-fixed.xcresult`. Three additional release tests check archive identity, build number, and complete iPad orientations; the release suite now has 14 passing tests. Run 34082479013 was intentionally stopped during simulator tests, before signing, to include this correction in the next full cloud run.
 
 After the initial cosmetic rename, SHA-256 hashes of the existing installation's conversation, download, folder, model, and permission JSON records matched their pre-rename values. The owner then selected a new App Store bundle ID, `com.ethanrimes.thimvale`; this installs separately from `com.ethanrimes.pocketmind`. The earlier installation is retained, but its files and Keychain data do not automatically migrate. See [simulator regressions](simulator-regressions.md) for the reported red screen, reproduced bugs, and fixes. Tests use isolated storage and credentials rather than resetting the user's app. Simulator test sessions use a fixed inference seed; ordinary app sessions do not.
 
