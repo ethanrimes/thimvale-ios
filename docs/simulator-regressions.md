@@ -30,3 +30,9 @@ xcodebuild test -project Thimvale.xcodeproj -scheme Thimvale \
 UI tests use separate UUID-named app storage, preferences, and Keychain services. Fixture-enabled tests import an actual GGUF, an actual Wikipedia ZIM, and the small text document under `Tests/Fixtures`. They do not substitute generated answers or search results. Fixture loading is available only in Debug simulator builds.
 
 This is a bounded regression pass, not proof that every model, device, accessibility setting, or future upstream response is error-free. See `validation.md` for the physical-device and background-transfer limitations.
+
+## Thimvale rename and release-flow follow-up
+
+The approval UI test could see the old Deny button while a just-approved sheet was animating away. It now waits for dismissal before handling any new request. Isolated Debug simulator inference uses a fixed random seed so the real-model regression is repeatable; production sampling is unchanged.
+
+The small model also sometimes returns a bibliography without numbered inline citations, even after the bounded retry. This was already recorded in the work activity, but the app now shows an explicit warning beside the retrieved sources as well. The Work UI test verifies either a valid numbered citation or the visible missing-citation warning, and always checks that the original source is inspectable. The separate real-inference integration test still requires a numbered citation. The suite does not pretend every small-model answer is accurate or correctly cited.

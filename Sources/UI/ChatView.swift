@@ -133,6 +133,11 @@ struct ChatView: View {
             if !message.content.isEmpty { Text(.init(AppState.visibleAnswer(message.content))).font(.system(size: 16)).lineSpacing(5).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).accessibilityIdentifier(message.role + "Message") }
             if !message.citations.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
+                    if !state.isGenerating && CitationValidator.cited(in: message.content, from: message.citations).isEmpty {
+                        Text("The model didn't add inline citations. Check the sources below.")
+                            .font(.caption).foregroundStyle(Palette.muted)
+                            .accessibilityIdentifier("missingInlineCitations")
+                    }
                     Eyebrow(text: "Evidence retrieved · tap to inspect")
                     let unique = message.citations.reduce(into: [Citation]()) { list, citation in if !list.contains(where: { $0.id == citation.id }) { list.append(citation) } }
                     ForEach(unique) { citation in
