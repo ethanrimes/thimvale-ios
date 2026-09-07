@@ -28,7 +28,13 @@ import SwiftUI
             }
             .task {
                 guard state == nil, startupError == nil else { return }
-                do { state = try AppState() } catch { startupError = error.localizedDescription }
+                do {
+                    let initial = try AppState()
+                    #if DEBUG && targetEnvironment(simulator)
+                    try await initial.prepareUITestFixtures()
+                    #endif
+                    state = initial
+                } catch { startupError = error.localizedDescription }
             }
         }
     }

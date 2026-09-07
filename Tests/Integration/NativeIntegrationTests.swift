@@ -4,6 +4,21 @@ import XCTest
 final class NativeIntegrationTests: XCTestCase {
     private var projectRoot: URL { URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent() }
 
+    @MainActor func testRejectedMessagesAreNotAcceptedOrAddedToHistory() throws {
+        let state = try AppState()
+        state.selectedModelID = nil
+        let count = state.current.messages.count
+        XCTAssertFalse(state.send(" \n "))
+        XCTAssertFalse(state.send(String(repeating: "x", count: 8_001)))
+        XCTAssertTrue(state.error?.contains("8,000") == true)
+        state.error = nil
+        XCTAssertFalse(state.send("Keep this draft until a model is selected."))
+        XCTAssertEqual(state.selectedTab, 1)
+        XCTAssertNotNil(state.notice)
+        XCTAssertFalse(state.isGenerating)
+        XCTAssertEqual(state.current.messages.count, count)
+    }
+
     func testRealGGUFInferenceAndCancellation() async throws {
         let url = projectRoot.appendingPathComponent("Vendor/smoke-model.gguf")
         guard FileManager.default.fileExists(atPath: url.path) else { throw XCTSkip("Run scripts/fetch-test-assets.sh to enable real inference tests.") }

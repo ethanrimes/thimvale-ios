@@ -2,7 +2,7 @@ import XCTest
 
 final class NavigationTests: XCTestCase {
     @MainActor func testPrimaryNavigationAndModelFiltering() throws {
-        let app = XCUIApplication()
+        let app = makeApp()
         app.launch()
         XCTAssertTrue(app.buttons["modelPicker"].waitForExistence(timeout: 15))
         XCTAssertTrue(app.textFields["messageInput"].exists)
@@ -27,10 +27,15 @@ final class NavigationTests: XCTestCase {
         add(screenshot)
     }
     @MainActor func testWorkModeDoesNotRequireNetworkOrModelToConfigure() {
-        let app = XCUIApplication(); app.launch()
+        let app = makeApp(); app.launch()
         XCTAssertTrue(app.segmentedControls["modePicker"].waitForExistence(timeout: 10))
         app.segmentedControls["modePicker"].buttons["Work"].tap()
         XCTAssertTrue(app.staticTexts["Work with your files."].waitForExistence(timeout: 5))
         app.segmentedControls["modePicker"].buttons["Chat"].tap()
+    }
+    @MainActor private func makeApp() -> XCUIApplication {
+        let app = XCUIApplication(bundleIdentifier: "com.ethanrimes.pocketmind")
+        app.launchEnvironment["POCKETMIND_TEST_SESSION"] = UUID().uuidString
+        return app
     }
 }

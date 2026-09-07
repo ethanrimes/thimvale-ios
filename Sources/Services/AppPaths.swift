@@ -2,13 +2,27 @@ import Foundation
 import Security
 
 enum AppPaths {
+    // Simulator regression runs must never change the user's library or credentials.
+    static var testSession: String? {
+        #if DEBUG && targetEnvironment(simulator)
+        return ProcessInfo.processInfo.environment["POCKETMIND_TEST_SESSION"].flatMap(UUID.init(uuidString:))?.uuidString
+        #else
+        return nil
+        #endif
+    }
+    static let preferences: UserDefaults = testSession.flatMap { UserDefaults(suiteName: "com.ethanrimes.pocketmind.tests." + $0) } ?? .standard
     static var root: URL {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("PocketMind", isDirectory: true)
+        let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        if let testSession { return support.appendingPathComponent("PocketMindTests", isDirectory: true).appendingPathComponent(testSession, isDirectory: true) }
+        return support.appendingPathComponent("PocketMind", isDirectory: true)
     }
     static var models: URL { root.appendingPathComponent("Models", isDirectory: true) }
     static var archives: URL { root.appendingPathComponent("Archives", isDirectory: true) }
     static var staging: URL { root.appendingPathComponent("Transfers", isDirectory: true) }
-    static var exports: URL { FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Exports", isDirectory: true) }
+    static var exports: URL {
+        if testSession != nil { return root.appendingPathComponent("Exports", isDirectory: true) }
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Exports", isDirectory: true)
+    }
 
     static func prepare() throws {
         for var directory in [root, models, archives, staging, exports] {
@@ -28,14 +42,15 @@ enum AppPaths {
 }
 
 enum Keychain {
+    private static var service: String { "com.ethanrimes.pocketmind" + (AppPaths.testSession.map { ".tests." + $0 } ?? "") }
     static func read(_ account: String) -> String {
-        let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: "com.ethanrimes.pocketmind", kSecAttrAccount as String: account, kSecReturnData as String: true]
+        let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: service, kSecAttrAccount as String: account, kSecReturnData as String: true]
         var value: CFTypeRef?
         guard SecItemCopyMatching(query as CFDictionary, &value) == errSecSuccess, let data = value as? Data else { return "" }
         return String(decoding: data, as: UTF8.self)
     }
     static func save(_ value: String, account: String) throws {
-        let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: "com.ethanrimes.pocketmind", kSecAttrAccount as String: account]
+        let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: service, kSecAttrAccount as String: account]
         SecItemDelete(query as CFDictionary)
         guard !value.isEmpty else { return }
         var item = query

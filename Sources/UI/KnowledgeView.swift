@@ -2,10 +2,19 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct KnowledgeView: View {
+    private enum ImportKind {
+        case files, folder, archive
+        var contentTypes: [UTType] {
+            switch self {
+            case .files: [.plainText, .pdf, .commaSeparatedText, .json, .html, .data]
+            case .folder: [.folder]
+            case .archive: [.data]
+            }
+        }
+    }
     @Bindable var state: AppState
-    @State private var importingFiles = false
-    @State private var importingFolder = false
-    @State private var importingArchive = false
+    @State private var importKind = ImportKind.files
+    @State private var showImporter = false
     @State private var showWikipedia = false
     @State private var query = ""
     @State private var results: [Citation] = []
@@ -41,8 +50,8 @@ struct KnowledgeView: View {
                         }
                     }.buttonStyle(.plain).accessibilityIdentifier("exploreWikipedia")
                     HStack(spacing: 12) {
-                        Button { importingFiles = true } label: { Label("Add files", systemImage: "doc.badge.plus") }.buttonStyle(PrimaryButton())
-                        Button { importingFolder = true } label: { Label("Add folder", systemImage: "folder.badge.plus") }.buttonStyle(PrimaryButton())
+                        Button { importKind = .files; showImporter = true } label: { Label("Add files", systemImage: "doc.badge.plus") }.buttonStyle(PrimaryButton())
+                        Button { importKind = .folder; showImporter = true } label: { Label("Add folder", systemImage: "folder.badge.plus") }.buttonStyle(PrimaryButton())
                     }.disabled(state.importing)
                     if state.importing {
                         Card { VStack(alignment: .leading, spacing: 12) { ProgressView(state.importStatus).font(.caption); Button("Stop indexing") { state.cancelImport() }.font(.caption) } }
@@ -87,18 +96,13 @@ struct KnowledgeView: View {
                             Button { deletingDocument = document } label: { Image(systemName: "trash").font(.caption) }.accessibilityLabel("Delete \(document.title)").disabled(state.importing || state.isGenerating)
                         }.padding(16).background(Palette.surface, in: RoundedRectangle(cornerRadius: 16))
                     }
-                    Button { importingArchive = true } label: { Label("Import an existing ZIM archive", systemImage: "square.and.arrow.down").font(.subheadline) }.disabled(state.importing)
+                    Button { importKind = .archive; showImporter = true } label: { Label("Import an existing ZIM archive", systemImage: "square.and.arrow.down").font(.subheadline) }.disabled(state.importing)
                 }.padding(22)
             }.background(Palette.background).navigationTitle("Knowledge").navigationBarTitleDisplayMode(.inline)
                 .task { await state.refreshKnowledge() }
                 .sheet(isPresented: $showWikipedia) { WikipediaPacksView(state: state) }
                 .sheet(item: $citation) { CitationView(citation: $0) }
-                .fileImporter(isPresented: $importingFiles, allowedContentTypes: [.plainText, .pdf, .commaSeparatedText, .json, .html, .data], allowsMultipleSelection: true) { result in handleImport(result) }
-                .fileImporter(isPresented: $importingFolder, allowedContentTypes: [.folder]) { result in handleImport(result.map { [$0] }) }
-                .fileImporter(isPresented: $importingArchive, allowedContentTypes: [.data]) { result in
-                    if case .success(let url) = result { Task { await state.importArchive(url) } }
-                    else if case .failure(let error) = result { state.error = error.localizedDescription }
-                }
+                .fileImporter(isPresented: $showImporter, allowedContentTypes: importKind.contentTypes, allowsMultipleSelection: importKind == .files, onCompletion: handleImport)
                 .confirmationDialog("Remove this document from the knowledge index? The original file stays in Files.", isPresented: Binding(get: { deletingDocument != nil }, set: { if !$0 { deletingDocument = nil } }), titleVisibility: .visible) {
                     Button("Remove document", role: .destructive) { if let doc = deletingDocument { Task { await state.removeDocument(doc.id) } }; deletingDocument = nil }
                 }
@@ -111,7 +115,13 @@ struct KnowledgeView: View {
         Card { VStack(alignment: .leading, spacing: 10) { Image(systemName: icon).foregroundStyle(Palette.accent); Text(value).font(.title2.weight(.medium)); Text(label).font(.caption).foregroundStyle(Palette.muted) } }
     }
     private func handleImport(_ result: Result<[URL], Error>) {
-        switch result { case .success(let urls): state.importKnowledge(urls); case .failure(let error): state.error = error.localizedDescription }
+        switch result {
+        case .success(let urls):
+            if importKind == .archive {
+                if let url = urls.first { Task { await state.importArchive(url) } }
+            } else { state.importKnowledge(urls) }
+        case .failure(let error): state.error = error.localizedDescription
+        }
     }
     private func search() {
         guard !searching, !query.isEmpty else { return }

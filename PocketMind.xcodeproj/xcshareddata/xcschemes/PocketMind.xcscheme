@@ -70,6 +70,11 @@
             value = "1"
             isEnabled = "YES">
          </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "POCKETMIND_TEST_SESSION"
+            value = "83DFF56A-63CB-4B79-9CF1-4DE662F3A137"
+            isEnabled = "YES">
+         </EnvironmentVariable>
       </EnvironmentVariables>
    </TestAction>
    <LaunchAction
