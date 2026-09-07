@@ -43,8 +43,15 @@ struct DownloadJob: Codable, Identifiable {
                 }
                 for i in self.jobs.indices where self.jobs[i].state == .downloading || self.jobs[i].state == .validating {
                     if self.tasks[self.jobs[i].id] == nil {
-                        self.jobs[i].state = .paused
-                        self.jobs[i].error = "Tap Resume to continue this transfer."
+                        let id = self.jobs[i].id
+                        let staged = AppPaths.staging.appendingPathComponent(id + ".download")
+                        if FileManager.default.fileExists(atPath: staged.path) {
+                            self.jobs[i].state = .validating
+                            Task { await self.finish(id, staged: staged) }
+                        } else {
+                            self.jobs[i].state = .paused
+                            self.jobs[i].error = "Tap Resume to continue this transfer."
+                        }
                     }
                 }
                 self.persist()
@@ -61,6 +68,12 @@ struct DownloadJob: Codable, Identifiable {
     }
     func resume(_ id: String) {
         guard let index = jobs.firstIndex(where: { $0.id == id }), tasks[id] == nil else { return }
+        let staged = AppPaths.staging.appendingPathComponent(id + ".download")
+        if FileManager.default.fileExists(atPath: staged.path) {
+            jobs[index].state = .validating
+            Task { await finish(id, staged: staged) }
+            return
+        }
         jobs[index].state = .downloading; jobs[index].error = nil
         let resumeURL = AppPaths.staging.appendingPathComponent(id + ".resume")
         let task: URLSessionDownloadTask
@@ -132,7 +145,12 @@ struct DownloadJob: Codable, Identifiable {
             jobs[index].received = job.expectedBytes
             persist()
             onReady?(jobs[index])
-        } catch { fail(id, error: error) }
+        } catch {
+            // A rejected staging file must not be retried as though it were a complete valid transfer.
+            try? FileManager.default.removeItem(at: staged)
+            try? FileManager.default.removeItem(at: AppPaths.staging.appendingPathComponent(id + ".resume"))
+            fail(id, error: error)
+        }
     }
     private func fail(_ id: String, error: Error) {
         if let i = jobs.firstIndex(where: { $0.id == id }) { jobs[i].state = .failed; jobs[i].error = error.localizedDescription }

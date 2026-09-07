@@ -1,0 +1,13 @@
+PocketMind is GPL-3.0-or-later. Copyright 2026 PocketMind contributors.
+
+llama.cpp (b10830), MIT. https://github.com/ggml-org/llama.cpp
+minja (021c229), MIT. Copyright Google LLC. https://github.com/google/minja
+nlohmann/json (3.11.3), MIT. Copyright Niels Lohmann. https://github.com/nlohmann/json
+SwiftSoup (2.8.8), MIT. Copyright Jonathan Hedley and the SwiftSoup contributors. https://github.com/scinfu/SwiftSoup
+CoreKiwix (14.2.1-2) includes libkiwix (GPL-3.0-or-later), libzim (GPL-2.0-or-later), and their dependencies. Corresponding source and build recipes: https://github.com/kiwix/kiwix-build and https://download.kiwix.org/release/
+
+Wikipedia content is created by Wikipedia contributors and separately licensed under CC BY-SA (see each article's license and history). Kiwix/openZIM produces the compressed archives. Article titles, archive snapshots, source URLs, and original passages are retained in citations. Imported documents remain the property of their owners.
+
+Model weights are not bundled. Each model has its own license; read its linked model card before downloading. Some open-weight models are not OSI-approved open source. PocketMind is not affiliated with model publishers, Hugging Face, Wikimedia, Kiwix, or Brave.
+
+The full third-party license texts are in the repository's LICENSES directory. This app is provided without warranty.

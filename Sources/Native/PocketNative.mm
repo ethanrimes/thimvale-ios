@@ -49,7 +49,7 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
         llama_log_set([](ggml_log_level, const char *, void *) {}, nullptr);
     });
     auto parameters = llama_model_default_params();
-    parameters.use_mmap = true;
+    parameters.load_mode = LLAMA_LOAD_MODE_MMAP;
     parameters.n_gpu_layers = 99;
 #if TARGET_OS_SIMULATOR
     parameters.n_gpu_layers = 0;
@@ -124,7 +124,7 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
         }
         llama_sampler *sampler = llama_sampler_chain_init(llama_sampler_chain_default_params());
         struct SamplerGuard { llama_sampler *s; ~SamplerGuard() { llama_sampler_free(s); } } samplerGuard{sampler};
-        llama_sampler_chain_add(sampler, llama_sampler_init_penalties(64, 1.1f, 0, 0));
+        llama_sampler_chain_add(sampler, llama_sampler_init_penalties(llama_vocab_n_tokens(vocab), 64, 1.1f, 0, 0));
         llama_sampler_chain_add(sampler, llama_sampler_init_top_k(40));
         llama_sampler_chain_add(sampler, llama_sampler_init_top_p(0.9f, 1));
         llama_sampler_chain_add(sampler, llama_sampler_init_temp(std::max(0.05f, temperature)));

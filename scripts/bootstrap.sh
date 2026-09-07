@@ -21,4 +21,5 @@ done
 if [ ! -f Vendor/nlohmann/json.hpp ]; then
   curl --fail --location --retry 3 https://raw.githubusercontent.com/nlohmann/json/v3.11.3/single_include/nlohmann/json.hpp -o Vendor/nlohmann/json.hpp
 fi
+./scripts/build-simulator-runtime.sh
 if [ -f project.yml ]; then xcodegen generate; fi
