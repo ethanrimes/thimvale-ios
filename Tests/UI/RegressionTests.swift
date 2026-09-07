@@ -26,7 +26,7 @@ import XCTest
         XCTAssertTrue(app.alerts["Library update"].waitForExistence(timeout: 5))
         app.alerts.buttons["OK"].tap()
         XCTAssertTrue(app.textFields["modelSearch"].exists)
-        app.tabBars.buttons["Chat"].tap()
+        app.selectMainTab("Chat")
         XCTAssertEqual(input.value as? String, "Explain how a bowline works.")
     }
 
@@ -42,25 +42,25 @@ import XCTest
 
     func testKnowledgeSearchDismissesKeyboard() throws {
         let app = try makeApp()
-        app.tabBars.buttons["Knowledge"].tap()
+        app.selectMainTab("Knowledge")
         let search = app.textFields["knowledgeSearch"]
         reveal(search, in: app)
         search.tap(); search.typeText("bowline\n")
         XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["No matching passages. Try a specific term or import more sources."].waitForExistence(timeout: 5))
-        app.tabBars.buttons["Chat"].tap()
+        app.selectMainTab("Chat")
         XCTAssertTrue(app.buttons["modelPicker"].exists)
     }
 
     func testIndependentPermissionsSurviveRelaunch() throws {
         let app = try makeApp()
-        app.tabBars.buttons["Permissions"].tap()
+        app.selectMainTab("Permissions")
         let read = app.segmentedControls["permission_read_file"]
         reveal(read, in: app); read.buttons["Off"].tap()
         let write = app.segmentedControls["permission_write_file"]
         reveal(write, in: app); write.buttons["Allow"].tap()
         app.terminate(); app.launch()
-        app.tabBars.buttons["Permissions"].tap()
+        app.selectMainTab("Permissions")
         reveal(read, in: app); XCTAssertTrue(read.buttons["Off"].isSelected)
         reveal(write, in: app); XCTAssertTrue(write.buttons["Allow"].isSelected)
         let web = app.segmentedControls["permission_web_search"]
@@ -91,10 +91,10 @@ import XCTest
 
     func testImportPickersCancelWithoutError() throws {
         let app = try makeApp()
-        app.tabBars.buttons["Models"].tap()
+        app.selectMainTab("Models")
         app.buttons["Import GGUF model"].tap()
         dismissFiles(app)
-        app.tabBars.buttons["Knowledge"].tap()
+        app.selectMainTab("Knowledge")
         app.buttons["Add files"].tap(); dismissFiles(app)
         app.buttons["Add folder"].tap(); dismissFiles(app)
         let archive = app.buttons["Import an existing ZIM archive"]
@@ -105,7 +105,7 @@ import XCTest
 
     func testInvalidRepositoryCanBeDismissedAndRetried() throws {
         let app = try makeApp()
-        app.tabBars.buttons["Models"].tap()
+        app.selectMainTab("Models")
         app.segmentedControls.buttons["Downloaded"].tap()
         app.buttons["Open a Hugging Face repository"].tap()
         app.alerts.textFields.firstMatch.typeText("invalid")
@@ -114,7 +114,7 @@ import XCTest
         app.buttons["Try again"].tap()
         XCTAssertTrue(app.staticTexts["Enter a repository in owner/model format."].waitForExistence(timeout: 5))
         app.buttons["Done"].tap()
-        app.tabBars.buttons["Chat"].tap()
+        app.selectMainTab("Chat")
         XCTAssertTrue(app.buttons["modelPicker"].exists)
     }
 
@@ -141,7 +141,7 @@ import XCTest
 
     func testOfflineSearchAndCitationInspector() throws {
         let app = try makeApp(fixtures: true)
-        app.tabBars.buttons["Knowledge"].tap()
+        app.selectMainTab("Knowledge")
         let search = app.textFields["knowledgeSearch"]
         reveal(search, in: app)
         search.tap(); search.typeText("bowline\n")
@@ -157,9 +157,9 @@ import XCTest
 
     func testWorkKnowledgeApprovalAndDenial() throws {
         let app = try makeApp(fixtures: true)
-        app.tabBars.buttons["Permissions"].tap()
+        app.selectMainTab("Permissions")
         app.segmentedControls["permission_search_knowledge"].buttons["Ask"].tap()
-        app.tabBars.buttons["Chat"].tap()
+        app.selectMainTab("Chat")
         app.segmentedControls["modePicker"].buttons["Work"].tap()
         let input = app.textFields["messageInput"]
         input.tap(); input.typeText("What is a bowline?")
@@ -214,7 +214,7 @@ import XCTest
 
     func testDownloadedModelSelectionAndDeletion() throws {
         let app = try makeApp(fixtures: true)
-        app.tabBars.buttons["Models"].tap()
+        app.selectMainTab("Models")
         app.segmentedControls.buttons["Downloaded"].tap()
         app.buttons.containing(.staticText, identifier: "smoke-model").firstMatch.tap()
         XCTAssertTrue(app.buttons["Use this model"].waitForExistence(timeout: 5))
@@ -226,21 +226,21 @@ import XCTest
         XCTAssertTrue(app.buttons["Delete model"].waitForExistence(timeout: 5))
         app.buttons["Delete model"].tap()
         XCTAssertTrue(app.staticTexts["No models found"].waitForExistence(timeout: 5))
-        app.tabBars.buttons["Chat"].tap()
+        app.selectMainTab("Chat")
         XCTAssertTrue(app.buttons["modelPicker"].label.contains("Pick a model"))
     }
 
     func testLiveModelDetailsAndWikipediaCatalog() throws {
         guard ProcessInfo.processInfo.environment["THIMVALE_NETWORK_TESTS"] == "1" else { throw XCTSkip("Network tests disabled") }
         let app = try makeApp()
-        app.tabBars.buttons["Models"].tap()
+        app.selectMainTab("Models")
         let search = app.textFields["modelSearch"]
         search.tap(); search.typeText("230M\n")
         app.buttons.containing(.staticText, identifier: "Liquid LFM 2.5").firstMatch.tap()
         XCTAssertTrue(app.staticTexts["Download size"].waitForExistence(timeout: 40))
         XCTAssertTrue(app.buttons.containing(NSPredicate(format: "label BEGINSWITH 'Download ·'")).firstMatch.exists)
         app.buttons["Done"].tap()
-        app.tabBars.buttons["Knowledge"].tap()
+        app.selectMainTab("Knowledge")
         app.buttons["exploreWikipedia"].tap()
         XCTAssertTrue(app.staticTexts["English Wikipedia"].firstMatch.waitForExistence(timeout: 40))
         XCTAssertFalse(app.buttons["Try again"].exists)
