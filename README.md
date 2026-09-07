@@ -1,4 +1,4 @@
-# PocketMind
+# Thimvale
 
 A native iPhone workspace for local language models, permission-controlled agents, and offline knowledge.
 
@@ -18,14 +18,16 @@ Requires an Apple Silicon Mac, Xcode 26.1 or later, the iOS simulator runtime, C
 ```sh
 brew install xcodegen cmake
 ./scripts/bootstrap.sh
-open PocketMind.xcodeproj
+open Thimvale.xcodeproj
 ```
 
 Select your Apple development team in Signing & Capabilities to install on a physical iPhone. The checked-in project contains no developer credentials. Simulator builds use CPU inference; devices use Metal. Simulator downloads use a foreground URLSession because some runtimes do not provide the background transfer daemon. Device builds use a background session and persist resumable transfers.
 
 The app targets iOS 18+. There is no hosted inference service, account requirement, or analytics. Models and knowledge archives download only when requested. Network access is needed for downloads and the optional web tools.
 
-With an iPhone simulator already booted, `./scripts/run-simulator.sh` builds, installs, and launches this exact app. Pass its simulator UUID if several are running. PocketMind is native Swift/C++; it does not use React Native, Expo, Metro, or a JavaScript bundle. A red “No script URL provided” screen belongs to a different app. The iOS status-bar “◀ PocketMind” label is a return button, not the foreground app's name.
+With an iPhone simulator already booted, `./scripts/run-simulator.sh` builds, installs, and launches this exact app. Pass its simulator UUID if several are running. Thimvale is native Swift/C++; it does not use React Native, Expo, Metro, or a JavaScript bundle. See the [simulator incident notes](docs/simulator-regressions.md) for the earlier red-screen report.
+
+Thimvale was previously named PocketMind. The public name, project, and repository have changed; the bundle identifier, storage directory, Keychain service, and background-download identifier deliberately retain their original values so existing installations keep their data. See the dated [name screening and rename notes](docs/name-screening.md).
 
 ## Use
 
@@ -43,16 +45,16 @@ Web search requires a user-provided Brave Search API key. Queries go directly to
 swift test
 python3 scripts/check-catalog.py
 ./scripts/fetch-test-assets.sh  # about 172 MB; test weights and a real Wikipedia archive
-xcodebuild -project PocketMind.xcodeproj -scheme PocketMind \
+xcodebuild -project Thimvale.xcodeproj -scheme Thimvale \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
   CODE_SIGNING_ALLOWED=NO test
 ```
 
-Tests cover capability denial, approval and revocation, path traversal, symlinks, overwrite refusal, compression, index updates/deletion, source provenance, real GGUF generation/cancellation, original Wikipedia article retrieval, upstream metadata, downloads and interrupted verification, plus UI navigation and model filtering. The test-assets script pins SHA-256 digests. Large files are excluded from Git. Set the scheme's `POCKETMIND_NETWORK_TESTS` to `0` for offline test runs; local inference and archive tests still run when fixtures are present.
+Tests cover capability denial, approval and revocation, path traversal, symlinks, overwrite refusal, compression, index updates/deletion, source provenance, real GGUF generation/cancellation, original Wikipedia article retrieval, upstream metadata, downloads and interrupted verification, plus UI navigation and model filtering. The test-assets script pins SHA-256 digests. Large files are excluded from Git. Set the scheme's `THIMVALE_NETWORK_TESTS` to `0` for offline test runs; local inference and archive tests still run when fixtures are present.
 
 GitHub Actions builds the app, fetches the pinned test assets, and runs core, native integration, and simulator UI tests on each push. Test result bundles are saved as workflow artifacts. XcodeGen's `project.yml` is the project source of truth; regenerate the checked-in project after changing it.
 
-Simulator UI regressions use a fresh `POCKETMIND_TEST_SESSION` UUID for separate app storage, preferences, and Keychain entries. They never reset the ordinary app library. Real chat and offline-search UI cases import the pinned fixtures through the app's normal import services. Test fixture loading is compiled out of physical-device and Release builds.
+Simulator UI regressions use a fresh `THIMVALE_TEST_SESSION` UUID for separate app storage, preferences, and Keychain entries. They never reset the ordinary app library. Real chat and offline-search UI cases import the pinned fixtures through the app's normal import services. Test fixture loading is compiled out of physical-device and Release builds.
 
 ## Implementation limits
 
@@ -73,4 +75,4 @@ See [architecture](docs/architecture.md) for storage and capability boundaries, 
 - [libzim / Kiwix](https://github.com/kiwix/apple): compressed, indexed Wikipedia archives (GPL-3.0 dependencies).
 - [Hugging Face Hub](https://huggingface.co/docs/hub/api): model discovery and downloads. Each model retains its own license; open weights do not necessarily mean OSI-approved open source.
 
-PocketMind source is GPL-3.0-or-later. Model weights and Wikipedia content are separately licensed.
+Thimvale source is GPL-3.0-or-later. Model weights and Wikipedia content are separately licensed.

@@ -15,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1D0CA2ECB46D2B4FDA80A257"
-               BuildableName = "PocketMind.app"
-               BlueprintName = "PocketMind"
-               ReferencedContainer = "container:PocketMind.xcodeproj">
+               BlueprintIdentifier = "8BAD18D7E2BDEE0CC3AF01C9"
+               BuildableName = "Thimvale.app"
+               BlueprintName = "Thimvale"
+               ReferencedContainer = "container:Thimvale.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1D0CA2ECB46D2B4FDA80A257"
-            BuildableName = "PocketMind.app"
-            BlueprintName = "PocketMind"
-            ReferencedContainer = "container:PocketMind.xcodeproj">
+            BlueprintIdentifier = "8BAD18D7E2BDEE0CC3AF01C9"
+            BuildableName = "Thimvale.app"
+            BlueprintName = "Thimvale"
+            ReferencedContainer = "container:Thimvale.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -44,10 +44,10 @@
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CE89CDE3E855F23AC6B62399"
-               BuildableName = "PocketMindIntegrationTests.xctest"
-               BlueprintName = "PocketMindIntegrationTests"
-               ReferencedContainer = "container:PocketMind.xcodeproj">
+               BlueprintIdentifier = "449914FA40E5E153716B3A42"
+               BuildableName = "ThimvaleIntegrationTests.xctest"
+               BlueprintName = "ThimvaleIntegrationTests"
+               ReferencedContainer = "container:Thimvale.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -55,10 +55,10 @@
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "977783F5F80AEF5A0CA38C05"
-               BuildableName = "PocketMindUITests.xctest"
-               BlueprintName = "PocketMindUITests"
-               ReferencedContainer = "container:PocketMind.xcodeproj">
+               BlueprintIdentifier = "EB0C2E14B88E144CC22623F5"
+               BuildableName = "ThimvaleUITests.xctest"
+               BlueprintName = "ThimvaleUITests"
+               ReferencedContainer = "container:Thimvale.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -66,12 +66,12 @@
       </CommandLineArguments>
       <EnvironmentVariables>
          <EnvironmentVariable
-            key = "POCKETMIND_NETWORK_TESTS"
+            key = "THIMVALE_NETWORK_TESTS"
             value = "1"
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
-            key = "POCKETMIND_TEST_SESSION"
+            key = "THIMVALE_TEST_SESSION"
             value = "83DFF56A-63CB-4B79-9CF1-4DE662F3A137"
             isEnabled = "YES">
          </EnvironmentVariable>
@@ -91,10 +91,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1D0CA2ECB46D2B4FDA80A257"
-            BuildableName = "PocketMind.app"
-            BlueprintName = "PocketMind"
-            ReferencedContainer = "container:PocketMind.xcodeproj">
+            BlueprintIdentifier = "8BAD18D7E2BDEE0CC3AF01C9"
+            BuildableName = "Thimvale.app"
+            BlueprintName = "Thimvale"
+            ReferencedContainer = "container:Thimvale.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -108,10 +108,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1D0CA2ECB46D2B4FDA80A257"
-            BuildableName = "PocketMind.app"
-            BlueprintName = "PocketMind"
-            ReferencedContainer = "container:PocketMind.xcodeproj">
+            BlueprintIdentifier = "8BAD18D7E2BDEE0CC3AF01C9"
+            BuildableName = "Thimvale.app"
+            BlueprintName = "Thimvale"
+            ReferencedContainer = "container:Thimvale.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

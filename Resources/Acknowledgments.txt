@@ -1,4 +1,4 @@
-PocketMind is GPL-3.0-or-later. Copyright 2026 PocketMind contributors.
+Thimvale is GPL-3.0-or-later. Copyright 2026 Thimvale contributors.
 
 llama.cpp (b10830), MIT. https://github.com/ggml-org/llama.cpp
 minja (021c229), MIT. Copyright Google LLC. https://github.com/google/minja
@@ -8,6 +8,6 @@ CoreKiwix (14.2.1-2) includes libkiwix (GPL-3.0-or-later), libzim (GPL-2.0-or-la
 
 Wikipedia content is created by Wikipedia contributors and separately licensed under CC BY-SA (see each article's license and history). Kiwix/openZIM produces the compressed archives. Article titles, archive snapshots, source URLs, and original passages are retained in citations. Imported documents remain the property of their owners.
 
-Model weights are not bundled. Each model has its own license; read its linked model card before downloading. Some open-weight models are not OSI-approved open source. PocketMind is not affiliated with model publishers, Hugging Face, Wikimedia, Kiwix, or Brave.
+Model weights are not bundled. Each model has its own license; read its linked model card before downloading. Some open-weight models are not OSI-approved open source. Thimvale is not affiliated with model publishers, Hugging Face, Wikimedia, Kiwix, or Brave.
 
 The full third-party license texts are in the repository's LICENSES directory. This app is provided without warranty.

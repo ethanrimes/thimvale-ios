@@ -1,7 +1,12 @@
 import XCTest
-@testable import PocketMind
+@testable import Thimvale
 
 final class NativeIntegrationTests: XCTestCase {
+    func testInstalledAppNameAndUpdateIdentity() {
+        XCTAssertEqual(Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String, AppIdentity.displayName)
+        XCTAssertEqual(Bundle.main.bundleIdentifier, AppIdentity.bundleIdentifier)
+    }
+
     private var projectRoot: URL { URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent() }
 
     @MainActor func testRejectedMessagesAreNotAcceptedOrAddedToHistory() throws {
@@ -138,7 +143,7 @@ final class NativeIntegrationTests: XCTestCase {
     }
 
     func testModelMetadataAndWikipediaCatalog() async throws {
-        guard ProcessInfo.processInfo.environment["POCKETMIND_NETWORK_TESTS"] == "1" else { throw XCTSkip("Set POCKETMIND_NETWORK_TESTS=1 to test upstream services.") }
+        guard ProcessInfo.processInfo.environment["THIMVALE_NETWORK_TESTS"] == "1" else { throw XCTSkip("Set THIMVALE_NETWORK_TESTS=1 to test upstream services.") }
         let hub = ModelHub()
         let (files, _) = try await hub.files(in: "LiquidAI/LFM2.5-230M-GGUF")
         XCTAssertTrue(files.contains { $0.path == "LFM2.5-230M-Q4_K_M.gguf" && $0.bytes > 100_000_000 && $0.sha256?.count == 64 })
@@ -151,7 +156,7 @@ final class NativeIntegrationTests: XCTestCase {
     }
 
     @MainActor func testModelDownloadAndValidationRecovery() async throws {
-        guard ProcessInfo.processInfo.environment["POCKETMIND_NETWORK_TESTS"] == "1" else { throw XCTSkip("Network tests are disabled.") }
+        guard ProcessInfo.processInfo.environment["THIMVALE_NETWORK_TESTS"] == "1" else { throw XCTSkip("Network tests are disabled.") }
         try AppPaths.prepare()
         let id = "integration-" + UUID().uuidString
         let ledger = id + ".json"

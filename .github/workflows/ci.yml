@@ -25,16 +25,16 @@ jobs:
       - name: Test permissions and retrieval
         run: swift test
       - name: Build iPhone app
-        run: xcodebuild -project PocketMind.xcodeproj -scheme PocketMind -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
+        run: xcodebuild -project Thimvale.xcodeproj -scheme Thimvale -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
       - name: Build simulator app
-        run: xcodebuild -project PocketMind.xcodeproj -scheme PocketMind -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+        run: xcodebuild -project Thimvale.xcodeproj -scheme Thimvale -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
       - name: Fetch real inference and Wikipedia fixtures
         run: ./scripts/fetch-test-assets.sh
       - name: Exercise simulator UI and native integration
         run: |
-          POCKETMIND_SIMULATOR_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; devices=[d for group in json.load(sys.stdin)["devices"].values() for d in group if d["name"].startswith("iPhone")]; print(devices[0]["udid"])')
-          xcodebuild test -project PocketMind.xcodeproj -scheme PocketMind \
-            -destination "platform=iOS Simulator,id=$POCKETMIND_SIMULATOR_ID" \
+          THIMVALE_SIMULATOR_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; devices=[d for group in json.load(sys.stdin)["devices"].values() for d in group if d["name"].startswith("iPhone")]; print(devices[0]["udid"])')
+          xcodebuild test -project Thimvale.xcodeproj -scheme Thimvale \
+            -destination "platform=iOS Simulator,id=$THIMVALE_SIMULATOR_ID" \
             -parallel-testing-enabled NO -resultBundlePath TestResults/CI.xcresult \
             CODE_SIGNING_ALLOWED=NO
       - uses: actions/upload-artifact@v4

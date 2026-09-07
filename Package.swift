@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "PocketMindCore",
+    name: "ThimvaleCore",
     platforms: [.macOS(.v14), .iOS(.v18)],
-    products: [.library(name: "PocketMindCore", targets: ["PocketMindCore"])],
+    products: [.library(name: "ThimvaleCore", targets: ["ThimvaleCore"])],
     targets: [
-        .target(name: "PocketMindCore", path: "Sources/Core", linkerSettings: [.linkedLibrary("sqlite3")]),
-        .testTarget(name: "PocketMindCoreTests", dependencies: ["PocketMindCore"], path: "Tests/Core")
+        .target(name: "ThimvaleCore", path: "Sources/Core", linkerSettings: [.linkedLibrary("sqlite3")]),
+        .testTarget(name: "ThimvaleCoreTests", dependencies: ["ThimvaleCore"], path: "Tests/Core")
     ],
     swiftLanguageModes: [.v5]
 )

@@ -83,7 +83,7 @@ struct RootView: View {
         .sheet(item: $state.approval, onDismiss: { state.approve(false) }) { request in
             ApprovalView(state: state, request: request).interactiveDismissDisabled()
         }
-        .alert("PocketMind", isPresented: Binding(get: { state.error != nil }, set: { if !$0 { state.error = nil } })) {
+        .alert(AppIdentity.displayName, isPresented: Binding(get: { state.error != nil }, set: { if !$0 { state.error = nil } })) {
             Button("OK") { state.error = nil }
         } message: { Text(state.error ?? "") }
         .alert("Library update", isPresented: Binding(get: { state.notice != nil }, set: { if !$0 { state.notice = nil } })) {

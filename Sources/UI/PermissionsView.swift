@@ -114,8 +114,8 @@ struct SettingsView: View {
                     Text("Conversations, models, and knowledge stay in app storage and are excluded from backups. Deleting the app removes them. Share important answers and export files you want to keep.").font(.caption).foregroundStyle(Palette.muted)
                     Text("Text models only. Generation stops when the app enters the background. Model performance and tool use vary; review source passages and proposed writes.").font(.caption).foregroundStyle(Palette.muted)
                 }
-                Section("PocketMind 0.1") {
-                    Link("Source code", destination: URL(string: "https://github.com/ethanrimes/pocketmind-ios")!)
+                Section("\(AppIdentity.displayName) 0.1") {
+                    Link("Source code", destination: AppIdentity.repositoryURL)
                     NavigationLink("Open-source acknowledgments") { ScrollView { Text(acknowledgments).font(.caption).padding() }.navigationTitle("Acknowledgments") }
                 }
             }.navigationTitle("Settings").navigationBarTitleDisplayMode(.inline)

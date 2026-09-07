@@ -18,9 +18,11 @@ The exploratory tests also exposed test issues: a math-answer assertion expected
 
 ## Reproducing the checks
 
+The app has since been renamed **Thimvale**. The incident above retains its original app names and bundle identifiers.
+
 ```sh
 ./scripts/fetch-test-assets.sh
-xcodebuild test -project PocketMind.xcodeproj -scheme PocketMind \
+xcodebuild test -project Thimvale.xcodeproj -scheme Thimvale \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
   -resultBundlePath TestResults/Simulator.xcresult CODE_SIGNING_ALLOWED=NO
 ```

@@ -6,7 +6,7 @@ extension AppState {
     /// This entry point is absent from device and Release builds.
     func prepareUITestFixtures() async throws {
         guard AppPaths.testSession != nil,
-              let path = ProcessInfo.processInfo.environment["POCKETMIND_UI_FIXTURES"] else { return }
+              let path = ProcessInfo.processInfo.environment["THIMVALE_UI_FIXTURES"] else { return }
         let marker = AppPaths.root.appendingPathComponent("fixtures-ready")
         guard !FileManager.default.fileExists(atPath: marker.path) else { return }
         let source = URL(fileURLWithPath: path, isDirectory: true)
