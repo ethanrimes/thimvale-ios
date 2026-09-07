@@ -22,6 +22,11 @@ targets:
     sources:
       - Sources
       - Resources
+      - path: LICENSES
+        buildPhase: resources
+        type: folder
+      - path: LICENSE
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ethanrimes.pocketmind

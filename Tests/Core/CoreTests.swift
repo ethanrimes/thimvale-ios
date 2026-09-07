@@ -84,6 +84,18 @@ final class CoreTests: XCTestCase {
         XCTAssertThrowsError(try budget.consume(ToolCall(tool: .readFile, path: "a")))
     }
 
+    func testCitationNumbersPreserveSourceIdentityAcrossToolCalls() {
+        let first = Citation(id: "stable-one", title: "One", location: "a.txt", excerpt: "First source")
+        let second = Citation(id: "stable-two", title: "Two", location: "b.txt", excerpt: "Second source")
+        var registry = CitationRegistry()
+        XCTAssertEqual(registry.register([first]).first?.id, "1")
+        let repeated = registry.register([second, first])
+        XCTAssertEqual(repeated.map(\.id), ["2", "1"])
+        XCTAssertEqual(registry.citations.count, 2)
+        XCTAssertEqual(registry.citations[0].excerpt, "First source")
+        XCTAssertEqual(CitationValidator.cited(in: "Answer [2]. Unknown [9].", from: registry.citations).map(\.title), ["Two"])
+    }
+
     func testFileValidationAndChunkBounds() throws {
         let url = try temporaryDirectory().appendingPathComponent("model.gguf")
         try Data("<html>error</html>".utf8).write(to: url)
