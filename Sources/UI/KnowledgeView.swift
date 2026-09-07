@@ -19,9 +19,9 @@ struct KnowledgeView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 10) {
-                        Eyebrow(text: "A library that travels with you")
-                        Text("Know more.\nGo anywhere.").font(.system(size: 36, design: .serif)).tracking(-1)
-                        Text("Turn your files into answers. Keep a little of the world's knowledge in your pocket.").font(.subheadline).foregroundStyle(Palette.muted).lineSpacing(4)
+                        Eyebrow(text: "Local search")
+                        Text("Offline knowledge").font(.system(size: 36, design: .serif)).tracking(-1)
+                        Text("Import files or download Wikipedia for local search.").font(.subheadline).foregroundStyle(Palette.muted).lineSpacing(4)
                     }
                     HStack(spacing: 12) {
                         stat("\(state.documents.count)", "documents", "doc.text")
@@ -35,8 +35,8 @@ struct KnowledgeView: View {
                                     Spacer()
                                     Text("OFFLINE EDITIONS").font(.system(size: 9, weight: .medium, design: .monospaced)).tracking(1).padding(8).background(Palette.tint, in: Capsule()).foregroundStyle(Palette.accent)
                                 }
-                                VStack(alignment: .leading, spacing: 7) { Text("Wikipedia, without the Wi-Fi.").font(.title3.weight(.medium)).foregroundStyle(Palette.ink); Text("From a compact collection to the full English encyclopedia. Search articles and cite the original text.").font(.subheadline).foregroundStyle(Palette.muted).lineSpacing(3) }
-                                HStack { Text("Explore knowledge packs").font(.subheadline.weight(.semibold)); Spacer(); Image(systemName: "arrow.right") }.foregroundStyle(Palette.accent)
+                                VStack(alignment: .leading, spacing: 7) { Text("Wikipedia").font(.title3.weight(.medium)).foregroundStyle(Palette.ink); Text("Download articles for offline search and answers with sources.").font(.subheadline).foregroundStyle(Palette.muted).lineSpacing(3) }
+                                HStack { Text("Browse Wikipedia downloads").font(.subheadline.weight(.semibold)); Spacer(); Image(systemName: "arrow.right") }.foregroundStyle(Palette.accent)
                             }
                         }
                     }.buttonStyle(.plain).accessibilityIdentifier("exploreWikipedia")
@@ -50,8 +50,8 @@ struct KnowledgeView: View {
                     ForEach(state.activeJobs.filter { $0.kind == .wikipedia }) { job in DownloadRow(center: state.downloads, job: job) }
                     Card {
                         VStack(alignment: .leading, spacing: 12) {
-                            Label(state.semanticSearchAvailable ? "Hybrid search is ready" : "Keyword search is ready", systemImage: "point.3.connected.trianglepath.dotted").font(.subheadline.weight(.medium))
-                            Text(state.semanticSearchAvailable ? "Compressed text, a keyword index, and tiny 1-bit semantic vectors. Everything is searched on this iPhone." : "Your device's English sentence embedding resource isn't available. Offline keyword search still works; semantic reranking activates when the OS resource is present.").font(.caption).foregroundStyle(Palette.muted).lineSpacing(3)
+                            Label(state.semanticSearchAvailable ? "Search by keywords and meaning" : "Keyword search", systemImage: "point.3.connected.trianglepath.dotted").font(.subheadline.weight(.medium))
+                            Text(state.semanticSearchAvailable ? "Indexed text is compressed and searched on this iPhone." : "Semantic search isn't available on this device. Keyword search works offline.").font(.caption).foregroundStyle(Palette.muted).lineSpacing(3)
                         }
                     }
                     HStack {
@@ -70,7 +70,7 @@ struct KnowledgeView: View {
                         }
                     }
                     SectionHeading(title: "Your library")
-                    if state.documents.isEmpty, state.archiveFiles.isEmpty { Text("Add text, Markdown, HTML, CSV, JSON, or a PDF with selectable text. Folder imports make a private snapshot; reimport when the originals change.").font(.subheadline).foregroundStyle(Palette.muted).lineSpacing(4) }
+                    if state.documents.isEmpty, state.archiveFiles.isEmpty { Text("Supports text, Markdown, HTML, CSV, JSON, and PDFs with selectable text. Imported files are copies. Reimport them to update the index.").font(.subheadline).foregroundStyle(Palette.muted).lineSpacing(4) }
                     ForEach(state.archiveFiles, id: \.self) { file in
                         HStack(spacing: 12) {
                             Image(systemName: "globe.europe.africa").foregroundStyle(Palette.accent)
@@ -136,8 +136,8 @@ struct WikipediaPacksView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
-                    Text("The world,\nin your pocket.").font(.system(size: 36, design: .serif)).tracking(-1)
-                    Text("Choose a collection that fits your trip and your storage. Mini editions use abridged articles. Full text editions keep complete articles without pictures.").font(.subheadline).foregroundStyle(Palette.muted).lineSpacing(4)
+                    Text("Download Wikipedia").font(.system(size: 36, design: .serif)).tracking(-1)
+                    Text("Mini editions contain abridged articles. Full text editions contain complete articles without pictures.").font(.subheadline).foregroundStyle(Palette.muted).lineSpacing(4)
                     if loading { ProgressView("Checking the Kiwix catalog…").frame(maxWidth: .infinity) }
                     if let error { Text(error).font(.subheadline).foregroundStyle(.red); Button("Try again") { Task { await load() } } }
                     ForEach(packs) { pack in

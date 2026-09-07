@@ -30,7 +30,7 @@ final class NavigationTests: XCTestCase {
         let app = XCUIApplication(); app.launch()
         XCTAssertTrue(app.segmentedControls["modePicker"].waitForExistence(timeout: 10))
         app.segmentedControls["modePicker"].buttons["Work"].tap()
-        XCTAssertTrue(app.staticTexts["Your knowledge.\nReady for work."].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Work with your files."].waitForExistence(timeout: 5))
         app.segmentedControls["modePicker"].buttons["Chat"].tap()
     }
 }

@@ -1,0 +1,30 @@
+name: iOS
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build tools
+        run: brew install xcodegen cmake
+      - uses: actions/cache@v4
+        with:
+          path: Vendor
+          key: native-b10830-kiwix14212-${{ runner.arch }}-${{ hashFiles('scripts/bootstrap.sh', 'scripts/build-simulator-runtime.sh') }}
+      - name: Bootstrap native libraries
+        run: ./scripts/bootstrap.sh
+      - name: Test permissions and retrieval
+        run: swift test
+      - name: Build iPhone app
+        run: xcodebuild -project PocketMind.xcodeproj -scheme PocketMind -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
+      - name: Build simulator app
+        run: xcodebuild -project PocketMind.xcodeproj -scheme PocketMind -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build

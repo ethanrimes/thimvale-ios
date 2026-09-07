@@ -117,7 +117,11 @@ actor KnowledgeService {
             try Task.checkCancellation()
             if archives[filename] == nil { archives[filename] = try PMArchive(path: AppPaths.archives.appendingPathComponent(filename).path) }
             guard let archive = archives[filename] else { continue }
-            let articles = try archive.search(query, limit: 6)
+            var articles = try archive.search(query, limit: 6)
+            if articles.isEmpty {
+                let keywords = KnowledgeStore.lexicalQuery(query)
+                if !keywords.isEmpty { articles = try archive.search(keywords, limit: 6) }
+            }
             for article in articles {
                 let title = article["title"] ?? "Wikipedia"
                 let text = try Self.plainText(article["html"] ?? "")
