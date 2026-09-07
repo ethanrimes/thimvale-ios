@@ -5,10 +5,11 @@ Environment: Apple Silicon Mac, Xcode 26.1.1, Swift 6.2.1, iPhone 17 Pro simulat
 | Check | Result |
 | --- | --- |
 | Swift core suite | 11 tests passed |
-| Native integration suite | 12 tests passed in full pass; additional built-plist orientation regression passed separately |
+| Native integration suite | 13 tests passed in the signed cloud run |
 | UI suite | 16 tests passed |
 | Release configuration suite | 14 tests passed, including profile-ID case preservation and archive metadata |
 | Unsigned iPhone Release archive | Passed; app identity and privacy manifest checked |
+| Signed cloud archive and upload | Build 12.1 uploaded successfully; Apple processing is separate |
 | Workflow and shell lint | Actionlint and ShellCheck passed |
 | Curated Hugging Face repository validation | All 36 contain single-file GGUFs at their preferred quantization |
 | Visual inspection | Chat, Models, 4B/Higher RAM filters, Knowledge, and Permissions inspected; screenshots included |
@@ -31,6 +32,8 @@ Cloud run [34081016795](https://github.com/ethanrimes/thimvale-ios/actions/runs/
 
 A subsequent archive audit found a missing iPad portrait-upside-down declaration. The app supports iPad multitasking, so its generated plist now includes all four iPad orientations. The simulator regression reads the raw built plist (Bundle's ordinary lookup resolves orientation variants for the current iPhone) and passed in `TestResults/Thimvale-orientations-fixed.xcresult`. Three additional release tests check archive identity, build number, and complete iPad orientations; the release suite now has 14 passing tests. Run 34082479013 was intentionally stopped during simulator tests, before signing, to include this correction in the next full cloud run.
 
+Cloud run [34083008401](https://github.com/ethanrimes/thimvale-ios/actions/runs/34083008401), commit `5487460`, then passed all 54 tests (11 core, 14 release configuration, 13 native, 16 UI), created and verified the distribution-signed archive, and uploaded **Thimvale 0.1.0 (12.1)** to App Store Connect. Xcode reported `EXPORT SUCCEEDED` at September 6, 2026, 9:49 p.m. Pacific. Apple processing and export compliance are separate from this upload result. The upload emitted a non-fatal missing-dSYM warning for the upstream prebuilt `llama.framework`; its native crash symbolication is limited until matching upstream symbols are available. No symbols were fabricated and the warning was not suppressed.
+
 The corrected unsigned Release archive `TestResults/Thimvale-submission.xcarchive` passed the same metadata validator used before cloud upload. A six-test navigation/filter/Chat–Work/relaunch/permission smoke pass then succeeded on both iPad mini (A17 Pro) and iPhone 17 Pro, running iOS 26.1. Results are `TestResults/Thimvale-ipad-smoke-fixed.xcresult` and `TestResults/Thimvale-iphone-navigation.xcresult`. The first iPad attempt exposed a test-selector assumption: its floating navigation items have no `TabBar` ancestor. The shared test helper now handles the observed iPad icon identifiers as well as iPhone tabs. No app-navigation change was needed. iPad Chat, Models, Higher RAM filtering, Knowledge, and Permissions screenshots were inspected. This is portrait smoke coverage, not a full iPad rotation/multitasking or inference validation.
 
 After the initial cosmetic rename, SHA-256 hashes of the existing installation's conversation, download, folder, model, and permission JSON records matched their pre-rename values. The owner then selected a new App Store bundle ID, `com.ethanrimes.thimvale`; this installs separately from `com.ethanrimes.pocketmind`. The earlier installation is retained, but its files and Keychain data do not automatically migrate. See [simulator regressions](simulator-regressions.md) for the reported red screen, reproduced bugs, and fixes. Tests use isolated storage and credentials rather than resetting the user's app. Simulator test sessions use a fixed inference seed; ordinary app sessions do not.
@@ -43,6 +46,6 @@ No full English Wikipedia download was performed during development. Its real ca
 
 Only the small Liquid model was exercised for inference. Availability checks for the other 35 curated entries, including the [4B models](models-4b.md) and [benchmark-chart additions](model-expansion.md), do not prove runtime compatibility, quality, or memory fitness. No 4B or larger weights were downloaded or executed. Citation following and tool selection remain model-dependent; the app displays retrieved evidence and flags an answer that omits citations.
 
-Web search's request and error paths are implemented, but no Brave API key was supplied, so a successful authenticated Brave search was not exercised. No App Store/TestFlight upload or signed device installation was performed.
+Web search's request and error paths are implemented, but no Brave API key was supplied, so a successful authenticated Brave search was not exercised. The signed cloud upload succeeded, but no signed physical-device installation was performed during these checks.
 
 Run the commands in the README to reproduce checks. Xcode test result bundles are written locally to `TestResults/` and excluded from Git.
