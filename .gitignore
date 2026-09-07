@@ -1,0 +1,14 @@
+.DS_Store
+.build/
+build/
+DerivedData/
+Vendor/
+*.xcuserstate
+xcuserdata/
+.venv/
+__pycache__/
+*.gguf
+*.zim
+*.partial
+*.log
+TestResults/
