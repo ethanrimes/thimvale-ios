@@ -33,6 +33,23 @@ class ReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "different Apple team"):
             release.validate_profile(self.profile(), "OTHER12345")
 
+    def test_profile_uuid_preserves_apple_casing_through_export(self):
+        for identifier in (self.profile()["UUID"], self.profile()["UUID"].lower()):
+            with self.subTest(identifier=identifier):
+                profile = self.profile()
+                profile["UUID"] = identifier
+                selected, certificate = release.validate_profile(profile, "ABCDE12345")
+                self.assertEqual(selected, identifier)
+                self.assertEqual(release.export_options("ABCDE12345", selected, certificate)[
+                    "provisioningProfiles"][release.BUNDLE_ID], identifier)
+
+    def test_noncanonical_profile_uuid_rejected(self):
+        for value in (None, "", "../profile", self.profile()["UUID"].replace("-", "")):
+            profile = self.profile()
+            profile["UUID"] = value
+            with self.assertRaisesRegex(ValueError, "canonical UUID"):
+                release.validate_profile(profile, "ABCDE12345")
+
     def test_development_adhoc_and_enterprise_rejected(self):
         for key, value in (("ProvisionedDevices", ["device"]), ("ProvisionsAllDevices", True)):
             profile = self.profile(); profile[key] = value
