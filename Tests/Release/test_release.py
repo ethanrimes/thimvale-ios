@@ -12,25 +12,36 @@ SPEC.loader.exec_module(release)
 class ReleaseTests(unittest.TestCase):
     def app_info(self):
         return {"CFBundleIdentifier": release.BUNDLE_ID, "CFBundleDisplayName": "Thimvale",
-                "CFBundleVersion": "12.1", "UIDeviceFamily": [1, 2],
+                "CFBundleVersion": "12.1", "CFBundleShortVersionString": "0.1.12", "UIDeviceFamily": [1, 2],
+                "ITSAppUsesNonExemptEncryption": False,
                 "UISupportedInterfaceOrientations~ipad": ["UIInterfaceOrientation" + suffix for suffix in (
                     "Portrait", "PortraitUpsideDown", "LandscapeLeft", "LandscapeRight")]}
 
     def test_valid_archive_metadata(self):
-        release.validate_app_info(self.app_info(), "12.1")
+        release.validate_app_info(self.app_info(), "12.1", "0.1.12")
 
     def test_archive_identity_and_build_number_must_match(self):
-        for key in ("CFBundleIdentifier", "CFBundleDisplayName", "CFBundleVersion"):
+        for key in ("CFBundleIdentifier", "CFBundleDisplayName", "CFBundleVersion", "CFBundleShortVersionString"):
             info = self.app_info()
             info[key] = "wrong"
             with self.assertRaises(ValueError):
-                release.validate_app_info(info, "12.1")
+                release.validate_app_info(info, "12.1", "0.1.12")
 
     def test_ipad_archive_requires_all_orientations(self):
         info = self.app_info()
         info["UISupportedInterfaceOrientations~ipad"].remove("UIInterfaceOrientationPortraitUpsideDown")
         with self.assertRaisesRegex(ValueError, "all four"):
-            release.validate_app_info(info, "12.1")
+            release.validate_app_info(info, "12.1", "0.1.12")
+
+    def test_archive_requires_explicit_boolean_encryption_declaration(self):
+        for value in (None, True, "NO", "false", 0):
+            info = self.app_info()
+            if value is None:
+                del info["ITSAppUsesNonExemptEncryption"]
+            else:
+                info["ITSAppUsesNonExemptEncryption"] = value
+            with self.assertRaisesRegex(ValueError, "Boolean encryption-exemption"):
+                release.validate_app_info(info, "12.1", "0.1.12")
 
     def profile(self):
         return {
@@ -93,6 +104,23 @@ class ReleaseTests(unittest.TestCase):
         for value in ("", "0", "1; command", "10000"):
             with self.assertRaises(ValueError):
                 release.build_number({"GITHUB_RUN_NUMBER": value, "GITHUB_RUN_ATTEMPT": "1"})
+
+    def test_patch_increments_for_each_new_run(self):
+        first = {"GITHUB_RUN_NUMBER": "14", "GITHUB_RUN_ATTEMPT": "1"}
+        self.assertEqual(release.marketing_version(first), "0.1.14")
+        self.assertEqual(release.marketing_version(dict(first, GITHUB_RUN_NUMBER="15")), "0.1.15")
+
+    def test_retry_keeps_patch_but_increments_build(self):
+        retry = {"GITHUB_RUN_NUMBER": "14", "GITHUB_RUN_ATTEMPT": "2"}
+        self.assertEqual(release.marketing_version(retry), "0.1.14")
+        self.assertEqual(release.build_number(retry), "14.2")
+
+    def test_major_minor_series_is_configurable_and_validated(self):
+        env = {"GITHUB_RUN_NUMBER": "14", "GITHUB_RUN_ATTEMPT": "1", "THIMVALE_VERSION_SERIES": "1.2"}
+        self.assertEqual(release.marketing_version(env), "1.2.14")
+        for series in ("", "1", "1.2.3", "1.02", "-1.2", "1.2; command", "10000.0"):
+            with self.assertRaisesRegex(ValueError, "major.minor"):
+                release.marketing_version(dict(env, THIMVALE_VERSION_SERIES=series))
 
     def test_export_uploads_without_submitting_for_review(self):
         options = release.export_options("ABCDE12345", "profile", "certificate")

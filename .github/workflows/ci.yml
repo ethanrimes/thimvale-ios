@@ -64,6 +64,8 @@ jobs:
     timeout-minutes: 30
     env:
       APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
+      # release.py appends the workflow run number as the automatic patch.
+      THIMVALE_VERSION_SERIES: '0.1'
     steps:
       - uses: actions/checkout@v4
         with:

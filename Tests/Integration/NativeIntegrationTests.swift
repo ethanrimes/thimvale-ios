@@ -38,6 +38,12 @@ final class NativeIntegrationTests: XCTestCase {
         XCTAssertEqual(Bundle.main.bundleIdentifier, AppIdentity.bundleIdentifier)
     }
 
+    func testBuiltAppDeclaresOnlyExemptEncryption() throws {
+        let value = try XCTUnwrap(Bundle.main.object(forInfoDictionaryKey: "ITSAppUsesNonExemptEncryption") as? NSNumber)
+        XCTAssertEqual(CFGetTypeID(value), CFBooleanGetTypeID())
+        XCTAssertFalse(value.boolValue)
+    }
+
     func testBuiltAppSupportsAllIPadOrientations() throws {
         // Bundle's lookup resolves device-specific variants for this iPhone;
         // inspect the actual built plist to check the iPad declaration too.

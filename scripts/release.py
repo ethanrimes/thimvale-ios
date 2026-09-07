@@ -90,6 +90,15 @@ def build_number(env):
     return ".".join(parts)
 
 
+def marketing_version(env):
+    # Use GitHub's durable counter, not a version commit that triggers another run.
+    # Failed/PR runs may leave gaps. Retrying a run keeps its marketing version.
+    series = env.get("THIMVALE_VERSION_SERIES", "0.1")
+    if not re.fullmatch(r"(?:0|[1-9][0-9]{0,3})\.(?:0|[1-9][0-9]{0,3})", series):
+        raise ValueError("THIMVALE_VERSION_SERIES must be a numeric major.minor pair.")
+    return series + "." + build_number(env).split(".")[0]
+
+
 def export_options(team, profile_uuid, certificate):
     return {
         "method": "app-store-connect", "destination": "upload",
@@ -101,11 +110,15 @@ def export_options(team, profile_uuid, certificate):
     }
 
 
-def validate_app_info(info, number):
+def validate_app_info(info, number, version):
     if info.get("CFBundleIdentifier") != BUNDLE_ID or info.get("CFBundleDisplayName") != "Thimvale":
         raise ValueError("The archive is not the expected Thimvale app.")
     if info.get("CFBundleVersion") != number:
         raise ValueError("The archive does not have the expected build number.")
+    if info.get("CFBundleShortVersionString") != version:
+        raise ValueError("The archive does not have the expected marketing version.")
+    if info.get("ITSAppUsesNonExemptEncryption") is not False:
+        raise ValueError("The archive must include the reviewed Boolean encryption-exemption declaration.")
     if 2 in info.get("UIDeviceFamily", []) and not info.get("UIRequiresFullScreen", False):
         orientations = set(info.get("UISupportedInterfaceOrientations~ipad",
                                     info.get("UISupportedInterfaceOrientations", [])))
@@ -132,6 +145,7 @@ def upload(env):
             or env.get("GITHUB_EVENT_NAME") not in ("push", "workflow_dispatch")):
         raise ValueError("Uploads are restricted to main on disposable GitHub-hosted runners.")
     number = build_number(env)
+    version = marketing_version(env)
     os.umask(0o077)
     with tempfile.TemporaryDirectory(prefix="thimvale-signing-", dir=env["RUNNER_TEMP"]) as temporary:
         root = Path(temporary)
@@ -173,17 +187,17 @@ def upload(env):
             with export_path.open("wb") as handle:
                 plistlib.dump(export_options(env["APPLE_TEAM_ID"], profile_uuid, fingerprint), handle)
             archive_path = root / "Thimvale.xcarchive"
-            print(f"Archiving Thimvale build {number} from {env.get('GITHUB_SHA', 'main')}", flush=True)
+            print(f"Archiving Thimvale {version} ({number}) from {env.get('GITHUB_SHA', 'main')}", flush=True)
             run(["xcodebuild", "archive", "-project", "Thimvale.xcodeproj", "-scheme", "Thimvale",
                  "-configuration", "Release", "-destination", "generic/platform=iOS",
                  "-archivePath", archive_path, "-derivedDataPath", root / "DerivedData",
                  "THIMVALE_CODE_SIGN_STYLE=Manual", "THIMVALE_CODE_SIGN_IDENTITY=" + fingerprint,
                  "THIMVALE_DEVELOPMENT_TEAM=" + env["APPLE_TEAM_ID"], "THIMVALE_PROVISIONING_PROFILE=" + profile_uuid,
-                 "CURRENT_PROJECT_VERSION=" + number])
+                 "CURRENT_PROJECT_VERSION=" + number, "MARKETING_VERSION=" + version])
             app = archive_path / "Products/Applications/Thimvale.app"
             with (app / "Info.plist").open("rb") as handle:
                 info = plistlib.load(handle)
-            validate_app_info(info, number)
+            validate_app_info(info, number, version)
             if not (app / "PrivacyInfo.xcprivacy").exists():
                 raise ValueError("The archive is missing the privacy manifest.")
             run(["codesign", "--verify", "--deep", "--strict", app])
@@ -192,7 +206,7 @@ def upload(env):
                  "-authenticationKeyPath", key_path, "-authenticationKeyID", env["APP_STORE_CONNECT_KEY_ID"],
                  "-authenticationKeyIssuerID", env["APP_STORE_CONNECT_ISSUER_ID"]])
             with open(env["GITHUB_STEP_SUMMARY"], "a") as summary:
-                summary.write(f"## TestFlight upload\n\nUploaded Thimvale build `{number}` from `{env['GITHUB_SHA']}`. "
+                summary.write(f"## TestFlight upload\n\nUploaded Thimvale `{version}` (`{number}`) from `{env['GITHUB_SHA']}`. "
                               "Apple must finish processing and export-compliance checks before installation. "
                               "An internal group with automatic distribution receives eligible builds.\n")
         finally:
