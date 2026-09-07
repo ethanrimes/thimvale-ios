@@ -21,6 +21,7 @@ struct ModelsView: View {
             (scope != "Downloaded" || model.isDownloaded)
                 && (family == "All" || model.family == family || scope == "Hugging Face")
                 && (scope != "Discover" || sizeFilter != "4B class" || model.isFourBillionClass)
+                && (scope != "Discover" || sizeFilter != "Higher RAM" || model.needsHigherMemory)
                 && (scope == "Hugging Face" || model.matchesLibrarySearch(query))
         }
     }
@@ -43,17 +44,21 @@ struct ModelsView: View {
                         Picker("Model size", selection: $sizeFilter) {
                             Text("All sizes").tag("All sizes")
                             Text("4B class").tag("4B class")
+                            Text("Higher RAM").tag("Higher RAM")
                         }.pickerStyle(.segmented).accessibilityIdentifier("modelSizeFilter")
                         if sizeFilter == "4B class" {
-                            Text("Includes Phi 4 Mini at 3.8B. For iPhones with roughly 8 GB RAM or more; start with a Q4 download. Free memory and context length still matter.")
+                            Text("About 3.5–4.5B total parameters, including Phi 4 Mini and Nanbeige. Start with Q4 on an iPhone with roughly 8 GB RAM or more. Free memory and context still matter.")
                                 .font(.caption).foregroundStyle(Palette.muted)
+                        } else if sizeFilter == "Higher RAM" {
+                            Text("For devices with roughly 12 GB RAM or more. These Q4 downloads are around 4.5–6 GB, before context and runtime memory. Active parameter counts do not describe memory use.")
+                                .font(.caption).foregroundStyle(Palette.muted).accessibilityIdentifier("higherRAMGuidance")
                         }
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
-                                ForEach(["All", "Gemma", "Qwen", "Liquid", "Granite", "Phi", "Llama", "SmolLM", "Mistral"], id: \.self) { item in
+                                ForEach(["All"] + ModelCatalog.families, id: \.self) { item in
                                     Button { family = item } label: {
                                         Text(item).font(.caption.weight(.medium)).padding(.horizontal, 16).padding(.vertical, 9).foregroundStyle(family == item ? Palette.background : Palette.muted).background(family == item ? Palette.accent : Palette.surface, in: Capsule())
-                                    }
+                                    }.accessibilityIdentifier("family_" + item)
                                 }
                             }
                         }
@@ -123,6 +128,7 @@ struct ModelsView: View {
                 VStack(alignment: .leading, spacing: 5) {
                     Text(model.name).font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink).lineLimit(2)
                     Text("\(model.parameters) · \(model.family)").font(.caption).foregroundStyle(Palette.muted)
+                    if model.needsHigherMemory { Text("Higher RAM · 12+ GB suggested").font(.caption2).foregroundStyle(Palette.muted) }
                 }
                 Spacer(minLength: 0)
                 if model.isDownloaded { Image(systemName: state.selectedModelID == model.id ? "checkmark.circle.fill" : "checkmark.circle").foregroundStyle(Palette.accent) }

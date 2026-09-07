@@ -4,7 +4,7 @@ Instructions checked against Apple and GitHub documentation on September 6, 2026
 
 The repository already has the cloud workflow. After the one-time setup below, a push to `main` runs tests on GitHub, builds a signed Release archive, and uploads it to your registered App Store Connect app. Pull requests never upload. A failed test blocks release. Apple still has to process each uploaded build; uploading does not publish the app on the App Store or submit it for review.
 
-**Current status:** no Apple credentials have been supplied and no build has been uploaded. `TESTFLIGHT_ENABLED` is `false` until you finish setup. An unsigned local archive is not an uploadable, distribution-signed build.
+**Setup status (September 6, 2026):** the owner registered the Thimvale app and its Personal internal-testing group. The supplied API key and distribution identity were validated, all six GitHub Secrets and the Team ID were configured, and a separate App Store provisioning profile was created for `com.ethanrimes.thimvale`. `TESTFLIGHT_ENABLED` is now `true`. The first signed cloud upload is being verified; an unsigned local archive is not a distribution-signed build.
 
 ## 1. Enroll and record your Team ID
 
@@ -19,10 +19,10 @@ In Apple Developer → Certificates, Identifiers & Profiles → Identifiers → 
 
 - Description: `Thimvale`
 - Bundle ID type: **Explicit**
-- Bundle ID: `com.ethanrimes.pocketmind`
+- Bundle ID: `com.ethanrimes.thimvale`
 - Do not enable unrelated capabilities such as iCloud, push notifications, or App Groups. The app does not require them.
 
-Register it, or reuse it if it is already registered to your team. The old-looking bundle ID is intentional: the public name is Thimvale, while the installation identity stays stable. If Apple says this identifier belongs to another team, stop and resolve that before changing the project. [Apple's App ID instructions](https://developer.apple.com/help/account/identifiers/register-an-app-id).
+Register it, or reuse it if it is already registered to your team. The owner selected this bundle identifier for the App Store Connect app. It is a separate installation from the earlier `com.ethanrimes.pocketmind` simulator prototype: sandbox files, preferences, and Keychain access do not automatically transfer between bundle IDs. The old installation has not been deleted. [Apple's App ID instructions](https://developer.apple.com/help/account/identifiers/register-an-app-id).
 
 In [App Store Connect](https://appstoreconnect.apple.com/) → Apps → **+** → New App, enter:
 
@@ -31,7 +31,7 @@ In [App Store Connect](https://appstoreconnect.apple.com/) → Apps → **+** �
 | Platform | iOS |
 | Name | Thimvale |
 | Primary language | English (U.S.), or your preferred primary language |
-| Bundle ID | The explicit `com.ethanrimes.pocketmind` identifier above |
+| Bundle ID | The explicit `com.ethanrimes.thimvale` identifier above |
 | SKU | `thimvale-ios-001` |
 | User access | Your account; restrict other users as appropriate |
 
@@ -98,7 +98,7 @@ These are repository variables, not secrets. Do not put private keys in Variable
 4. The runner removes its temporary credentials and restores the profile/keychain state. GitHub destroys the hosted VM afterward. Signing material and archives are not uploaded as GitHub artifacts; test result bundles are retained for seven days.
 5. Watch App Store Connect → Thimvale → TestFlight → iOS for Apple processing. An upload success is not an Apple processing or review approval. If a job is skipped, check the enable variable; if blocked, inspect the failing step rather than bypassing tests.
 
-The cloud runner uses its installed Xcode; Apple currently requires Xcode 26+ and an iOS 26+ SDK for uploads. The app's deployment target remains iOS 18. [Apple SDK requirements](https://developer.apple.com/news/upcoming-requirements/), [build processing](https://developer.apple.com/help/app-store-connect/manage-builds/upload-builds/).
+The cloud runner pins Xcode 26.1.1 on macOS 15 and the iPhone 17 Pro/iOS 26.1 test destination to match local validation. Runner defaults had advanced to Xcode 26.6: one cloud UI run failed to activate navigation controls, while the following run passed. Pinning makes the release environment reproducible; it is not a claim that the cause of that intermittent failure was established. Apple currently requires Xcode 26+ and an iOS 26+ SDK for uploads. The app's deployment target remains iOS 18. [Apple SDK requirements](https://developer.apple.com/news/upcoming-requirements/), [build processing](https://developer.apple.com/help/app-store-connect/manage-builds/upload-builds/), [GitHub runner software](https://github.com/actions/runner-images/blob/main/images/macos/macos-15-arm64-Readme.md).
 
 ### Export compliance
 

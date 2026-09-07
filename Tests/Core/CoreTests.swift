@@ -6,8 +6,8 @@ final class CoreTests: XCTestCase {
         func model(_ size: String) -> ModelEntry {
             .init(id: size, name: "Example", family: "Family", repository: "owner/model", summary: "Text model", parameters: size, minimumMemoryGB: 8)
         }
-        for size in ["4B", "3.8B", "4b"] { XCTAssertTrue(model(size).isFourBillionClass) }
-        for size in ["230M", "1B", "3B", "8B", "E2B", "GGUF", "4.5B"] { XCTAssertFalse(model(size).isFourBillionClass) }
+        for size in ["4B", "3.8B", "4.2B", "4b"] { XCTAssertTrue(model(size).isFourBillionClass) }
+        for size in ["230M", "1B", "3B", "8B", "E2B", "E4B", "8B (1B active)", "GGUF", "4.5B"] { XCTAssertFalse(model(size).isFourBillionClass) }
         XCTAssertTrue(model("4B").matchesLibrarySearch("4b"))
         XCTAssertTrue(model("3.8B").matchesLibrarySearch("3.8B"))
         XCTAssertTrue(model("4B").matchesLibrarySearch(" family "))
@@ -15,10 +15,21 @@ final class CoreTests: XCTestCase {
         XCTAssertFalse(model("1B").matchesLibrarySearch("4B"))
     }
 
-    func testBrandingDoesNotChangePersistedIdentity() {
+    func testHigherMemoryClassificationDoesNotGuessFromActiveParameters() {
+        var model = ModelEntry(id: "moe", name: "Example", family: "Example", repository: "owner/model", summary: "", parameters: "8B (1B active)", minimumMemoryGB: 12)
+        XCTAssertTrue(model.needsHigherMemory)
+        XCTAssertFalse(model.isFourBillionClass)
+        model.minimumMemoryGB = 8
+        XCTAssertFalse(model.needsHigherMemory)
+        model.minimumMemoryGB = 0
+        model.parameters = "GGUF"
+        XCTAssertFalse(model.needsHigherMemory)
+    }
+
+    func testRegisteredAppIdentityAndPrivateStorageNames() {
         XCTAssertEqual(AppIdentity.displayName, "Thimvale")
         XCTAssertEqual(AppIdentity.repositoryURL.absoluteString, "https://github.com/ethanrimes/thimvale-ios")
-        XCTAssertEqual(AppIdentity.bundleIdentifier, "com.ethanrimes.pocketmind")
+        XCTAssertEqual(AppIdentity.bundleIdentifier, "com.ethanrimes.thimvale")
         XCTAssertEqual(AppIdentity.storageDirectory, "PocketMind")
         XCTAssertEqual(AppIdentity.keychainService, "com.ethanrimes.pocketmind")
         XCTAssertEqual(AppIdentity.downloadSessionIdentifier, "com.ethanrimes.pocketmind.downloads")

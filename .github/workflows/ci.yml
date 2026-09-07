@@ -6,16 +6,21 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+env:
+  # Match the locally validated compiler/SDK instead of following runner defaults.
+  DEVELOPER_DIR: /Applications/Xcode_26.1.1.app/Contents/Developer
 concurrency:
   group: ios-${{ github.ref }}
   # Do not interrupt an upload already running for main.
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   build:
-    runs-on: macos-latest
-    timeout-minutes: 30
+    runs-on: macos-15
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+      - name: Check pinned Xcode
+        run: xcodebuild -version
       - name: Install build tools
         run: brew install xcodegen cmake
       - uses: actions/cache@v4
@@ -36,7 +41,8 @@ jobs:
         run: ./scripts/fetch-test-assets.sh
       - name: Exercise simulator UI and native integration
         run: |
-          THIMVALE_SIMULATOR_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; devices=[d for group in json.load(sys.stdin)["devices"].values() for d in group if d["name"].startswith("iPhone")]; print(devices[0]["udid"])')
+          THIMVALE_SIMULATOR_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; devices=[d for runtime,group in json.load(sys.stdin)["devices"].items() if runtime.endswith("iOS-26-1") for d in group if d["name"] == "iPhone 17 Pro"]; assert devices, "Install the pinned iOS 26.1 runtime"; print(devices[0]["udid"])')
+          xcrun simctl bootstatus "$THIMVALE_SIMULATOR_ID" -b
           xcodebuild test -project Thimvale.xcodeproj -scheme Thimvale \
             -destination "platform=iOS Simulator,id=$THIMVALE_SIMULATOR_ID" \
             -parallel-testing-enabled NO -resultBundlePath TestResults/CI.xcresult \
@@ -54,7 +60,7 @@ jobs:
       github.ref == 'refs/heads/main' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
       vars.TESTFLIGHT_ENABLED == 'true'
-    runs-on: macos-latest
+    runs-on: macos-15
     timeout-minutes: 30
     env:
       APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}

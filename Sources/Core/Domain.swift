@@ -45,6 +45,7 @@ struct ModelEntry: Codable, Identifiable, Hashable, Sendable {
     var localFilename: String?
     var license: String?
     var isDownloaded: Bool { localFilename != nil }
+    var needsHigherMemory: Bool { minimumMemoryGB >= 12 }
     var isFourBillionClass: Bool {
         let label = parameters.uppercased().trimmingCharacters(in: .whitespacesAndNewlines)
         guard label.hasSuffix("B"), let billions = Double(label.dropLast()) else { return false }
