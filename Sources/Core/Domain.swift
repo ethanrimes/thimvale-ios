@@ -78,6 +78,25 @@ enum CitationValidator {
     }
 }
 
+/// Short, turn-local labels are easier for small models to reproduce than hashes.
+/// Stable retrieval IDs remain the deduplication keys; numbering cannot redirect a source.
+struct CitationRegistry {
+    private var labels: [String: String] = [:]
+    private(set) var citations: [Citation] = []
+    mutating func register(_ sources: [Citation]) -> [Citation] {
+        sources.map { source in
+            var numbered = source
+            if let label = labels[source.id] { numbered.id = label }
+            else {
+                numbered.id = String(citations.count + 1)
+                labels[source.id] = numbered.id
+                citations.append(numbered)
+            }
+            return numbered
+        }
+    }
+}
+
 enum FileValidation {
     static func check(_ url: URL, magic: [UInt8], expectedBytes: Int64? = nil) throws {
         let handle = try FileHandle(forReadingFrom: url)

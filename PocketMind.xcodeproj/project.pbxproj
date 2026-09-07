@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		05AD65A812BB65E7BCE56DCC /* NaturalLanguage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C602EE10B73A18CE7E0D0702 /* NaturalLanguage.framework */; };
+		0B48C6939BA3343FD7131634 /* LICENSES in Resources */ = {isa = PBXBuildFile; fileRef = 3E2E9889CD990890C10C9E47 /* LICENSES */; };
 		168FF44A7F77408F51BED66F /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0657FA61168CC1EAFD5BD320 /* libc++.tbd */; };
 		27CF3604869994BE3BC6D95F /* AppPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737E223123867E341B30A0DB /* AppPaths.swift */; };
 		2E29583DF5218E432CE2B03F /* KnowledgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92B663432342F3CEF3567D6 /* KnowledgeView.swift */; };
@@ -23,6 +24,7 @@
 		5D013A112B62D54D06699D09 /* llama.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38FDBBA80C3BBB2A9A79073 /* llama.xcframework */; };
 		6466BCEA687C15DE8794E388 /* Acknowledgments.txt in Resources */ = {isa = PBXBuildFile; fileRef = AEFFDF517446669B9C0893FE /* Acknowledgments.txt */; };
 		72E56D1196DCE1E2E9A5E2BB /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D2751EFCAD9BEA94DADD40 /* PermissionsView.swift */; };
+		7652CF11237841D84944A46B /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 2B3A1B1D4284BF1CD4BDF119 /* LICENSE */; };
 		8CA067346FDCE58FC532D74E /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AE1A97D360BBC56C2D08848 /* Metal.framework */; };
 		8E2DD24089AFC5524EC443B9 /* Downloads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A38C6BB46ED8664DC310A12 /* Downloads.swift */; };
 		99E9024BF7CD9202D877FB2A /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156EABF18CA68460AC7AD555 /* ChatView.swift */; };
@@ -81,7 +83,9 @@
 		156EABF18CA68460AC7AD555 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		227E8DCDA0254A523C56CE6C /* CoreKiwix.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CoreKiwix.xcframework; path = "Vendor/libkiwix_xcframework-14.2.1-2/lib/CoreKiwix.xcframework"; sourceTree = "<group>"; };
 		262C6A067A4157FFCA103776 /* Domain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Domain.swift; sourceTree = "<group>"; };
+		2B3A1B1D4284BF1CD4BDF119 /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
 		2FFE40C44096CD0A9B5BDF68 /* NavigationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTests.swift; sourceTree = "<group>"; };
+		3E2E9889CD990890C10C9E47 /* LICENSES */ = {isa = PBXFileReference; lastKnownFileType = folder; path = LICENSES; sourceTree = SOURCE_ROOT; };
 		477CDDD38E96DA56B1024F4C /* PocketNative.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PocketNative.mm; sourceTree = "<group>"; };
 		574147C5CD4FB325A4A68054 /* PocketMindUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PocketMindUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C0935FB1B7BA8C8AF7D3C9C /* PocketNative.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PocketNative.h; sourceTree = "<group>"; };
@@ -235,6 +239,8 @@
 		E1655B2260A05B42271CDFC3 = {
 			isa = PBXGroup;
 			children = (
+				2B3A1B1D4284BF1CD4BDF119 /* LICENSE */,
+				3E2E9889CD990890C10C9E47 /* LICENSES */,
 				C2C500599597157A91AD7A83 /* Integration */,
 				31D68AFC6B009E9F00E53401 /* Resources */,
 				546DECE501C8E6EAFE45121D /* Sources */,
@@ -364,6 +370,8 @@
 			files = (
 				6466BCEA687C15DE8794E388 /* Acknowledgments.txt in Resources */,
 				C09651E838948B2955C526D3 /* Assets.xcassets in Resources */,
+				7652CF11237841D84944A46B /* LICENSE in Resources */,
+				0B48C6939BA3343FD7131634 /* LICENSES in Resources */,
 				FE9F675DBC95FC70ADCE97D8 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

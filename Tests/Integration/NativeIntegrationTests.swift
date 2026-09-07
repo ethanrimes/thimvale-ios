@@ -34,6 +34,24 @@ final class NativeIntegrationTests: XCTestCase {
         XCTAssertFalse(body.contains("<script"))
     }
 
+    func testCitedAnswerFromOfflineWikipedia() async throws {
+        let model = projectRoot.appendingPathComponent("Vendor/smoke-model.gguf")
+        let zim = projectRoot.appendingPathComponent("Vendor/smoke-wikipedia.zim")
+        guard FileManager.default.fileExists(atPath: model.path), FileManager.default.fileExists(atPath: zim.path) else { throw XCTSkip("Fetch the test assets first.") }
+        let archive = try PMArchive(path: zim.path)
+        let article = try XCTUnwrap(archive.search("bowline", limit: 3).first { ($0["title"] ?? "").lowercased() == "bowline" })
+        let excerpt = String(try KnowledgeService.plainText(article["html"] ?? "").prefix(1600))
+        let inference = InferenceService()
+        inference.prepare()
+        let answer = try await inference.generate(model: model, messages: [
+            .init(role: "system", content: "Answer using only the provided source. Include its citation number in brackets after your answer, such as [1]."),
+            .init(role: "user", content: "Source [1]:\n\(excerpt)\n\nWhat is a bowline knot? Answer briefly and cite the source with [1].")
+        ], maxTokens: 120) { _ in }
+        XCTAssertTrue(answer.lowercased().contains("loop"), "Answer: \(answer)")
+        XCTAssertTrue(answer.contains("[1]"), "Answer: \(answer)")
+        inference.unload()
+    }
+
     @MainActor func testToolExecutorApprovalDenialAndRevocation() async throws {
         let state = try AppState()
         let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)

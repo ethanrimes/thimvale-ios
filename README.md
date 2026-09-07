@@ -2,6 +2,8 @@
 
 A native iPhone workspace for local language models, permission-controlled agents, and offline knowledge.
 
+<img src="docs/screenshots/chat.png" width="230" alt="Chat with plain labels and Chat/Work toggle"> <img src="docs/screenshots/models.png" width="230" alt="Model selection"> <img src="docs/screenshots/knowledge.png" width="230" alt="Offline knowledge library">
+
 ## Product
 
 - **Chat:** private, streaming conversations with a downloaded GGUF model.
@@ -57,9 +59,9 @@ GitHub Actions builds the app and runs the core tests on each push. XcodeGen's `
 - Wikipedia uses the ZIM corpus's compressed article storage and full-text index, with semantic reranking of retrieved passages. It does **not** ship millions of precomputed Wikipedia vectors. Mini editions are abridged; full English text still requires tens of gigabytes. Nothing downloads automatically.
 - Import limits: 1,000 supported files per folder operation, 25 MB per file, 500 PDF pages, and 20 MB of extracted text per indexed document. Scanned PDFs need OCR before import. Imports are snapshots, not live folder sync.
 - Work executes at most six tool calls per request and blocks repeated loops. Small models may emit malformed tool calls or omit citations. Retrieved sources remain inspectable, and omitted citations are reported in the work activity. Tool results are treated as untrusted evidence; permissions are enforced in code.
-- Generation stops in the background. App data is excluded from backups. Use Share and the Exports folder for material you want to keep. API tokens are kept in device-only Keychain entries.
+- Generation stops and the model is unloaded in the background or under memory pressure. App data is excluded from backups. Use Share and the Exports folder for material you want to keep. API tokens are kept in device-only Keychain entries.
 
-See [architecture](docs/architecture.md) for the storage and capability boundaries.
+See [architecture](docs/architecture.md) for storage and capability boundaries, and [validation](docs/validation.md) for the checks performed and their limits.
 
 ## Upstream projects
 
