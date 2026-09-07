@@ -120,6 +120,7 @@ import XCTest
 
     func testRealChatHistoryAndRestart() throws {
         let app = try makeApp(fixtures: true)
+        XCTAssertTrue(app.staticTexts["modelMemoryState"].wait(for: \.label, toEqual: "In memory", timeout: 30))
         let input = app.textFields["messageInput"]
         input.tap(); input.typeText("What is two plus two? Answer with the number.")
         app.buttons["sendMessage"].tap()
@@ -129,14 +130,43 @@ import XCTest
         XCTAssertTrue(answer.label.contains("4") || answer.label.lowercased().contains("four"), answer.label)
         app.buttons["New conversation"].tap()
         XCTAssertTrue(app.staticTexts["Start a conversation."].exists)
+        XCTAssertEqual(app.staticTexts["modelMemoryState"].label, "In memory")
         app.buttons["Conversation history"].tap()
         app.buttons.containing(.staticText, identifier: "What is two plus two? Answer with the number.").firstMatch.tap()
         XCTAssertTrue(answer.label.contains("4") || answer.label.lowercased().contains("four"))
         app.terminate(); app.launch()
+        XCTAssertTrue(app.staticTexts["modelMemoryState"].wait(for: \.label, toEqual: "Unloaded · loads when you send", timeout: 15))
         app.buttons["Conversation history"].tap()
         app.buttons.containing(.staticText, identifier: "What is two plus two? Answer with the number.").firstMatch.tap()
         XCTAssertTrue(answer.label.contains("4") || answer.label.lowercased().contains("four"))
         capture(app, "Real local chat")
+    }
+
+    func testLiveTokensStopAndBackgroundModelRelease() throws {
+        let app = try makeApp(fixtures: true)
+        XCTAssertTrue(app.staticTexts["modelMemoryState"].wait(for: \.label, toEqual: "In memory", timeout: 30))
+        let input = app.textFields["messageInput"]
+        input.tap(); input.typeText("Write a long story about a sailor exploring an island. Include many details.")
+        app.buttons["sendMessage"].tap()
+        let live = app.staticTexts["liveModelOutput"]
+        XCTAssertTrue(live.waitForExistence(timeout: 60))
+        XCTAssertFalse(app.buttons["New conversation"].isEnabled, "Output must be visible before generation finishes")
+        XCTAssertFalse(live.label.isEmpty)
+        capture(app, "Live streamed local model output")
+        app.buttons["sendMessage"].tap()
+        XCTAssertTrue(app.buttons["New conversation"].wait(for: \.isEnabled, toEqual: true, timeout: 20))
+        XCTAssertEqual(app.staticTexts["modelMemoryState"].label, "In memory")
+        XCUIDevice.shared.press(.home)
+        let home = XCTAttachment(screenshot: XCUIApplication(bundleIdentifier: "com.apple.springboard").screenshot())
+        home.name = "Installed Thimvale icon"; home.lifetime = .keepAlways; add(home)
+        app.activate()
+        XCTAssertTrue(app.staticTexts["modelMemoryState"].wait(for: \.label, toEqual: "Unloaded · loads when you send", timeout: 10))
+        app.buttons["New conversation"].tap()
+        input.tap(); input.typeText("What is two plus two? Answer with the number.")
+        app.buttons["sendMessage"].tap()
+        XCTAssertTrue(app.staticTexts["assistantMessage"].waitForExistence(timeout: 90))
+        XCTAssertTrue(app.buttons["New conversation"].wait(for: \.isEnabled, toEqual: true, timeout: 90))
+        XCTAssertEqual(app.staticTexts["modelMemoryState"].label, "In memory")
     }
 
     func testOfflineSearchAndCitationInspector() throws {
@@ -181,14 +211,19 @@ import XCTest
         // The dismissed sheet remains in the accessibility tree during animation.
         // Do not mistake its old Deny button for a newly requested tool.
         XCTAssertTrue(app.buttons["allowTool"].waitForNonExistence(timeout: 10))
-        let deadline = Date().addingTimeInterval(120)
-        while !app.buttons["citation_1"].exists && Date() < deadline {
+        XCTAssertTrue(app.staticTexts["liveModelOutput"].waitForExistence(timeout: 120))
+        XCTAssertFalse(app.buttons["New conversation"].isEnabled)
+        capture(app, "Live Work model output and tool activity")
+        // Hosted simulator runners can be much slower than a local Mac. This is
+        // still a bounded wait for real inference, not a sleep or fixture answer.
+        let deadline = Date().addingTimeInterval(240)
+        while !app.buttons["New conversation"].isEnabled && Date() < deadline {
             // Allow once is not blanket access; refuse any extra action the model proposes.
             if app.buttons["denyTool"].exists && app.buttons["denyTool"].isHittable {
                 app.buttons["denyTool"].tap()
                 XCTAssertTrue(app.buttons["denyTool"].waitForNonExistence(timeout: 10))
             }
-            if app.buttons["citation_1"].waitForExistence(timeout: 2) { break }
+            if app.buttons["New conversation"].wait(for: \.isEnabled, toEqual: true, timeout: 2) { break }
         }
         XCTAssertTrue(app.buttons["citation_1"].exists)
         XCTAssertTrue(app.buttons["New conversation"].waitForExistence(timeout: 5))
@@ -206,6 +241,7 @@ import XCTest
             XCTAssertTrue(app.staticTexts["missingInlineCitations"].exists, answer.label)
         }
         XCTAssertFalse(answer.label.contains("search_knowledge("), answer.label)
+        XCTAssertTrue(app.buttons["toolEvent_search_knowledge"].firstMatch.exists)
         capture(app, "Work answer with evidence")
         reveal(app.buttons["citation_1"], in: app); app.buttons["citation_1"].tap()
         XCTAssertTrue(app.navigationBars["Evidence"].waitForExistence(timeout: 5))
@@ -257,7 +293,7 @@ import XCTest
     }
     private func dismissFiles(_ app: XCUIApplication) {
         let cancel = app.buttons["Cancel"].firstMatch
-        XCTAssertTrue(cancel.waitForExistence(timeout: 10)); cancel.tap()
+        XCTAssertTrue(cancel.waitForExistence(timeout: 30)); cancel.tap()
         XCTAssertTrue(cancel.waitForNonExistence(timeout: 5))
     }
     private func capture(_ app: XCUIApplication, _ name: String) {

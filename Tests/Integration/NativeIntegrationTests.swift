@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 @testable import Thimvale
 
 final class NativeIntegrationTests: XCTestCase {
@@ -36,6 +37,21 @@ final class NativeIntegrationTests: XCTestCase {
     func testInstalledAppNameAndUpdateIdentity() {
         XCTAssertEqual(Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String, AppIdentity.displayName)
         XCTAssertEqual(Bundle.main.bundleIdentifier, AppIdentity.bundleIdentifier)
+    }
+
+    func testCompiledAppIconIsNotABlankSquare() throws {
+        let icons = try XCTUnwrap(Bundle.main.object(forInfoDictionaryKey: "CFBundleIcons") as? [String: Any])
+        let primary = try XCTUnwrap(icons["CFBundlePrimaryIcon"] as? [String: Any])
+        let name = try XCTUnwrap((primary["CFBundleIconFiles"] as? [String])?.last)
+        let image = try XCTUnwrap(UIImage(named: name)?.cgImage)
+        var pixels = [UInt8](repeating: 0, count: 32 * 32 * 4)
+        try pixels.withUnsafeMutableBytes { bytes in
+            let context = try XCTUnwrap(CGContext(data: bytes.baseAddress, width: 32, height: 32, bitsPerComponent: 8, bytesPerRow: 128, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue))
+            context.draw(image, in: CGRect(x: 0, y: 0, width: 32, height: 32))
+        }
+        let brightness = stride(from: 0, to: pixels.count, by: 4).map { (Int(pixels[$0]) + Int(pixels[$0 + 1]) + Int(pixels[$0 + 2])) / 3 }
+        XCTAssertGreaterThan(Set(brightness).count, 30)
+        XCTAssertGreaterThan(brightness.filter { $0 > 150 }.count, 100, "The compiled icon must contain a visible foreground mark")
     }
 
     func testBuiltAppDeclaresOnlyExemptEncryption() throws {
@@ -77,16 +93,38 @@ final class NativeIntegrationTests: XCTestCase {
         let url = projectRoot.appendingPathComponent("Vendor/smoke-model.gguf")
         guard FileManager.default.fileExists(atPath: url.path) else { throw XCTSkip("Run scripts/fetch-test-assets.sh to enable real inference tests.") }
         let inference = InferenceService()
-        inference.prepare()
+        try await inference.load(model: url)
+        let loaded = await inference.residency()
+        XCTAssertEqual(loaded.path, url.path)
+        XCTAssertEqual(loaded.loads, 1)
         let output = try await inference.generate(model: url, messages: [.init(role: "system", content: "Answer briefly."), .init(role: "user", content: "What is two plus two? Answer with the number.")], maxTokens: 48) { _ in }
         XCTAssertFalse(output.isEmpty)
         XCTAssertTrue(output.contains("4") || output.lowercased().contains("four"), "Real model output: \(output)")
-        inference.prepare()
-        inference.cancel()
+        let reused = await inference.residency()
+        XCTAssertEqual(reused.loads, 1, "Selection preload must be reused by generation")
+        let cancelled = Task {
+            _ = try await inference.generate(model: url, messages: [.init(role: "user", content: "Write a long story.")], maxTokens: 300) { _ in inference.cancel() }
+        }
         do {
-            _ = try await inference.generate(model: url, messages: [.init(role: "user", content: "Write a long story.")], maxTokens: 300) { _ in }
+            try await cancelled.value
             XCTFail("Cancelled generation should fail")
-        } catch { XCTAssertTrue(error.localizedDescription.localizedCaseInsensitiveContains("stop")) }
+        } catch { XCTAssertTrue(error is CancellationError || error.localizedDescription.localizedCaseInsensitiveContains("stop")) }
+        let stillResident = await inference.residency()
+        XCTAssertEqual(stillResident.loads, 1)
+        XCTAssertEqual(stillResident.path, url.path)
+        inference.unload()
+        let released = await inference.residency()
+        XCTAssertNil(released.path)
+        try await inference.load(model: url)
+        let reloaded = await inference.residency()
+        XCTAssertEqual(reloaded.loads, 2)
+        // A failed switch must not leave a stale cache entry for the old weights.
+        do { try await inference.load(model: url.appendingPathExtension("missing")); XCTFail("Missing model loaded") } catch {}
+        let failed = await inference.residency()
+        XCTAssertNil(failed.path)
+        try await inference.load(model: url)
+        let recovered = await inference.residency()
+        XCTAssertEqual(recovered.loads, 3)
         inference.unload()
     }
 
@@ -127,7 +165,6 @@ final class NativeIntegrationTests: XCTestCase {
         let article = try XCTUnwrap(archive.search("bowline", limit: 3).first { ($0["title"] ?? "").lowercased() == "bowline" })
         let excerpt = String(try KnowledgeService.plainText(article["html"] ?? "").prefix(1600))
         let inference = InferenceService()
-        inference.prepare()
         let answer = try await inference.generate(model: model, messages: [
             .init(role: "system", content: "Answer using only the provided source. Include its citation number in brackets after your answer, such as [1]."),
             .init(role: "user", content: "Source [1]:\n\(excerpt)\n\nWhat is a bowline knot? Answer briefly and cite the source with [1].")

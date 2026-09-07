@@ -129,6 +129,7 @@ struct ModelsView: View {
                     Text(model.name).font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink).lineLimit(2)
                     Text("\(model.parameters) · \(model.family)").font(.caption).foregroundStyle(Palette.muted)
                     if model.needsHigherMemory { Text("Higher RAM · 12+ GB suggested").font(.caption2).foregroundStyle(Palette.muted) }
+                    if state.selectedModelID == model.id { Text(state.modelSession.label).font(.caption2).foregroundStyle(Palette.accent) }
                 }
                 Spacer(minLength: 0)
                 if model.isDownloaded { Image(systemName: state.selectedModelID == model.id ? "checkmark.circle.fill" : "checkmark.circle").foregroundStyle(Palette.accent) }

@@ -89,7 +89,9 @@ struct RootView: View {
         .alert("Library update", isPresented: Binding(get: { state.notice != nil }, set: { if !$0 { state.notice = nil } })) {
             Button("OK") { state.notice = nil }
         } message: { Text(state.notice ?? "") }
+        .onAppear { if UIApplication.shared.applicationState != .background { state.activate() } }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in state.activate() }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in state.suspend() }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didReceiveMemoryWarningNotification)) { _ in state.suspend() }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didReceiveMemoryWarningNotification)) { _ in state.releaseForMemoryPressure() }
     }
 }

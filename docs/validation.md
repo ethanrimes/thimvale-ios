@@ -2,6 +2,22 @@
 
 Environment: Apple Silicon Mac, Xcode 26.1.1, Swift 6.2.1, iPhone 17 Pro simulator running iOS 26.1. App deployment target: iOS 18.
 
+## Model lifetime, live activity, and icon update
+
+The [memory/activity change](model-session-and-activity.md) adds explicit preload and lifecycle state, ordered token streaming in Chat and every Work generation (including citation retries), and permission-checked tool event cards. The [new icon](app-icon.md) is an opaque 1024-square image; a native test also checks the primary icon compiled into the app. The device Release target builds with the original Boolean encryption exemption intact.
+
+Tests use two clearly separate approaches: the native GGUF suite and simulator UI tests run the actual Liquid model, while `SessionAndStreamingTests` uses an explicitly scripted test double to control cancellation, idle timeout, and approval timing. No scripted engine is selected by the shipped app. The real runtime checks assert loaded-path/load-count reuse, native unload/reload, and recovery after a failed replacement, rather than inferring residency from a fast answer.
+
+The first full local pass caught the activity container overriding individual tool-card accessibility IDs. Removing the inherited container ID restored independently addressable tool cards. Both the real Work flow and the import-picker flow subsequently passed in `TestResults/Thimvale-live-work-fixed.xcresult`.
+
+Final checks: **73 distinct tests passed** (12 core, 18 release-configuration, 15 native integration, 11 lifecycle/streaming integration, 17 UI), plus **3 iPad smoke tests**. `TestResults/Thimvale-memory-activity-final.xcresult` contains the complete iPhone native/UI run (42 passed, zero failed/skipped). After preserving successful tool results when cancellation arrives on return, `TestResults/Thimvale-final-cancellation.xcresult` reran all 11 lifecycle/streaming tests, including the additional completed-write regression. `TestResults/Thimvale-memory-activity-ipad.xcresult` contains the three passing iPad mini A17 Pro flows: selection/deletion, live tokens/Stop/background/reload, and Work approval/streaming/evidence.
+
+The final unsigned iPhone Release build passed. Actionlint and `git diff --check` passed. Exported iPhone/iPad screenshots were inspected, including the installed book-and-sun icon and live Chat/Work output. Updated [Chat](screenshots/chat-streaming.png) and [Work](screenshots/work-streaming.png) screenshots are included in the repo. No physical-device memory, thermal, or background GPU validation is claimed.
+
+The earlier cloud run [34086236949](https://github.com/ethanrimes/thimvale-ios/actions/runs/34086236949) did **not** upload: the simulator gate failed before the signing job. Its Files picker appeared after the original 10-second wait, and its real Work answer/evidence arrived just after the original 120-second deadline. Exported result attachments show the completed answer and source buttons. The waits now remain bounded at 30 seconds for the system picker and 240 seconds for a Work turn; no test or permission check was removed. Retrieved citations are now visible before the answer, so the UI test waits for generation completion independently of citation-button existence.
+
+## Earlier release baseline
+
 | Check | Result |
 | --- | --- |
 | Swift core suite | 11 tests passed |

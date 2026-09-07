@@ -1,28 +1,91 @@
 import Foundation
 
-final class InferenceService: @unchecked Sendable {
+protocol InferenceServing: AnyObject, Sendable {
+    func load(model: URL) async throws
+    func generate(model: URL, messages: [ChatMessage], maxTokens: Int, onToken: @escaping @Sendable (String) -> Void) async throws -> String
+    func cancel()
+    func unload()
+}
+
+final class InferenceService: InferenceServing, @unchecked Sendable {
     private let engine = PMInference()
     private let queue = DispatchQueue(label: "com.ethanrimes.pocketmind.inference", qos: .userInitiated)
+    private let lock = NSLock()
+    // The queue owns model/context state. The lock owns cancellation only.
     private var loadedPath: String?
-    func cancel() { engine.cancel() }
-    func prepare() { engine.resetCancellation() }
-    func unload() { queue.async { self.engine.unload(); self.loadedPath = nil } }
+    private var loads = 0
+    private var epoch = 0
+    private var activeOperation: UUID?
+
+    private final class Operation: @unchecked Sendable {
+        let id = UUID()
+        var cancelled = false // Protected by the service lock.
+    }
+
+    func cancel() {
+        lock.withLock { epoch += 1; engine.cancel() }
+    }
+    func unload() {
+        lock.withLock {
+            epoch += 1; engine.cancel()
+            queue.async { self.engine.unload(); self.loadedPath = nil }
+        }
+    }
+    private func ensureLoaded(_ model: URL) throws {
+        guard loadedPath != model.path else { return }
+        // Native loading releases the previous model even if the replacement fails.
+        loadedPath = nil
+        do {
+            try engine.loadModel(atPath: model.path, contextSize: 4096)
+            loadedPath = model.path
+            loads += 1
+        } catch { engine.unload(); throw error }
+    }
+    func load(model: URL) async throws {
+        try await perform { try self.ensureLoaded(model) }
+    }
     func generate(model: URL, messages: [ChatMessage], maxTokens: Int = 768, onToken: @escaping @Sendable (String) -> Void) async throws -> String {
-        try await withTaskCancellationHandler {
-            try await withCheckedThrowingContinuation { continuation in
+        try await perform {
+            try self.ensureLoaded(model)
+            let payload = messages.map { ["role": $0.role, "content": $0.content] }
+            return try self.engine.generateMessages(payload, maxTokens: Int32(maxTokens), temperature: 0.6, onToken: onToken)
+        }
+    }
+    private func perform<T>(_ work: @escaping () throws -> T) async throws -> T {
+        let operation = Operation()
+        let ticket = lock.withLock { epoch }
+        return try await withTaskCancellationHandler {
+            try Task.checkCancellation()
+            return try await withCheckedThrowingContinuation { continuation in
                 queue.async {
+                    let canStart = self.lock.withLock {
+                        guard !operation.cancelled, ticket == self.epoch else { return false }
+                        self.activeOperation = operation.id
+                        self.engine.resetCancellation()
+                        return true
+                    }
+                    guard canStart else { continuation.resume(throwing: CancellationError()); return }
+                    defer { self.lock.withLock { self.activeOperation = nil } }
                     do {
-                        if self.loadedPath != model.path {
-                            try self.engine.loadModel(atPath: model.path, contextSize: 4096)
-                            self.loadedPath = model.path
-                        }
-                        let payload = messages.map { ["role": $0.role, "content": $0.content] }
-                        let output = try self.engine.generateMessages(payload, maxTokens: Int32(maxTokens), temperature: 0.6, onToken: onToken)
+                        let output = try work()
+                        guard self.lock.withLock({ !operation.cancelled && ticket == self.epoch }) else { throw CancellationError() }
                         continuation.resume(returning: output)
                     } catch { continuation.resume(throwing: error) }
                 }
             }
-        } onCancel: { self.engine.cancel() }
+        } onCancel: {
+            self.lock.withLock {
+                operation.cancelled = true
+                // A late cancellation from an old request must not stop its successor.
+                if self.activeOperation == operation.id { self.engine.cancel() }
+            }
+        }
+    }
+    /// Queue-consistent diagnostics; never includes prompts or generated text.
+    func residency() async -> (path: String?, loads: Int) {
+        await withCheckedContinuation { continuation in
+            queue.async { continuation.resume(returning: (self.loadedPath, self.loads)) }
+        }
     }
 }
 
