@@ -1,5 +1,21 @@
 # Models from the mobile benchmark chart
 
+## September 7 additions from the Intelligence screenshot
+
+The catalogue now has **39 distinct repositories**. Added the three missing releases, verified against live Hugging Face metadata on September 7, 2026:
+
+| Release | GGUF publisher | Default download | Total parameters reported by GGUF | Suggested RAM |
+| --- | --- | --- | --- | --- |
+| MiniCPM5-2B | [OpenBMB, official](https://huggingface.co/openbmb/MiniCPM5-2B-GGUF) | Q4_K_M · 1.56 GB | 2.52B | 6+ GB |
+| Nanbeige4.1-3B | [Mungert, community](https://huggingface.co/Mungert/Nanbeige4.1-3B-GGUF) | Q4_K_M · 2.58 GB | 3.93B | 8+ GB |
+| Nemotron 3 Nano 4B | [NVIDIA, official](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-4B-GGUF) | Q4_K_M · 2.84 GB | 3.97B | 8+ GB |
+
+Checked revisions: MiniCPM `8ffce1833680`, Nanbeige `7a35d8054f29`, NVIDIA `ba223d14e455`. All three are public single-file downloads with SHA-256 metadata. MiniCPM and Nanbeige cards declare Apache-2.0; NVIDIA uses its Nemotron Open Model License, not an OSI-license claim. `llama` and `nemotron_h` handlers exist in bundled b10830. These new weights have not been inference-tested on an iPhone; architecture support and download availability alone do not certify compatibility.
+
+Already present: G9v3 3B, Granite 4.2 3B, MiniCPM5 1B, Liquid LFM2.5 2.6B, Phi 4 Mini, and Qwen3.5 0.8B/2B. Reasoning/non-reasoning bars do not become duplicate downloads. Scores from the screenshot are not presented as app benchmarks. The new Nanbeige and Nemotron entries join the 3.5–4.5B size class; MiniCPM keeps its release name and explains its larger total parameter count.
+
+## September 6 additions
+
 Checked September 6, 2026 against Hugging Face repository metadata and the bundled llama.cpp b10830 architecture registry. The user's Artificial Analysis screenshot measures a **Galaxy S26 Ultra**, a 1,024-token input, a 256-token response, and a maximum 16K evaluation context. It is not an iPhone performance test. No benchmark scores, latency promises, or rankings were copied into the app.
 
 Fourteen entries were added, bringing the curated library to 36. Every repository below exposes a single-file text GGUF at the listed default quantization. Vision projectors, MTP sidecars, and split weights are not selected. File sizes are decimal GB, rounded; the app fetches exact sizes and checksums and pins revisions when downloading.

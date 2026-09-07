@@ -14,9 +14,11 @@ Background GPU work is restricted by iOS; inference is stopped before queued mod
 
 ## Live activity
 
-Both modes display actual emitted text in an automatically expanded **Model output** card. This includes model-produced tool JSON in Work. A completed generation can be expanded again to inspect its output; the final answer remains in the conversation below. Answer-only citation recovery streams through the same path. There is no fabricated reasoning transcript or simulated production activity.
+Both modes stream the answer directly into the conversation, using the same width and typography as a finished reply, without a nested scrolling block. Raw generation transcripts are available under the collapsed **Model details** disclosure, including tool JSON and any emitted reasoning markers. Unfinished tool JSON and explicit unfinished `<think>` sections are not presented as the answer. Answer-only citation recovery streams through the same path. There is no fabricated reasoning transcript or simulated production activity.
 
-Each executed Work tool gets a separate card with its name, arguments, **Checking permissions / Awaiting approval / Running / Completed / Failed / Stopped** state, elapsed time, and result or error. Result previews are bounded to 6000 characters. Fast local calls may finish in one UI frame; their completed event and duration remain visible.
+Each executed Work tool gets a compact, borderless terminal-style row: status glyph, monospaced tool name, query or file target, **Checking permissions / Awaiting approval / Running / Completed / Failed / Stopped** state, and elapsed time. Tap a row for full arguments and results; they do not auto-expand. Result previews remain bounded to 6000 characters. Fast local calls may finish in one UI frame; their completed event and duration remain visible. The separate approval sheet still shows the complete proposed action before consent.
+
+Citation numbers such as **[1]** are tappable inside both a streaming and a completed answer. Only IDs in that message's actual returned evidence become local source links; unknown or unfinished references remain text, and inline code is not rewritten. A tap opens the original passage inspector, not a website. The full deduplicated **Sources** list stays collapsed at the end and expands on request. Models that omit citations still show the missing-citation notice and expandable retrieved sources; the app does not invent inline attribution.
 
 Partial JSON never executes. Parsing occurs only after a complete generation, and existing mode, approval, folder, permission-recheck, and call-budget checks still apply. Output and result previews are plain text rather than actionable Markdown. Chat still has no tool access.
 

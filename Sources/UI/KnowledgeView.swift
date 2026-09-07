@@ -16,6 +16,8 @@ struct KnowledgeView: View {
     @State private var importKind = ImportKind.files
     @State private var showImporter = false
     @State private var showWikipedia = false
+    @State private var readWikipedia = false
+    @State private var wikipediaUpdates = false
     @State private var query = ""
     @State private var results: [Citation] = []
     @State private var searching = false
@@ -49,6 +51,13 @@ struct KnowledgeView: View {
                             }
                         }
                     }.buttonStyle(.plain).accessibilityIdentifier("exploreWikipedia")
+                    Button { readWikipedia = true } label: {
+                        Label("Read Wikipedia offline", systemImage: "book")
+                    }.buttonStyle(PrimaryButton()).accessibilityIdentifier("readWikipedia")
+                    Button { wikipediaUpdates = true } label: {
+                        Label(state.wikipediaUpdates.available.isEmpty ? "Wikipedia updates" : "Wikipedia updates · \(state.wikipediaUpdates.available.count) available", systemImage: "arrow.triangle.2.circlepath")
+                            .font(.caption)
+                    }.accessibilityIdentifier("wikipediaUpdates")
                     HStack(spacing: 12) {
                         Button { importKind = .files; showImporter = true } label: { Label("Add files", systemImage: "doc.badge.plus") }.buttonStyle(PrimaryButton())
                         Button { importKind = .folder; showImporter = true } label: { Label("Add folder", systemImage: "folder.badge.plus") }.buttonStyle(PrimaryButton())
@@ -101,6 +110,8 @@ struct KnowledgeView: View {
             }.background(Palette.background).navigationTitle("Knowledge").navigationBarTitleDisplayMode(.inline)
                 .task { await state.refreshKnowledge() }
                 .sheet(isPresented: $showWikipedia) { WikipediaPacksView(state: state) }
+                .sheet(isPresented: $readWikipedia) { WikipediaBrowserView(state: state) }
+                .sheet(isPresented: $wikipediaUpdates) { WikipediaUpdatesView(state: state) }
                 .sheet(item: $citation) { CitationView(citation: $0) }
                 .fileImporter(isPresented: $showImporter, allowedContentTypes: importKind.contentTypes, allowsMultipleSelection: importKind == .files, onCompletion: handleImport)
                 .confirmationDialog("Remove this document from the knowledge index? The original file stays in Files.", isPresented: Binding(get: { deletingDocument != nil }, set: { if !$0 { deletingDocument = nil } }), titleVisibility: .visible) {

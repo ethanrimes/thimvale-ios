@@ -40,6 +40,10 @@ struct ApprovalRequest: Identifiable {
     var notice: String?
     var approval: ApprovalRequest?
     var downloads: DownloadCenter
+    let wikipediaUpdates = WikipediaUpdates()
+    let packNotifications = PackNotifications()
+    let reviews = ReviewPrompter()
+    var showWikipediaUpdates = false
     let modelSession: ModelSession
     let hub = ModelHub()
     @ObservationIgnored let knowledge: KnowledgeService
@@ -194,6 +198,7 @@ struct ApprovalRequest: Identifiable {
             documents = try await knowledge.documents()
             semanticSearchAvailable = await knowledge.hasSemanticSearch()
             archiveFiles = try FileManager.default.contentsOfDirectory(at: AppPaths.archives, includingPropertiesForKeys: nil).filter { $0.pathExtension == "zim" }.map(\.lastPathComponent).sorted()
+            wikipediaUpdates.setInstalled(archiveFiles)
         } catch { self.error = error.localizedDescription }
     }
     func importKnowledge(_ urls: [URL]) {
@@ -252,9 +257,10 @@ struct ApprovalRequest: Identifiable {
     func suspend() {
         stop()
         modelSession.suspend()
+        wikipediaUpdates.setForeground(false)
         save()
     }
-    func activate() { modelSession.activate() }
+    func activate() { modelSession.activate(); wikipediaUpdates.setForeground(true) }
     func releaseForMemoryPressure() { stop(); modelSession.release(); save() }
     private func requestApproval(_ call: ToolCall) async -> Bool {
         await withCheckedContinuation { continuation in
@@ -436,6 +442,20 @@ struct ApprovalRequest: Identifiable {
     static func visibleAnswer(_ text: String) -> String {
         if let range = text.range(of: "</think>", options: .backwards) { return String(text[range.upperBound...]).trimmingCharacters(in: .whitespacesAndNewlines) }
         return text.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    /// Presentation only. The transcript and permission-checked executor stay
+    /// separate; unfinished tool JSON must not masquerade as the assistant reply.
+    static func streamingAnswer(_ message: ChatMessage, mode: ConversationMode) -> String {
+        guard message.role == "assistant", message.content.isEmpty,
+              let event = message.events?.last, event.kind == .generation else { return "" }
+        let raw = event.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if (raw.hasPrefix("<think>") || "<think>".hasPrefix(raw)), !raw.contains("</think>") { return "" }
+        let answer = visibleAnswer(raw)
+        if mode == .work {
+            let controlPrefixes = ["```json", "<tool_call>", "<|tool_call", "<function"]
+            if answer.hasPrefix("{") || controlPrefixes.contains(where: { $0.hasPrefix(answer) || answer.hasPrefix($0) }) || ToolCall.looksLikeCall(answer) { return "" }
+        }
+        return answer
     }
     private func updateMessage(_ conversation: UUID, _ message: UUID, _ body: (inout ChatMessage) -> Void) {
         guard let c = conversations.firstIndex(where: { $0.id == conversation }), let m = conversations[c].messages.firstIndex(where: { $0.id == message }) else { return }

@@ -5,7 +5,7 @@ import UIKit
 final class NativeIntegrationTests: XCTestCase {
     func testExpandedCatalogUsesDistinctModelsAndHonestMemoryLabels() throws {
         let models = ModelCatalog.models
-        XCTAssertEqual(models.count, 36)
+        XCTAssertEqual(models.count, 39)
         XCTAssertEqual(Set(models.map(\.repository)).count, models.count)
         XCTAssertEqual(Set(ModelCatalog.families), Set(models.map(\.family)))
         XCTAssertEqual(ModelCatalog.families.count, Set(ModelCatalog.families).count)
@@ -29,7 +29,7 @@ final class NativeIntegrationTests: XCTestCase {
         let models = ModelCatalog.models
         XCTAssertEqual(Set(models.map(\.id)).count, models.count)
         let fourB = models.filter { $0.parameters == "4B" }
-        XCTAssertEqual(Set(fourB.map(\.id)), ["qwen35-4", "qwen3-4", "qwen3-4-instruct2507", "gemma3-4"])
+        XCTAssertEqual(Set(fourB.map(\.id)), ["qwen35-4", "qwen3-4", "qwen3-4-instruct2507", "gemma3-4", "nemotron3-nano-4"])
         XCTAssertTrue(fourB.allSatisfy { $0.minimumMemoryGB >= 8 && $0.preferredQuant == "Q4_K_M" })
         XCTAssertTrue(models.first { $0.id == "phi4-mini" }?.isFourBillionClass == true)
     }

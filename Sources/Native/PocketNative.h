@@ -18,6 +18,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PMArchive : NSObject
 - (nullable instancetype)initWithPath:(NSString *)path error:(NSError **)error;
 - (nullable NSArray<NSDictionary<NSString *, NSString *> *> *)search:(NSString *)query limit:(int)limit error:(NSError **)error;
+/// Metadata only: does not decompress every article in a page of results.
+- (nullable NSArray<NSDictionary<NSString *, NSString *> *> *)browse:(NSString *)query offset:(int)offset limit:(int)limit error:(NSError **)error;
+- (nullable NSDictionary<NSString *, NSString *> *)articleAtPath:(NSString *)path error:(NSError **)error;
 @property(nonatomic, readonly) NSUInteger articleCount;
 @end
 NS_ASSUME_NONNULL_END

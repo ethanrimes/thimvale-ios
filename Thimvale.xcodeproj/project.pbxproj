@@ -13,8 +13,12 @@
 		128171F3ED72F46F5C2DAD66 /* NativeIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A1BDC320026EAD1B1CCD56 /* NativeIntegrationTests.swift */; };
 		136CF8A0BCBB625161769A4B /* AppIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9542E361F5976D1F9CC2278E /* AppIdentity.swift */; };
 		16B88DE1F3C3A39BA8D9D719 /* llama.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCBCAB99D251C969E4C52435 /* llama.xcframework */; };
+		1D18F8BAB2BAE914DB3ACF2B /* WikipediaReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC98974FB0C819C37B580FA3 /* WikipediaReader.swift */; };
 		1E5A234BF41352B089A3F3A3 /* LICENSES in Resources */ = {isa = PBXBuildFile; fileRef = 31028C82AA37E45AC573A9ED /* LICENSES */; };
+		2C800089C7285A8DB2D77B68 /* ReviewCadence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F431A9E483FD90C4DC32F4B /* ReviewCadence.swift */; };
+		3A7B847BFC70F53227A3AB7B /* WikipediaReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C91105DFB4EEB360E87F9E7 /* WikipediaReaderTests.swift */; };
 		3BBB68758BE61EAA5710DF6C /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 7166F1142F3D760A68787128 /* SwiftSoup */; };
+		40567478962DB686FE5A2D5B /* WikipediaUpdateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C5B0FC658E961CEF73CDCE /* WikipediaUpdateTests.swift */; };
 		51E787F71DDBC5C8744E2D27 /* Acknowledgments.txt in Resources */ = {isa = PBXBuildFile; fileRef = D8ADEE46B14B95FC8DC06AA1 /* Acknowledgments.txt */; };
 		529ADA47ACAEBA62CEC402B3 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24974DB58320A6275614AF6 /* Permissions.swift */; };
 		564BCBFA4F610AF0FDD736D8 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DB03CF18C9B2F0BF0D6DBF /* AppState.swift */; };
@@ -22,10 +26,14 @@
 		6473A8C94BAB8E613E5CA702 /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E86637CAFBCA4757E53E81B /* PermissionsView.swift */; };
 		66329FF06BCD5BBA4E081F52 /* PocketNative.mm in Sources */ = {isa = PBXBuildFile; fileRef = CD20EB2896B4E451BC31795C /* PocketNative.mm */; };
 		68790E9012B6429028CCBA48 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CD305C9E0F424ADF690F0164 /* libsqlite3.tbd */; };
+		6A3BDCBEB5AC84A6E88FD54F /* AppNotices.swift in Sources */ = {isa = PBXBuildFile; fileRef = F495D8D1E827A37C96F198DF /* AppNotices.swift */; };
 		714D43EF00F6B7CB4DACDBB3 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 053C3F9080EB36B7E4DF961D /* Metal.framework */; };
+		7CF09B3CB455664F4F46CC55 /* CitationText.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B2E7FCA67D0FEA3BB2A50C /* CitationText.swift */; };
 		7FD5C9F666ACD6E396AB6F6C /* InferenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FECAAE4D7FB0F96F7F67EE /* InferenceService.swift */; };
+		8198B9901779CE9F1B5445C0 /* WikipediaUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606A53FE66305C0FF9F0979 /* WikipediaUpdatesView.swift */; };
 		83099413F0C1C7939B988363 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 98F90D1BAFF720477930E814 /* libz.tbd */; };
 		88D85E5A551E0E47E778863F /* KnowledgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CF209069C4E8357772FDC6 /* KnowledgeView.swift */; };
+		928EA2BB9F441E138E7B6D3E /* WikipediaBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DCD4B665EE48392978E32E /* WikipediaBrowserView.swift */; };
 		937D40969F660B148AFE7DB7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF77756BFA5D937486BD4BAB /* Accelerate.framework */; };
 		9E45272FF9E05A52265DFD51 /* RegressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C397F5A5FFFB1B1106466AE /* RegressionTests.swift */; };
 		A26F78BFB1B22FC88E8C7B3B /* NaturalLanguage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B530C020F7FC7DA6E3D19E24 /* NaturalLanguage.framework */; };
@@ -38,6 +46,7 @@
 		C1FA6204F576150966CA24B9 /* AgentEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A81ECC02FD0B00E70C0C33B /* AgentEventView.swift */; };
 		C758DA912A3775068904A46D /* ModelHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C269832E889657954C23231 /* ModelHub.swift */; };
 		C9EC1CD7444859D1B9B0B16A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B7AC691D18ECC38E3D1D9EF7 /* PrivacyInfo.xcprivacy */; };
+		CABD69D88C7C8E33E4F3BB12 /* WikipediaUpdates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E06820ED2F9C39AE34CF4CF /* WikipediaUpdates.swift */; };
 		CCCCBF14B838D53874FEFB4C /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DC86216F17A76AB258A60 /* Domain.swift */; };
 		CE4B7D725E3314E74AD064C1 /* ModelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0FCF291A58466FE3B6E696 /* ModelsView.swift */; };
 		CF8090F947E668BC5F4943C4 /* CoreKiwix.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A44C74D1648428BFDA710B9 /* CoreKiwix.xcframework */; };
@@ -97,16 +106,20 @@
 		4DEC295E5CE3BF0222AB00B3 /* KnowledgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeService.swift; sourceTree = "<group>"; };
 		517AD785AE11E50416C7FFB4 /* SecureWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureWorkspace.swift; sourceTree = "<group>"; };
 		5C397F5A5FFFB1B1106466AE /* RegressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegressionTests.swift; sourceTree = "<group>"; };
+		5E06820ED2F9C39AE34CF4CF /* WikipediaUpdates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikipediaUpdates.swift; sourceTree = "<group>"; };
+		5F431A9E483FD90C4DC32F4B /* ReviewCadence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewCadence.swift; sourceTree = "<group>"; };
 		603CB79672805AA1734A034D /* Thimvale.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Thimvale.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6253D593DAF82B23921DCFBA /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		719124325B4C34650AFB5BA3 /* Design.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Design.swift; sourceTree = "<group>"; };
 		81CF209069C4E8357772FDC6 /* KnowledgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeView.swift; sourceTree = "<group>"; };
+		82DCD4B665EE48392978E32E /* WikipediaBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikipediaBrowserView.swift; sourceTree = "<group>"; };
 		8C269832E889657954C23231 /* ModelHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelHub.swift; sourceTree = "<group>"; };
 		8E86637CAFBCA4757E53E81B /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
 		90A3FE24B08D8D347952B733 /* SessionAndStreamingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionAndStreamingTests.swift; sourceTree = "<group>"; };
 		9542E361F5976D1F9CC2278E /* AppIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIdentity.swift; sourceTree = "<group>"; };
 		9618F02104E0102C12BFD087 /* KnowledgeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeStore.swift; sourceTree = "<group>"; };
 		98F90D1BAFF720477930E814 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		9C91105DFB4EEB360E87F9E7 /* WikipediaReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikipediaReaderTests.swift; sourceTree = "<group>"; };
 		9D40E84D3F9CA8EB8012F9BD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A0A1BDC320026EAD1B1CCD56 /* NativeIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeIntegrationTests.swift; sourceTree = "<group>"; };
 		A48EBE4B3AC78E66344EE9AE /* ThimvaleUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ThimvaleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -114,14 +127,19 @@
 		B4FECAAE4D7FB0F96F7F67EE /* InferenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InferenceService.swift; sourceTree = "<group>"; };
 		B530C020F7FC7DA6E3D19E24 /* NaturalLanguage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NaturalLanguage.framework; path = System/Library/Frameworks/NaturalLanguage.framework; sourceTree = SDKROOT; };
 		B7AC691D18ECC38E3D1D9EF7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		C606A53FE66305C0FF9F0979 /* WikipediaUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikipediaUpdatesView.swift; sourceTree = "<group>"; };
+		C7C5B0FC658E961CEF73CDCE /* WikipediaUpdateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikipediaUpdateTests.swift; sourceTree = "<group>"; };
 		CCBCAB99D251C969E4C52435 /* llama.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = llama.xcframework; path = Vendor/llama.xcframework; sourceTree = "<group>"; };
 		CD20EB2896B4E451BC31795C /* PocketNative.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PocketNative.mm; sourceTree = "<group>"; };
 		CD305C9E0F424ADF690F0164 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		D3B2E7FCA67D0FEA3BB2A50C /* CitationText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitationText.swift; sourceTree = "<group>"; };
 		D8ADEE46B14B95FC8DC06AA1 /* Acknowledgments.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Acknowledgments.txt; sourceTree = "<group>"; };
 		D9E3E258D6D9A172F3689C5A /* ModelSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSession.swift; sourceTree = "<group>"; };
 		E24974DB58320A6275614AF6 /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 		E38E5B758C66CB4DBC099D2C /* Downloads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Downloads.swift; sourceTree = "<group>"; };
 		E3C9BDEF2D0458641A26200B /* PocketNative.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PocketNative.h; sourceTree = "<group>"; };
+		EC98974FB0C819C37B580FA3 /* WikipediaReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikipediaReader.swift; sourceTree = "<group>"; };
+		F495D8D1E827A37C96F198DF /* AppNotices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNotices.swift; sourceTree = "<group>"; };
 		FF77756BFA5D937486BD4BAB /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -148,11 +166,14 @@
 		06E3F33096B73855D47F27CE /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				F495D8D1E827A37C96F198DF /* AppNotices.swift */,
 				0F0FEA8A1215DF3AED84DC1A /* AppPaths.swift */,
 				E38E5B758C66CB4DBC099D2C /* Downloads.swift */,
 				B4FECAAE4D7FB0F96F7F67EE /* InferenceService.swift */,
 				4DEC295E5CE3BF0222AB00B3 /* KnowledgeService.swift */,
 				8C269832E889657954C23231 /* ModelHub.swift */,
+				EC98974FB0C819C37B580FA3 /* WikipediaReader.swift */,
+				5E06820ED2F9C39AE34CF4CF /* WikipediaUpdates.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -171,6 +192,8 @@
 			children = (
 				A0A1BDC320026EAD1B1CCD56 /* NativeIntegrationTests.swift */,
 				90A3FE24B08D8D347952B733 /* SessionAndStreamingTests.swift */,
+				9C91105DFB4EEB360E87F9E7 /* WikipediaReaderTests.swift */,
+				C7C5B0FC658E961CEF73CDCE /* WikipediaUpdateTests.swift */,
 			);
 			name = Integration;
 			path = Tests/Integration;
@@ -238,10 +261,13 @@
 			children = (
 				4A81ECC02FD0B00E70C0C33B /* AgentEventView.swift */,
 				6253D593DAF82B23921DCFBA /* ChatView.swift */,
+				D3B2E7FCA67D0FEA3BB2A50C /* CitationText.swift */,
 				719124325B4C34650AFB5BA3 /* Design.swift */,
 				81CF209069C4E8357772FDC6 /* KnowledgeView.swift */,
 				2E0FCF291A58466FE3B6E696 /* ModelsView.swift */,
 				8E86637CAFBCA4757E53E81B /* PermissionsView.swift */,
+				82DCD4B665EE48392978E32E /* WikipediaBrowserView.swift */,
+				C606A53FE66305C0FF9F0979 /* WikipediaUpdatesView.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -278,6 +304,7 @@
 				431DC86216F17A76AB258A60 /* Domain.swift */,
 				9618F02104E0102C12BFD087 /* KnowledgeStore.swift */,
 				E24974DB58320A6275614AF6 /* Permissions.swift */,
+				5F431A9E483FD90C4DC32F4B /* ReviewCadence.swift */,
 				517AD785AE11E50416C7FFB4 /* SecureWorkspace.swift */,
 			);
 			path = Core;
@@ -407,9 +434,11 @@
 			files = (
 				C1FA6204F576150966CA24B9 /* AgentEventView.swift in Sources */,
 				136CF8A0BCBB625161769A4B /* AppIdentity.swift in Sources */,
+				6A3BDCBEB5AC84A6E88FD54F /* AppNotices.swift in Sources */,
 				EADEC2F25BC54E710A838D79 /* AppPaths.swift in Sources */,
 				564BCBFA4F610AF0FDD736D8 /* AppState.swift in Sources */,
 				5DF0FC6E7A78D669E87F6CF8 /* ChatView.swift in Sources */,
+				7CF09B3CB455664F4F46CC55 /* CitationText.swift in Sources */,
 				09C0BD9F35BE036DC28DEBD9 /* Design.swift in Sources */,
 				CCCCBF14B838D53874FEFB4C /* Domain.swift in Sources */,
 				F6982C9D4C6BADFEF894D68D /* Downloads.swift in Sources */,
@@ -423,9 +452,14 @@
 				529ADA47ACAEBA62CEC402B3 /* Permissions.swift in Sources */,
 				6473A8C94BAB8E613E5CA702 /* PermissionsView.swift in Sources */,
 				66329FF06BCD5BBA4E081F52 /* PocketNative.mm in Sources */,
+				2C800089C7285A8DB2D77B68 /* ReviewCadence.swift in Sources */,
 				AB75D618DC92BE58FED597DD /* SecureWorkspace.swift in Sources */,
 				01CE44F74457F35FFE7209D1 /* ThimvaleApp.swift in Sources */,
 				B32F16606DC041F7EDEE2556 /* UITestFixtures.swift in Sources */,
+				928EA2BB9F441E138E7B6D3E /* WikipediaBrowserView.swift in Sources */,
+				1D18F8BAB2BAE914DB3ACF2B /* WikipediaReader.swift in Sources */,
+				CABD69D88C7C8E33E4F3BB12 /* WikipediaUpdates.swift in Sources */,
+				8198B9901779CE9F1B5445C0 /* WikipediaUpdatesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -435,6 +469,8 @@
 			files = (
 				128171F3ED72F46F5C2DAD66 /* NativeIntegrationTests.swift in Sources */,
 				E4A8C45439D744F408E19EA5 /* SessionAndStreamingTests.swift in Sources */,
+				3A7B847BFC70F53227A3AB7B /* WikipediaReaderTests.swift in Sources */,
+				40567478962DB686FE5A2D5B /* WikipediaUpdateTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

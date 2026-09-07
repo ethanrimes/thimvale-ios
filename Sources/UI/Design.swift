@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 
 enum Palette {
     static let ink = Color.primary
@@ -71,6 +72,7 @@ struct SectionHeading: View {
 
 struct RootView: View {
     @Bindable var state: AppState
+    @Environment(\.requestReview) private var requestReview
     @State private var settings = false
     var body: some View {
         TabView(selection: $state.selectedTab) {
@@ -80,6 +82,29 @@ struct RootView: View {
             PermissionsView(state: state).tag(3).tabItem { Label("Permissions", systemImage: "hand.raised") }
         }
         .tint(Palette.accent)
+        .safeAreaInset(edge: .top) {
+            if state.packNotifications.noticeCount > 0 {
+                HStack(spacing: 12) {
+                    Button {
+                        state.selectedTab = 2; state.showWikipediaUpdates = true; state.packNotifications.dismissNotice()
+                    } label: {
+                        Label("Wikipedia updates available", systemImage: "arrow.triangle.2.circlepath").font(.caption.weight(.medium))
+                    }.accessibilityIdentifier("packUpdateNotice")
+                    Spacer()
+                    Button { state.packNotifications.dismissNotice() } label: { Image(systemName: "xmark").font(.caption) }.accessibilityLabel("Dismiss update notice")
+                }.padding(14).background(Palette.surface)
+            }
+        }
+        .sheet(isPresented: $state.showWikipediaUpdates) { WikipediaUpdatesView(state: state) }
+        .onChange(of: state.wikipediaUpdates.available.map { $0.pack.filename }, initial: true) { _, _ in
+            Task { await state.packNotifications.discovered(state.wikipediaUpdates.available) }
+        }
+        .onChange(of: state.isGenerating) { old, new in
+            if old && !new {
+                state.reviews.recordInteraction()
+                if UIApplication.shared.applicationState == .active, state.approval == nil, state.reviews.consumeOpportunity() { requestReview() }
+            }
+        }
         .sheet(item: $state.approval, onDismiss: { state.approve(false) }) { request in
             ApprovalView(state: state, request: request).interactiveDismissDisabled()
         }

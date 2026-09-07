@@ -4,7 +4,9 @@
 #include <zim/archive.h>
 #include <zim/search.h>
 #include <zim/item.h>
+#include <zim/error.h>
 #include <atomic>
+#include <climits>
 #include <memory>
 #include <vector>
 #include <algorithm>
@@ -177,6 +179,45 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
     return self;
 }
 - (NSUInteger)articleCount { return _archive ? _archive->getArticleCount() : 0; }
+- (NSArray<NSDictionary<NSString *,NSString *> *> *)browse:(NSString *)query offset:(int)offset limit:(int)limit error:(NSError **)error {
+    try {
+        offset = std::clamp(offset, 0, INT_MAX - 100);
+        limit = std::clamp(limit, 1, 100);
+        NSMutableArray *output = [NSMutableArray new];
+        if (query.length == 0) {
+            for (auto entry : _archive->iterByTitle().offset(offset, limit)) {
+                [output addObject:@{@"title": [NSString stringWithUTF8String:entry.getTitle().c_str()],
+                                    @"path": [NSString stringWithUTF8String:entry.getPath().c_str()]}];
+            }
+        } else {
+            auto search = _searcher->search(zim::Query(query.UTF8String));
+            auto results = search.getResults(offset, limit);
+            for (auto it = results.begin(); it != results.end(); ++it) {
+                [output addObject:@{@"title": [NSString stringWithUTF8String:it.getTitle().c_str()],
+                                    @"path": [NSString stringWithUTF8String:it.getPath().c_str()],
+                                    @"snippet": [NSString stringWithUTF8String:it.getSnippet().c_str()]}];
+            }
+        }
+        return output;
+    } catch (const std::exception &e) { PMError(error, [NSString stringWithUTF8String:e.what()]); return nil; }
+}
+- (NSDictionary<NSString *,NSString *> *)articleAtPath:(NSString *)path error:(NSError **)error {
+    try {
+        auto item = _archive->getEntryByPath(path.UTF8String).getItem(true);
+        auto mime = item.getMimetype();
+        if (mime.find("text/html") != 0 && mime != "application/xhtml+xml")
+            throw std::runtime_error("This link is not a readable article.");
+        if (item.getSize() > 4 * 1024 * 1024)
+            throw std::runtime_error("This article exceeds the reader's 4 MB page limit.");
+        auto blob = item.getData();
+        NSString *html = [[NSString alloc] initWithBytes:blob.data() length:blob.size() encoding:NSUTF8StringEncoding];
+        if (!html) throw std::runtime_error("This article is not valid UTF-8 text.");
+        return @{@"title": [NSString stringWithUTF8String:item.getTitle().c_str()],
+                 @"path": [NSString stringWithUTF8String:item.getPath().c_str()], @"html": html};
+    } catch (const zim::EntryNotFound &) {
+        PMError(error, @"This page isn't included in this pack. Try another downloaded edition."); return nil;
+    } catch (const std::exception &e) { PMError(error, [NSString stringWithUTF8String:e.what()]); return nil; }
+}
 - (NSArray<NSDictionary<NSString *,NSString *> *> *)search:(NSString *)query limit:(int)limit error:(NSError **)error {
     try {
         auto search = _searcher->search(zim::Query(query.UTF8String));
