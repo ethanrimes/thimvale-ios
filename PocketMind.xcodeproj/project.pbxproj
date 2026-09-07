@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		05AD65A812BB65E7BCE56DCC /* NaturalLanguage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C602EE10B73A18CE7E0D0702 /* NaturalLanguage.framework */; };
 		0B48C6939BA3343FD7131634 /* LICENSES in Resources */ = {isa = PBXBuildFile; fileRef = 3E2E9889CD990890C10C9E47 /* LICENSES */; };
+		0D29C16E568DC3A9666735C4 /* UITestFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552216054ADBBBE8DA3A3382 /* UITestFixtures.swift */; };
 		168FF44A7F77408F51BED66F /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0657FA61168CC1EAFD5BD320 /* libc++.tbd */; };
 		27CF3604869994BE3BC6D95F /* AppPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737E223123867E341B30A0DB /* AppPaths.swift */; };
 		2E29583DF5218E432CE2B03F /* KnowledgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92B663432342F3CEF3567D6 /* KnowledgeView.swift */; };
@@ -29,6 +30,7 @@
 		8E2DD24089AFC5524EC443B9 /* Downloads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A38C6BB46ED8664DC310A12 /* Downloads.swift */; };
 		99E9024BF7CD9202D877FB2A /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 156EABF18CA68460AC7AD555 /* ChatView.swift */; };
 		A1AA0FDDE97BCF0CB6F1AE80 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = B8A490326C2CB185441448F6 /* SwiftSoup */; };
+		A6091F759ED4CA19BFDC4146 /* RegressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7271AD45E649A0AA2BC5A24C /* RegressionTests.swift */; };
 		A6D665CE0C8A1C34302638D5 /* KnowledgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0DE424259B43339CFE728D /* KnowledgeService.swift */; };
 		ABE40B1A5133D83A8A014C0F /* NativeIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC409C7BC8A9CC2050EAFF46 /* NativeIntegrationTests.swift */; };
 		AE5DFFF48E75A7B4BFB7BA64 /* CoreKiwix.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 227E8DCDA0254A523C56CE6C /* CoreKiwix.xcframework */; };
@@ -87,11 +89,13 @@
 		2FFE40C44096CD0A9B5BDF68 /* NavigationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTests.swift; sourceTree = "<group>"; };
 		3E2E9889CD990890C10C9E47 /* LICENSES */ = {isa = PBXFileReference; lastKnownFileType = folder; path = LICENSES; sourceTree = SOURCE_ROOT; };
 		477CDDD38E96DA56B1024F4C /* PocketNative.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PocketNative.mm; sourceTree = "<group>"; };
+		552216054ADBBBE8DA3A3382 /* UITestFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestFixtures.swift; sourceTree = "<group>"; };
 		574147C5CD4FB325A4A68054 /* PocketMindUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PocketMindUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C0935FB1B7BA8C8AF7D3C9C /* PocketNative.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PocketNative.h; sourceTree = "<group>"; };
 		5F3E59FE99CDC08CC9EDE65D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		68D2751EFCAD9BEA94DADD40 /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
 		6A38C6BB46ED8664DC310A12 /* Downloads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Downloads.swift; sourceTree = "<group>"; };
+		7271AD45E649A0AA2BC5A24C /* RegressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegressionTests.swift; sourceTree = "<group>"; };
 		737E223123867E341B30A0DB /* AppPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPaths.swift; sourceTree = "<group>"; };
 		78BF7EEADC2A6E48DB74F5E9 /* PocketMindApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketMindApp.swift; sourceTree = "<group>"; };
 		7B6B1657987809369EEEA54B /* SecureWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureWorkspace.swift; sourceTree = "<group>"; };
@@ -214,6 +218,7 @@
 			children = (
 				DFC3066BAD501CCB5B5BCE9E /* AppState.swift */,
 				78BF7EEADC2A6E48DB74F5E9 /* PocketMindApp.swift */,
+				552216054ADBBBE8DA3A3382 /* UITestFixtures.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -231,6 +236,7 @@
 			isa = PBXGroup;
 			children = (
 				2FFE40C44096CD0A9B5BDF68 /* NavigationTests.swift */,
+				7271AD45E649A0AA2BC5A24C /* RegressionTests.swift */,
 			);
 			name = UI;
 			path = Tests/UI;
@@ -384,6 +390,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FD1D2F8C498CD78C5D1878E7 /* NavigationTests.swift in Sources */,
+				A6091F759ED4CA19BFDC4146 /* RegressionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +423,7 @@
 				4A58AC0F867DF8A7A811A85D /* PocketMindApp.swift in Sources */,
 				5A5D0C6C66E4406D51E8BF67 /* PocketNative.mm in Sources */,
 				E08E088E1D64225DFC95EFA9 /* SecureWorkspace.swift in Sources */,
+				0D29C16E568DC3A9666735C4 /* UITestFixtures.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

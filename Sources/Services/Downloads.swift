@@ -89,7 +89,7 @@ struct DownloadJob: Codable, Identifiable {
         if let data = try? Data(contentsOf: resumeURL) { task = session.downloadTask(withResumeData: data) }
         else {
             var request = URLRequest(url: jobs[index].url)
-            request.allowsCellularAccess = UserDefaults.standard.bool(forKey: "cellularDownloads")
+            request.allowsCellularAccess = AppPaths.preferences.bool(forKey: "cellularDownloads")
             if jobs[index].url.host == "huggingface.co", !Keychain.read("huggingface").isEmpty {
                 request.setValue("Bearer " + Keychain.read("huggingface"), forHTTPHeaderField: "Authorization")
             }

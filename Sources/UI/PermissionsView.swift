@@ -85,7 +85,7 @@ struct SettingsView: View {
     @State private var hfToken = ""
     @State private var braveKey = ""
     @State private var saved = false
-    @AppStorage("cellularDownloads") private var cellular = false
+    @AppStorage("cellularDownloads", store: AppPaths.preferences) private var cellular = false
     var body: some View {
         NavigationStack {
             Form {

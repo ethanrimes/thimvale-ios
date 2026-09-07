@@ -25,6 +25,8 @@ Select your Apple development team in Signing & Capabilities to install on a phy
 
 The app targets iOS 18+. There is no hosted inference service, account requirement, or analytics. Models and knowledge archives download only when requested. Network access is needed for downloads and the optional web tools.
 
+With an iPhone simulator already booted, `./scripts/run-simulator.sh` builds, installs, and launches this exact app. Pass its simulator UUID if several are running. PocketMind is native Swift/C++; it does not use React Native, Expo, Metro, or a JavaScript bundle. A red “No script URL provided” screen belongs to a different app. The iOS status-bar “◀ PocketMind” label is a return button, not the foreground app's name.
+
 ## Use
 
 1. In **Models**, select a curated model or search Hugging Face. Review the model card, choose a quantization, and download. Private/gated repositories require a read token in Settings and accepted upstream terms. Single-file GGUF imports are also supported.
@@ -48,7 +50,9 @@ xcodebuild -project PocketMind.xcodeproj -scheme PocketMind \
 
 Tests cover capability denial, approval and revocation, path traversal, symlinks, overwrite refusal, compression, index updates/deletion, source provenance, real GGUF generation/cancellation, original Wikipedia article retrieval, upstream metadata, downloads and interrupted verification, plus UI navigation and model filtering. The test-assets script pins SHA-256 digests. Large files are excluded from Git. Set the scheme's `POCKETMIND_NETWORK_TESTS` to `0` for offline test runs; local inference and archive tests still run when fixtures are present.
 
-GitHub Actions builds the app and runs the core tests on each push. XcodeGen's `project.yml` is the project source of truth; regenerate the checked-in project after changing it.
+GitHub Actions builds the app, fetches the pinned test assets, and runs core, native integration, and simulator UI tests on each push. Test result bundles are saved as workflow artifacts. XcodeGen's `project.yml` is the project source of truth; regenerate the checked-in project after changing it.
+
+Simulator UI regressions use a fresh `POCKETMIND_TEST_SESSION` UUID for separate app storage, preferences, and Keychain entries. They never reset the ordinary app library. Real chat and offline-search UI cases import the pinned fixtures through the app's normal import services. Test fixture loading is compiled out of physical-device and Release builds.
 
 ## Implementation limits
 

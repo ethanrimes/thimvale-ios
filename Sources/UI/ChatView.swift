@@ -103,7 +103,10 @@ struct ChatView: View {
                     .font(.subheadline).lineLimit(1...5).focused($composing).padding(.vertical, 10).accessibilityIdentifier("messageInput")
                 Button {
                     if state.isGenerating { state.stop() }
-                    else { let message = draft; draft = ""; composing = false; state.send(message) }
+                    else {
+                        composing = false
+                        if state.send(draft) { draft = "" }
+                    }
                 } label: {
                     Image(systemName: state.isGenerating ? "stop.fill" : "arrow.up").font(.system(size: 16, weight: .semibold)).foregroundStyle(Palette.background)
                         .frame(width: 38, height: 38).background(Palette.accent, in: Circle())
@@ -127,7 +130,7 @@ struct ChatView: View {
                     ForEach(Array(message.activity.enumerated()), id: \.offset) { _, item in Text(item).font(.caption).frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 3) }
                 }.font(.caption).foregroundStyle(Palette.muted)
             }
-            if !message.content.isEmpty { Text(.init(AppState.visibleAnswer(message.content))).font(.system(size: 16)).lineSpacing(5).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) }
+            if !message.content.isEmpty { Text(.init(AppState.visibleAnswer(message.content))).font(.system(size: 16)).lineSpacing(5).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).accessibilityIdentifier(message.role + "Message") }
             if !message.citations.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
                     Eyebrow(text: "Evidence retrieved · tap to inspect")
@@ -135,7 +138,7 @@ struct ChatView: View {
                     ForEach(unique) { citation in
                         Button { source = citation } label: {
                             HStack(spacing: 8) { Image(systemName: "doc.text.magnifyingglass"); Text(citation.title).lineLimit(1); Spacer(); Text("[\(citation.id)]").font(.system(size: 9, design: .monospaced)) }.font(.caption).padding(11).background(Palette.tint, in: RoundedRectangle(cornerRadius: 10))
-                        }
+                        }.accessibilityIdentifier("citation_" + citation.id)
                     }
                 }
             }

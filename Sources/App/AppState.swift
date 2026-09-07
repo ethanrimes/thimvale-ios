@@ -72,7 +72,7 @@ struct ApprovalRequest: Identifiable {
             if let file = initialModels[i].localFilename, !FileManager.default.fileExists(atPath: AppPaths.models.appendingPathComponent(file).path) { initialModels[i].localFilename = nil }
         }
         models = initialModels
-        selectedModelID = UserDefaults.standard.string(forKey: "selectedModel")
+        selectedModelID = AppPaths.preferences.string(forKey: "selectedModel")
         policy = AppPaths.load(PermissionPolicy.self, name: "permissions.json") ?? .init()
         folders = AppPaths.load([FolderGrant].self, name: "folders.json") ?? [.init(id: "exports", name: "PocketMind Exports", isExports: true)]
         downloads = DownloadCenter()
@@ -88,7 +88,7 @@ struct ApprovalRequest: Identifiable {
             try AppPaths.save(models, as: "models.json")
             try AppPaths.save(policy, as: "permissions.json")
             try AppPaths.save(folders, as: "folders.json")
-            UserDefaults.standard.set(selectedModelID, forKey: "selectedModel")
+            AppPaths.preferences.set(selectedModelID, forKey: "selectedModel")
         } catch { self.error = error.localizedDescription }
     }
     func setMode(_ mode: ConversationMode) {
@@ -300,15 +300,15 @@ struct ApprovalRequest: Identifiable {
         }
         return text
     }
-    func send(_ input: String) {
+    @discardableResult func send(_ input: String) -> Bool {
         let input = input.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !isGenerating, !input.isEmpty else { return }
-        guard let model = selectedModel, let filename = model.localFilename else { selectedTab = 1; notice = "Download or import a model to start a conversation."; return }
-        guard input.count <= 8_000 else { error = "Please shorten your message to 8,000 characters or import it as a document."; return }
+        guard !isGenerating, !input.isEmpty else { return false }
+        guard input.count <= 8_000 else { error = "Please shorten your message to 8,000 characters or import it as a document."; return false }
+        guard let model = selectedModel, let filename = model.localFilename else { selectedTab = 1; notice = "Download or import a model to start a conversation."; return false }
         let mode = current.mode
         let conversation = conversationID
         let responseID = UUID()
-        guard let index = conversations.firstIndex(where: { $0.id == conversation }) else { return }
+        guard let index = conversations.firstIndex(where: { $0.id == conversation }) else { return false }
         if conversations[index].messages.isEmpty { conversations[index].title = String(input.prefix(48)) }
         conversations[index].messages.append(.init(role: "user", content: input))
         let history = conversations[index].messages
@@ -370,6 +370,7 @@ struct ApprovalRequest: Identifiable {
                 }
             }
         }
+        return true
     }
     static func visibleAnswer(_ text: String) -> String {
         if let range = text.range(of: "</think>", options: .backwards) { return String(text[range.upperBound...]).trimmingCharacters(in: .whitespacesAndNewlines) }
