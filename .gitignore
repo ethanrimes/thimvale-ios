@@ -19,3 +19,11 @@ TestResults/
 *.provisionprofile
 *.xcarchive/
 *.ipa
+.gradle/
+.kotlin/
+.cxx/
+local.properties
+*.apk
+*.aab
+*.jks
+*.keystore
