@@ -368,7 +368,12 @@ import XCTest
 
     private func reveal(_ element: XCUIElement, in app: XCUIApplication) {
         for _ in 0..<10 {
-            if element.exists && element.isHittable { return }
+            // XCTest can report a partly obscured row as hittable even when
+            // its center is behind the fixed chat composer. Bring the whole
+            // control into the visible conversation before tapping it.
+            let composer = app.textFields["messageInput"]
+            let clearOfComposer = !element.exists || !composer.exists || element.frame.maxY < composer.frame.minY - 24
+            if element.exists && element.isHittable && clearOfComposer { return }
             if element.exists, element.frame.midY < app.frame.midY { app.swipeDown() }
             else { app.swipeUp() }
         }
