@@ -13,3 +13,9 @@ __pycache__/
 *.partial
 *.log
 TestResults/
+*.p8
+*.p12
+*.mobileprovision
+*.provisionprofile
+*.xcarchive/
+*.ipa

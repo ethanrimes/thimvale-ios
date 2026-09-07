@@ -137,7 +137,13 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
         llama_sampler_chain_add(sampler, llama_sampler_init_top_k(40));
         llama_sampler_chain_add(sampler, llama_sampler_init_top_p(0.9f, 1));
         llama_sampler_chain_add(sampler, llama_sampler_init_temp(std::max(0.05f, temperature)));
-        llama_sampler_chain_add(sampler, llama_sampler_init_dist(LLAMA_DEFAULT_SEED));
+        uint32_t seed = LLAMA_DEFAULT_SEED;
+#if DEBUG && TARGET_OS_SIMULATOR
+        // Real inference, reproducible sampling in isolated regression sessions only.
+        NSString *testSession = NSProcessInfo.processInfo.environment[@"THIMVALE_TEST_SESSION"];
+        if (testSession.length && [[NSUUID alloc] initWithUUIDString:testSession]) seed = 42;
+#endif
+        llama_sampler_chain_add(sampler, llama_sampler_init_dist(seed));
         NSMutableString *output = [NSMutableString new];
         std::string pending;
         for (int generated = 0; generated < maxTokens; ++generated) {
