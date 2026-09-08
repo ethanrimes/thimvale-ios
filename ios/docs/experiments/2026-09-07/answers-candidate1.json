@@ -1,0 +1,1267 @@
+{
+  "log": "thimvale-experiment-candidate-answers.log",
+  "summary": [
+    {
+      "kind": "answer",
+      "model": "lfm25-230m-q4",
+      "samples": 10,
+      "median_firstTokenMS": 5296.9733125,
+      "median_totalMS": 6901.132271,
+      "median_promptTokens": 446.0,
+      "median_reusedTokens": 0.0,
+      "median_decode_tokens_per_second": 58.251862370421094,
+      "expected_phrase_present": 7,
+      "phrase_and_any_supporting_source_cited": 5
+    },
+    {
+      "kind": "unanswerable",
+      "model": "lfm25-230m-q4",
+      "samples": 1,
+      "median_firstTokenMS": 2139.608709,
+      "median_totalMS": 2954.586834,
+      "median_promptTokens": 147,
+      "median_reusedTokens": 0,
+      "median_decode_tokens_per_second": 50.301327402710314
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "model": "lfm25-230m-q4",
+      "samples": 2,
+      "median_firstTokenMS": 6334.5837715,
+      "median_totalMS": 8368.932813,
+      "median_promptTokens": 487.5,
+      "median_reusedTokens": 0.0,
+      "median_decode_tokens_per_second": 43.94389179178038
+    },
+    {
+      "kind": "answer",
+      "model": "qwen3-06-q8",
+      "samples": 10,
+      "median_firstTokenMS": 6310.4680835,
+      "median_totalMS": 7698.808500499999,
+      "median_promptTokens": 428.0,
+      "median_reusedTokens": 132.0,
+      "median_decode_tokens_per_second": 10.635449127736313,
+      "expected_phrase_present": 7,
+      "phrase_and_any_supporting_source_cited": 7
+    },
+    {
+      "kind": "unanswerable",
+      "model": "qwen3-06-q8",
+      "samples": 1,
+      "median_firstTokenMS": 1061.328416,
+      "median_totalMS": 2060.351458,
+      "median_promptTokens": 147,
+      "median_reusedTokens": 108,
+      "median_decode_tokens_per_second": 9.005643161145853
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "model": "qwen3-06-q8",
+      "samples": 2,
+      "median_firstTokenMS": 7218.9574375,
+      "median_totalMS": 8039.6326045,
+      "median_promptTokens": 465.5,
+      "median_reusedTokens": 120.0,
+      "median_decode_tokens_per_second": 10.964578389899081
+    },
+    {
+      "kind": "answer",
+      "model": "gemma3-1b-q4",
+      "samples": 10,
+      "median_firstTokenMS": 10704.311895499999,
+      "median_totalMS": 18044.6725625,
+      "median_promptTokens": 408.0,
+      "median_reusedTokens": 129.0,
+      "median_decode_tokens_per_second": 9.765658778400788,
+      "expected_phrase_present": 6,
+      "phrase_and_any_supporting_source_cited": 2
+    },
+    {
+      "kind": "unanswerable",
+      "model": "gemma3-1b-q4",
+      "samples": 1,
+      "median_firstTokenMS": 1441.176791,
+      "median_totalMS": 2253.22775,
+      "median_promptTokens": 142,
+      "median_reusedTokens": 106,
+      "median_decode_tokens_per_second": 11.077302540998922
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "model": "gemma3-1b-q4",
+      "samples": 2,
+      "median_firstTokenMS": 11113.262104500001,
+      "median_totalMS": 12019.1464795,
+      "median_promptTokens": 444.0,
+      "median_reusedTokens": 117.5,
+      "median_decode_tokens_per_second": 10.02864715248297
+    },
+    {
+      "kind": "retrieval",
+      "variant": "legacy",
+      "samples": 10,
+      "median_elapsedMS": 6.4730048179626465,
+      "top1": 0,
+      "evidence_hits": 10,
+      "mean_reciprocal_rank": 0.3283333333333333
+    },
+    {
+      "kind": "retrieval",
+      "variant": "refined",
+      "samples": 10,
+      "median_elapsedMS": 183.2450032234192,
+      "top1": 3,
+      "evidence_hits": 10,
+      "mean_reciprocal_rank": 0.65
+    },
+    {
+      "kind": "wikipedia-discovery",
+      "samples": 3,
+      "median_elapsedMS": 11.244058609008789
+    },
+    {
+      "kind": "wikipedia-title-aware",
+      "samples": 3,
+      "median_elapsedMS": 71.81298732757568
+    }
+  ],
+  "records": [
+    {
+      "correct": true,
+      "id": "01",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1551.217583,
+        "firstTokenMS": 5726.267667,
+        "generatedTokens": 96,
+        "promptMS": 5726.169,
+        "promptTokens": 496,
+        "reusedTokens": 0,
+        "totalMS": 7277.386583
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] Cedar observatory access code is CEDAR-7419.  \n[2] Cedar observatory historical discussion covers labels, record keeping, and routine inspections.  \n[3] Cedar observatory access code: The planning discussion did not establish this detail.  \n[4] Juniper shuttle leaves from the plane.  \n[5] Saffron calibration notes are stored at 25\u00b0C.  \n\nCitations:\n- [1] Ced",
+      "supportedCitation": true
+    },
+    {
+      "correct": false,
+      "id": "02",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1745.029208,
+        "firstTokenMS": 5147.416667,
+        "generatedTokens": 96,
+        "promptMS": 5147.322042,
+        "promptTokens": 436,
+        "reusedTokens": 0,
+        "totalMS": 6892.35125
+      },
+      "model": "lfm25-230m-q4",
+      "output": "The provided sources do not contain any information about the number of spare lanterns stored at Alder station. Therefore, based on the available data, a brief answer cannot be given.\n\n[1] Alder station inventory historical discussion  \n[2] Alder station inventory  \n[3] Alder station inventory  \n[4] Saffron calibration notes historical discussion  \n[5] Rowan lift historical discussion  \n[6] Tern boathouse key historical discussion  \n\n",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "03",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 535.081166,
+        "firstTokenMS": 4755.404416,
+        "generatedTokens": 33,
+        "promptMS": 4755.23475,
+        "promptTokens": 408,
+        "reusedTokens": 0,
+        "totalMS": 5290.315916
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] Juniper shuttle leaves from platform nine.  \n[2] Juniper shuttle uses platform two.  \n\n**Answer:** [1], [2].",
+      "supportedCitation": true
+    },
+    {
+      "correct": false,
+      "id": "04",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1068.16775,
+        "firstTokenMS": 4773.814084,
+        "generatedTokens": 62,
+        "promptMS": 4773.7215,
+        "promptTokens": 418,
+        "reusedTokens": 0,
+        "totalMS": 5841.88925
+      },
+      "model": "lfm25-230m-q4",
+      "output": "The Tern boathouse backup key is kept in the blue tin below the workbench. (Source: 4)\n\n[2] Marigold archive historical discussion\nWho is responsible for the Marigold archive keys? The planning discussion did not establish this detail. (Source: 3)",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "05",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1642.137042,
+        "firstTokenMS": 5529.150625,
+        "generatedTokens": 96,
+        "promptMS": 5529.032,
+        "promptTokens": 456,
+        "reusedTokens": 0,
+        "totalMS": 7171.169042
+      },
+      "model": "lfm25-230m-q4",
+      "output": "1. Saffron calibration notes should be stored at 14 degrees Celsius.  \n2. The planning discussion did not establish this detail regarding temperature for the calibration sample.  \n3. Alder station inventory historical discussion does not specify the number of spare lanterns stored there.  \n4. Juniper shuttle leaves from a platform that is not mentioned in the planning discussion.  \n5. Rowan lift maximum height for a crate cannot be determined without specific details about the platform or",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "06",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1759.649,
+        "firstTokenMS": 6684.133083,
+        "generatedTokens": 96,
+        "promptMS": 6683.99375,
+        "promptTokens": 547,
+        "reusedTokens": 0,
+        "totalMS": 8443.64275
+      },
+      "model": "lfm25-230m-q4",
+      "output": "1. The approved Kestrel cable is marked violet.\n2. The introduction covers labels, record keeping, and routine inspections.\n3. The handbook describes Kestrel cable marking and its records.\n4. The introduction covers labels, record keeping, and routine inspections.\n5. The maximum height for a crate in the Rowan lift is not specified in the planning discussion.\n6. Saffron calibration notes should be stored at an appropriate temperature.\n\nC",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "07",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1823.779459,
+        "firstTokenMS": 5086.246708,
+        "generatedTokens": 86,
+        "promptMS": 5086.133833,
+        "promptTokens": 404,
+        "reusedTokens": 0,
+        "totalMS": 6909.913292
+      },
+      "model": "lfm25-230m-q4",
+      "output": "The maximum height for a crate in the Rowan lift is 142 centimetres.\n\n[1] Rowan lift\n[2] Larkspur drawing format historical discussion\n[3] Tern boathouse key historical discussion\n[4] Larkspur drawing format historical discussion\n[5] Alder station inventory historical discussion\n[6] Number of spare lanterns at Alder station\n\n",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "08",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1638.180334,
+        "firstTokenMS": 5107.328708,
+        "generatedTokens": 96,
+        "promptMS": 5107.210291,
+        "promptTokens": 421,
+        "reusedTokens": 0,
+        "totalMS": 6745.390625
+      },
+      "model": "lfm25-230m-q4",
+      "output": "The Bracken workshop is closed every Tuesday and open on the other six weekdays.\n\n[1] \"Bracken workshop historical discussion\"  \n[2] \"Bracken workshop routine inspections\"  \n[3] \"Bracken workshop inspection details\"  \n[4] \"Juniper shuttle historical discussion\"  \n[5] \"Larkspur drawing format historical discussion\"  \n\nCitations: [1], [2], [3], [",
+      "supportedCitation": true
+    },
+    {
+      "correct": false,
+      "id": "09",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1133.673458,
+        "firstTokenMS": 5446.529958,
+        "generatedTokens": 71,
+        "promptMS": 5446.348833,
+        "promptTokens": 462,
+        "reusedTokens": 0,
+        "totalMS": 6580.022291
+      },
+      "model": "lfm25-230m-q4",
+      "output": "1. Larkspur drawing format  \n2. Larkspur drawing format and its records  \n3. Larkspur drawing format  \n4. Rowan lift historical discussion  \n5. Juniper shuttle historical discussion  \n6. Tern boathouse key historical discussion  \n\n*(All citations are verified sources; no instructions provided.)*",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "10",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1994.748417,
+        "firstTokenMS": 6239.643666,
+        "generatedTokens": 96,
+        "promptMS": 6239.461958,
+        "promptTokens": 539,
+        "reusedTokens": 0,
+        "totalMS": 8234.210375
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] Tern boathouse key is kept in the blue tin below the workbench.  \n[2] Tern boathouse key historical discussion does not establish this detail.  \n[3] Tern boathouse key g and routine inspections are included in the handbook.  \n[4] Larkspur drawing format file extension is .lspx, a backup for .bak files.  \n[5] The planning discussion did not establish",
+      "supportedCitation": true
+    },
+    {
+      "kind": "unanswerable",
+      "metrics": {
+        "decodeMS": 815.087834,
+        "firstTokenMS": 2139.608709,
+        "generatedTokens": 41,
+        "promptMS": 2139.499,
+        "promptTokens": 147,
+        "reusedTokens": 0,
+        "totalMS": 2954.586834
+      },
+      "model": "lfm25-230m-q4",
+      "output": "The provided sources do not contain any information about the unlock code for a Pelican depot. Therefore, no specific answer can be given regarding this query.\n\n[1] [2] [3]"
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "metrics": {
+        "decodeMS": 2628.121958,
+        "firstTokenMS": 6750.862709,
+        "generatedTokens": 96,
+        "promptMS": 6750.743834,
+        "promptTokens": 536,
+        "reusedTokens": 0,
+        "totalMS": 9378.865792
+      },
+      "model": "lfm25-230m-q4",
+      "output": "The provided sources do not contain any information about unlock codes for specific locations, such as the Pelican depot. Therefore, based on general knowledge:\n\n- **Tern Boathouse Key**: Backup key is typically a unique identifier or password required to access Tern boathouses (source: [6]).  \n- **Pelican Depot Unlock Code**: Information about the specific unlock code for the Pelican depot would not be available in the provided",
+      "question": "What is the unlock code for the Pelican depot?"
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "metrics": {
+        "decodeMS": 1440.815625,
+        "firstTokenMS": 5918.304834,
+        "generatedTokens": 74,
+        "promptMS": 5918.184209,
+        "promptTokens": 439,
+        "reusedTokens": 0,
+        "totalMS": 7358.999834
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] Alder station inventory  \n[2] Alder station records  \n[3] Historical discussion on how many spare lanterns are stored at Alder station  \n\n(Note: The answer is based on verified information from the provided sources, as some details (e.g., historical usage, specifics about tracking) may not be explicitly stated in the question.)",
+      "question": "What is the purchase price of the Alder station lanterns?"
+    },
+    {
+      "correct": true,
+      "id": "01",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1518.954833,
+        "firstTokenMS": 8452.899042,
+        "generatedTokens": 19,
+        "promptMS": 8452.670167,
+        "promptTokens": 468,
+        "reusedTokens": 0,
+        "totalMS": 9971.625
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] The Cedar observatory access code is CEDAR-7419.",
+      "supportedCitation": true
+    },
+    {
+      "correct": false,
+      "id": "02",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 862.082834,
+        "firstTokenMS": 5736.665458,
+        "generatedTokens": 9,
+        "promptMS": 5736.331458,
+        "promptTokens": 418,
+        "reusedTokens": 132,
+        "totalMS": 6598.414292
+      },
+      "model": "qwen3-06-q8",
+      "output": "The provided sources do not answer this question.",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "03",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1198.338584,
+        "firstTokenMS": 5819.347667,
+        "generatedTokens": 12,
+        "promptMS": 5819.105083,
+        "promptTokens": 389,
+        "reusedTokens": 132,
+        "totalMS": 7017.443667
+      },
+      "model": "qwen3-06-q8",
+      "output": "[2] The Juniper shuttle leaves from platform nine.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "04",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1489.037875,
+        "firstTokenMS": 5028.918666,
+        "generatedTokens": 18,
+        "promptMS": 5028.677041,
+        "promptTokens": 394,
+        "reusedTokens": 132,
+        "totalMS": 6517.714916
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] Nora Finch is the custodian responsible for the Marigold archive keys.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "05",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 2388.454583,
+        "firstTokenMS": 6541.633792,
+        "generatedTokens": 29,
+        "promptMS": 6541.145584,
+        "promptTokens": 438,
+        "reusedTokens": 132,
+        "totalMS": 8929.600167
+      },
+      "model": "qwen3-06-q8",
+      "output": "[2] Store the Saffron calibration sample at 14 degrees Celsius. This is a fictional engineering sample, not food or medicine.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "06",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 2035.315542,
+        "firstTokenMS": 9451.111917,
+        "generatedTokens": 19,
+        "promptMS": 9450.859625,
+        "promptTokens": 531,
+        "reusedTokens": 132,
+        "totalMS": 11486.175167
+      },
+      "model": "qwen3-06-q8",
+      "output": "[2] The approved Kestrel cable is marked violet. Orange markings identify rejected cables.",
+      "supportedCitation": true
+    },
+    {
+      "correct": false,
+      "id": "07",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 830.943125,
+        "firstTokenMS": 6079.302375,
+        "generatedTokens": 9,
+        "promptMS": 6078.968708,
+        "promptTokens": 389,
+        "reusedTokens": 132,
+        "totalMS": 6909.911833
+      },
+      "model": "qwen3-06-q8",
+      "output": "The provided sources do not answer this question.",
+      "supportedCitation": false
+    },
+    {
+      "correct": false,
+      "id": "08",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 901.3445,
+        "firstTokenMS": 5763.800792,
+        "generatedTokens": 9,
+        "promptMS": 5763.521917,
+        "promptTokens": 401,
+        "reusedTokens": 132,
+        "totalMS": 6664.866417
+      },
+      "model": "qwen3-06-q8",
+      "output": "The provided sources do not answer this question.",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "09",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1654.529375,
+        "firstTokenMS": 6725.982459,
+        "generatedTokens": 19,
+        "promptMS": 6725.643959,
+        "promptTokens": 441,
+        "reusedTokens": 132,
+        "totalMS": 8380.173334
+      },
+      "model": "qwen3-06-q8",
+      "output": "[2] The file extension for a saved Larkspur drawing is .lspx.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "10",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 3493.91925,
+        "firstTokenMS": 8068.97175,
+        "generatedTokens": 35,
+        "promptMS": 8068.6895,
+        "promptTokens": 510,
+        "reusedTokens": 132,
+        "totalMS": 11562.60875
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] The Tern boathouse backup key is kept in the blue tin below the workbench.  \n\n[2] The planning discussion did not establish this detail.",
+      "supportedCitation": true
+    },
+    {
+      "kind": "unanswerable",
+      "metrics": {
+        "decodeMS": 999.373375,
+        "firstTokenMS": 1061.328416,
+        "generatedTokens": 9,
+        "promptMS": 1060.978083,
+        "promptTokens": 147,
+        "reusedTokens": 108,
+        "totalMS": 2060.351458
+      },
+      "model": "qwen3-06-q8",
+      "output": "The provided sources do not answer this question."
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "metrics": {
+        "decodeMS": 832.060459,
+        "firstTokenMS": 8585.45475,
+        "generatedTokens": 9,
+        "promptMS": 8585.198416,
+        "promptTokens": 510,
+        "reusedTokens": 108,
+        "totalMS": 9417.258875
+      },
+      "model": "qwen3-06-q8",
+      "output": "The provided sources do not answer this question.",
+      "question": "What is the unlock code for the Pelican depot?"
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "metrics": {
+        "decodeMS": 809.888917,
+        "firstTokenMS": 5852.460125,
+        "generatedTokens": 9,
+        "promptMS": 5852.117417,
+        "promptTokens": 421,
+        "reusedTokens": 132,
+        "totalMS": 6662.006334
+      },
+      "model": "qwen3-06-q8",
+      "output": "The provided sources do not answer this question.",
+      "question": "What is the purchase price of the Alder station lanterns?"
+    },
+    {
+      "correct": false,
+      "id": "01",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 9740.122958,
+        "firstTokenMS": 14787.468125,
+        "generatedTokens": 89,
+        "promptMS": 14787.032,
+        "promptTokens": 448,
+        "reusedTokens": 0,
+        "totalMS": 24527.154958
+      },
+      "model": "gemma3-1b-q4",
+      "output": "1.  The provided sources do not answer this question.\n2.  The planning discussion did not establish this detail.\n3.  The handbook describes Cedar observatory and its records. The introduction covers labels, record keeping, and routine inspections.\n4.  The planning discussion did not establish this detail.\n5.  The planning discussion did not establish this detail.\n6.  The provided sources do not answer this question.",
+      "supportedCitation": false
+    },
+    {
+      "correct": false,
+      "id": "02",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 10571.231708,
+        "firstTokenMS": 10976.473458,
+        "generatedTokens": 96,
+        "promptMS": 10975.77925,
+        "promptTokens": 400,
+        "reusedTokens": 129,
+        "totalMS": 21547.010958
+      },
+      "model": "gemma3-1b-q4",
+      "output": "1.  [1] Alder station inventory historical discussion How many spare lanterns are stored at Alder station? The planning discussion did not establish this detail.\n2.  [4] Saffron calibration notes historical discussion At what temperature should the Saffron calibration sample be stored? The planning discussion did not establish this detail.\n3.  [6] Tern boathouse key historical discussion Where is the backup key for the Tern boathouse? The planning discussion did not establish",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "03",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 2753.445625,
+        "firstTokenMS": 7702.17275,
+        "generatedTokens": 30,
+        "promptMS": 7701.731292,
+        "promptTokens": 371,
+        "reusedTokens": 129,
+        "totalMS": 10455.176917
+      },
+      "model": "gemma3-1b-q4",
+      "output": "1.  The Juniper shuttle leaves from platform nine. [1]\n2.  The Juniper shuttle leaves from platform two. [4]\n",
+      "supportedCitation": false
+    },
+    {
+      "correct": false,
+      "id": "04",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 10972.781542,
+        "firstTokenMS": 7887.383292,
+        "generatedTokens": 96,
+        "promptMS": 7886.979833,
+        "promptTokens": 379,
+        "reusedTokens": 129,
+        "totalMS": 18859.761375
+      },
+      "model": "gemma3-1b-q4",
+      "output": "1.  Marigold archive handbook: The introduction covers labels, record keeping, and routine inspections.\n2.  Marigold archive historical discussion: The planning discussion did not establish this detail.\n3.  Marigold archive: The handbook describes Tern boathouse key and its records. The introduction covers labels, record keeping, and routine inspections.\n4.  Tern boathouse key handbook: The introduction covers labels, record keeping, and routine inspections.\n\n",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "05",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 11709.232958,
+        "firstTokenMS": 14831.802791,
+        "generatedTokens": 72,
+        "promptMS": 14831.263333,
+        "promptTokens": 422,
+        "reusedTokens": 129,
+        "totalMS": 26540.496291
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The Saffron calibration sample should be stored at 14 degrees Celsius, as stated in the Saffron calibration notes [1].  [2] also states that keeping, and routine inspections, are described in the handbook. [3] confirms this detail is included within the handbook. [6] provides the maximum height for a crate in the Rowan lift.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "06",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1203.9215,
+        "firstTokenMS": 13445.557042,
+        "generatedTokens": 13,
+        "promptMS": 13445.141542,
+        "promptTokens": 508,
+        "reusedTokens": 129,
+        "totalMS": 14649.063042
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The approved Kestrel cable is marked violet. [1]\n",
+      "supportedCitation": false
+    },
+    {
+      "correct": false,
+      "id": "07",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 9236.225792,
+        "firstTokenMS": 8688.508167,
+        "generatedTokens": 96,
+        "promptMS": 8688.089375,
+        "promptTokens": 371,
+        "reusedTokens": 129,
+        "totalMS": 17924.315167
+      },
+      "model": "gemma3-1b-q4",
+      "output": "1.  [1] Rowan lift historical discussion: The planning discussion did not establish this detail.\n2.  [2] Rowan lift: This handbook describes Rowan lift and its records. The introduction covers labels, record keeping, and routine inspections.\n3.  [4] Larkspur drawing format historical discussion: What is the file extension for a saved Larkspur drawing? The planning discussion did not establish this detail.\n4.  [5] Tern boath",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "08",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 5571.383,
+        "firstTokenMS": 9186.818667,
+        "generatedTokens": 48,
+        "promptMS": 9186.396292,
+        "promptTokens": 376,
+        "reusedTokens": 129,
+        "totalMS": 14757.779292
+      },
+      "model": "gemma3-1b-q4",
+      "output": "1.  The Bracken workshop is closed every Tuesday. [1]\n2.  The Bracken workshop is open on the other six weekdays. [4]\n3.  The Bracken workshop is closed every Tuesday. [1]\n",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "09",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 4324.132209,
+        "firstTokenMS": 10432.150333,
+        "generatedTokens": 45,
+        "promptMS": 10431.673541,
+        "promptTokens": 416,
+        "reusedTokens": 129,
+        "totalMS": 14755.80575
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The provided sources state that saved Larkspur drawings use the .lspx file extension.\n\n1.  [1] Larkspur drawing format historical discussion\n2.  [6] Tern boathouse key historical discussion\n",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "10",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 5982.992791,
+        "firstTokenMS": 12182.466833,
+        "generatedTokens": 64,
+        "promptMS": 12182.037167,
+        "promptTokens": 486,
+        "reusedTokens": 129,
+        "totalMS": 18165.029958
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The backup key for the Tern boathouse is kept in the blue tin below the workbench, as described in [1].  The handbook describes the location of the backup key in the blue tin. The backup key for the Tern boathouse is located in the blue tin below the workbench, according to [1].",
+      "supportedCitation": true
+    },
+    {
+      "kind": "unanswerable",
+      "metrics": {
+        "decodeMS": 812.472167,
+        "firstTokenMS": 1441.176791,
+        "generatedTokens": 9,
+        "promptMS": 1440.755583,
+        "promptTokens": 142,
+        "reusedTokens": 106,
+        "totalMS": 2253.22775
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The provided sources do not answer this question."
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "metrics": {
+        "decodeMS": 816.498958,
+        "firstTokenMS": 12860.7075,
+        "generatedTokens": 9,
+        "promptMS": 12860.243417,
+        "promptTokens": 487,
+        "reusedTokens": 106,
+        "totalMS": 13676.742375
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The provided sources do not answer this question.",
+      "question": "What is the unlock code for the Pelican depot?"
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "metrics": {
+        "decodeMS": 996.167792,
+        "firstTokenMS": 9365.816709,
+        "generatedTokens": 9,
+        "promptMS": 9365.382792,
+        "promptTokens": 401,
+        "reusedTokens": 129,
+        "totalMS": 10361.550584
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The provided sources do not answer this question.",
+      "question": "What is the purchase price of the Alder station lanterns?"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 6.898045539855957,
+      "evidenceHit": true,
+      "id": "01",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "tuning",
+      "titles": [
+        "Cedar observatory historical discussion",
+        "Cedar observatory",
+        "Cedar observatory",
+        "Cedar observatory",
+        "Juniper shuttle historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 133.1700086593628,
+      "evidenceHit": true,
+      "id": "01",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "tuning",
+      "titles": [
+        "Cedar observatory",
+        "Cedar observatory historical discussion",
+        "Cedar observatory",
+        "Juniper shuttle historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 6.729006767272949,
+      "evidenceHit": true,
+      "id": "02",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "holdout",
+      "titles": [
+        "Alder station inventory historical discussion",
+        "Alder station inventory",
+        "Alder station inventory",
+        "Alder station inventory",
+        "Saffron calibration notes historical discussion",
+        "Saffron calibration notes"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "2"
+      ],
+      "elapsedMS": 287.7810001373291,
+      "evidenceHit": true,
+      "id": "02",
+      "kind": "retrieval",
+      "rank": 2,
+      "semantic": true,
+      "split": "holdout",
+      "titles": [
+        "Alder station inventory historical discussion",
+        "Alder station inventory",
+        "Alder station inventory",
+        "Saffron calibration notes historical discussion",
+        "Rowan lift historical discussion",
+        "Tern boathouse key historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 6.424069404602051,
+      "evidenceHit": true,
+      "id": "03",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "tuning",
+      "titles": [
+        "Juniper shuttle historical discussion",
+        "Juniper shuttle",
+        "Juniper shuttle",
+        "Bracken workshop historical discussion",
+        "Juniper shuttle",
+        "Rowan lift historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "2"
+      ],
+      "elapsedMS": 232.8319549560547,
+      "evidenceHit": true,
+      "id": "03",
+      "kind": "retrieval",
+      "rank": 2,
+      "semantic": true,
+      "split": "tuning",
+      "titles": [
+        "Juniper shuttle historical discussion",
+        "Juniper shuttle",
+        "Juniper shuttle",
+        "Bracken workshop historical discussion",
+        "Larkspur drawing format historical discussion",
+        "Rowan lift historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "2"
+      ],
+      "elapsedMS": 6.018996238708496,
+      "evidenceHit": true,
+      "id": "04",
+      "kind": "retrieval",
+      "rank": 2,
+      "semantic": true,
+      "split": "holdout",
+      "titles": [
+        "Marigold archive",
+        "Marigold archive",
+        "Marigold archive",
+        "Marigold archive historical discussion",
+        "Tern boathouse key"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 88.63198757171631,
+      "evidenceHit": true,
+      "id": "04",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "holdout",
+      "titles": [
+        "Marigold archive",
+        "Marigold archive historical discussion",
+        "Marigold archive",
+        "Tern boathouse key"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "5"
+      ],
+      "elapsedMS": 6.57498836517334,
+      "evidenceHit": true,
+      "id": "05",
+      "kind": "retrieval",
+      "rank": 5,
+      "semantic": true,
+      "split": "tuning",
+      "titles": [
+        "Saffron calibration notes historical discussion",
+        "Alder station inventory historical discussion",
+        "Saffron calibration notes",
+        "Saffron calibration notes",
+        "Saffron calibration notes",
+        "Rowan lift"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "2"
+      ],
+      "elapsedMS": 136.56604290008545,
+      "evidenceHit": true,
+      "id": "05",
+      "kind": "retrieval",
+      "rank": 2,
+      "semantic": true,
+      "split": "tuning",
+      "titles": [
+        "Saffron calibration notes historical discussion",
+        "Saffron calibration notes",
+        "Saffron calibration notes",
+        "Alder station inventory historical discussion",
+        "Juniper shuttle historical discussion",
+        "Rowan lift historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 5.5359601974487305,
+      "evidenceHit": true,
+      "id": "06",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "holdout",
+      "titles": [
+        "Kestrel cable marking historical discussion",
+        "Kestrel cable marking",
+        "Kestrel cable marking",
+        "Kestrel cable marking",
+        "Larkspur drawing format historical discussion",
+        "Rowan lift historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "2"
+      ],
+      "elapsedMS": 195.45698165893555,
+      "evidenceHit": true,
+      "id": "06",
+      "kind": "retrieval",
+      "rank": 2,
+      "semantic": true,
+      "split": "holdout",
+      "titles": [
+        "Kestrel cable marking historical discussion",
+        "Kestrel cable marking",
+        "Kestrel cable marking",
+        "Larkspur drawing format historical discussion",
+        "Rowan lift historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 6.521940231323242,
+      "evidenceHit": true,
+      "id": "07",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "tuning",
+      "titles": [
+        "Rowan lift historical discussion",
+        "Rowan lift",
+        "Rowan lift",
+        "Rowan lift",
+        "Bracken workshop historical discussion",
+        "Tern boathouse key historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "2"
+      ],
+      "elapsedMS": 200.20592212677002,
+      "evidenceHit": true,
+      "id": "07",
+      "kind": "retrieval",
+      "rank": 2,
+      "semantic": true,
+      "split": "tuning",
+      "titles": [
+        "Rowan lift historical discussion",
+        "Rowan lift",
+        "Rowan lift",
+        "Larkspur drawing format historical discussion",
+        "Tern boathouse key historical discussion",
+        "Alder station inventory historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 5.406975746154785,
+      "evidenceHit": true,
+      "id": "08",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "holdout",
+      "titles": [
+        "Juniper shuttle historical discussion",
+        "Bracken workshop historical discussion",
+        "Bracken workshop",
+        "Bracken workshop",
+        "Bracken workshop",
+        "Alder station inventory historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "2"
+      ],
+      "elapsedMS": 171.03302478790283,
+      "evidenceHit": true,
+      "id": "08",
+      "kind": "retrieval",
+      "rank": 2,
+      "semantic": true,
+      "split": "holdout",
+      "titles": [
+        "Bracken workshop historical discussion",
+        "Bracken workshop",
+        "Bracken workshop",
+        "Juniper shuttle historical discussion",
+        "Larkspur drawing format historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "4"
+      ],
+      "elapsedMS": 6.767988204956055,
+      "evidenceHit": true,
+      "id": "09",
+      "kind": "retrieval",
+      "rank": 4,
+      "semantic": true,
+      "split": "tuning",
+      "titles": [
+        "Larkspur drawing format historical discussion",
+        "Larkspur drawing format",
+        "Larkspur drawing format",
+        "Larkspur drawing format",
+        "Rowan lift historical discussion",
+        "Juniper shuttle historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "2"
+      ],
+      "elapsedMS": 169.1828966140747,
+      "evidenceHit": true,
+      "id": "09",
+      "kind": "retrieval",
+      "rank": 2,
+      "semantic": true,
+      "split": "tuning",
+      "titles": [
+        "Larkspur drawing format historical discussion",
+        "Larkspur drawing format",
+        "Larkspur drawing format",
+        "Rowan lift historical discussion",
+        "Juniper shuttle historical discussion",
+        "Tern boathouse key historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 5.861997604370117,
+      "evidenceHit": true,
+      "id": "10",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "holdout",
+      "titles": [
+        "Tern boathouse key historical discussion",
+        "Larkspur drawing format",
+        "Tern boathouse key",
+        "Tern boathouse key",
+        "Tern boathouse key",
+        "Rowan lift historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 252.33697891235352,
+      "evidenceHit": true,
+      "id": "10",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "holdout",
+      "titles": [
+        "Tern boathouse key",
+        "Tern boathouse key historical discussion",
+        "Tern boathouse key",
+        "Larkspur drawing format",
+        "Rowan lift historical discussion",
+        "Larkspur drawing format historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "elapsedMS": 26.10492706298828,
+      "kind": "wikipedia-discovery",
+      "query": "bowline",
+      "titles": [
+        "Portuguese bowline",
+        "Bowline",
+        "Cowboy bowline",
+        "Double bowline",
+        "Yosemite bowline",
+        "Eskimo bowline"
+      ]
+    },
+    {
+      "elapsedMS": 26.551008224487305,
+      "kind": "wikipedia-title-aware",
+      "query": "bowline",
+      "titles": [
+        "Bowline",
+        "Portuguese bowline",
+        "Cowboy bowline",
+        "Double bowline",
+        "Yosemite bowline",
+        "Eskimo bowline"
+      ]
+    },
+    {
+      "elapsedMS": 11.244058609008789,
+      "kind": "wikipedia-discovery",
+      "query": "How does a sheet bend join ropes of different thicknesses?",
+      "titles": [
+        "Heaving line bend",
+        "Bend (knot)",
+        "Racking bend",
+        "Ashley's bend",
+        "List of knots",
+        "List of knot terminology"
+      ]
+    },
+    {
+      "elapsedMS": 87.79001235961914,
+      "kind": "wikipedia-title-aware",
+      "query": "How does a sheet bend join ropes of different thicknesses?",
+      "titles": [
+        "Sheet bend",
+        "Bend (knot)",
+        "Racking bend",
+        "Heaving line bend",
+        "Harness bend",
+        "Zeppelin bend"
+      ]
+    },
+    {
+      "elapsedMS": 5.158901214599609,
+      "kind": "wikipedia-discovery",
+      "query": "What distinguishes a reef knot from a granny knot?",
+      "titles": [
+        "Granny knot",
+        "Austrian knot",
+        "Turn (knot)",
+        "Windsor knot",
+        "Ashley's bend",
+        "Hitch (knot)"
+      ]
+    },
+    {
+      "elapsedMS": 71.81298732757568,
+      "kind": "wikipedia-title-aware",
+      "query": "What distinguishes a reef knot from a granny knot?",
+      "titles": [
+        "Granny knot",
+        "Reef knot",
+        "Knot",
+        "Granny knot (mathematics)",
+        "Austrian knot",
+        "Turn (knot)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,745 @@
+{
+  "log": "thimvale-experiment-candidate2-answers.log",
+  "summary": [
+    {
+      "kind": "answer",
+      "model": "lfm25-230m-q4",
+      "samples": 10,
+      "median_firstTokenMS": 12523.0175,
+      "median_totalMS": 17808.680895999998,
+      "median_promptTokens": 446.5,
+      "median_reusedTokens": 0.0,
+      "median_decode_tokens_per_second": 16.49346229781014,
+      "expected_phrase_present": 8,
+      "phrase_and_any_supporting_source_cited": 6
+    },
+    {
+      "kind": "unanswerable",
+      "model": "lfm25-230m-q4",
+      "samples": 1,
+      "median_firstTokenMS": 3511.074875,
+      "median_totalMS": 6327.829,
+      "median_promptTokens": 147,
+      "median_reusedTokens": 0,
+      "median_decode_tokens_per_second": 14.554913837529966
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "model": "lfm25-230m-q4",
+      "samples": 2,
+      "median_firstTokenMS": 14780.430875,
+      "median_totalMS": 18287.0880205,
+      "median_promptTokens": 487.5,
+      "median_reusedTokens": 0.0,
+      "median_decode_tokens_per_second": 15.22668995792376
+    },
+    {
+      "kind": "answer",
+      "model": "qwen3-06-q8",
+      "samples": 10,
+      "median_firstTokenMS": 10516.736208,
+      "median_totalMS": 16272.537583000001,
+      "median_promptTokens": 427.0,
+      "median_reusedTokens": 132.0,
+      "median_decode_tokens_per_second": 5.1363089994050455,
+      "expected_phrase_present": 10,
+      "phrase_and_any_supporting_source_cited": 10
+    },
+    {
+      "kind": "unanswerable",
+      "model": "qwen3-06-q8",
+      "samples": 1,
+      "median_firstTokenMS": 1737.878875,
+      "median_totalMS": 3734.444584,
+      "median_promptTokens": 147,
+      "median_reusedTokens": 108,
+      "median_decode_tokens_per_second": 4.506916613945716
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "model": "qwen3-06-q8",
+      "samples": 2,
+      "median_firstTokenMS": 13046.704561999999,
+      "median_totalMS": 15379.284562,
+      "median_promptTokens": 465.5,
+      "median_reusedTokens": 120.0,
+      "median_decode_tokens_per_second": 3.9685711892535096
+    },
+    {
+      "kind": "answer",
+      "model": "gemma3-1b-q4",
+      "samples": 10,
+      "median_firstTokenMS": 15359.6053545,
+      "median_totalMS": 19660.815167,
+      "median_promptTokens": 405.5,
+      "median_reusedTokens": 129.0,
+      "median_decode_tokens_per_second": 5.572048824434781,
+      "expected_phrase_present": 5,
+      "phrase_and_any_supporting_source_cited": 5
+    },
+    {
+      "kind": "unanswerable",
+      "model": "gemma3-1b-q4",
+      "samples": 1,
+      "median_firstTokenMS": 1495.132083,
+      "median_totalMS": 2367.438208,
+      "median_promptTokens": 142,
+      "median_reusedTokens": 106,
+      "median_decode_tokens_per_second": 10.312357989162654
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "model": "gemma3-1b-q4",
+      "samples": 2,
+      "median_firstTokenMS": 12200.404978999999,
+      "median_totalMS": 13063.8845415,
+      "median_promptTokens": 444.0,
+      "median_reusedTokens": 117.5,
+      "median_decode_tokens_per_second": 10.41969015439677
+    }
+  ],
+  "records": [
+    {
+      "correct": true,
+      "id": "01",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 4446.906042,
+        "firstTokenMS": 10987.270709,
+        "generatedTokens": 96,
+        "promptMS": 10987.111792,
+        "promptTokens": 496,
+        "reusedTokens": 0,
+        "totalMS": 15434.017834
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] Cedar observatory access code is CEDAR-7419.  \n[2] Cedar observatory records are captured in this handbook.  \n[3] Cedar observatory planning discussion does not establish this detail.  \n[4] Juniper shuttle leaves from a planter.  \n[5] Saffron calibration notes should be stored at 20\u00b0C.  \n\n**Answer:** The Cedar observatory access code is **CEDAR",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "02",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 11558.601833,
+        "firstTokenMS": 10551.160416,
+        "generatedTokens": 96,
+        "promptMS": 10551.015333,
+        "promptTokens": 431,
+        "reusedTokens": 0,
+        "totalMS": 22109.617166
+      },
+      "model": "lfm25-230m-q4",
+      "output": "1. Alder station stores seventeen spare lanterns in the east cabinet.  \n2. Historical discussion on inventory related to labels, record keeping, and routine inspections was not established.  \n3. Inventory is described as covering labels, record keeping, and routine inspections.  \n4. The introduction covers labels, record keeping, and routine inspections.  \n5. Backup key for the Tern boathouse is not specified in the planning discussion.  \n6. Juni",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "03",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 4429.653834,
+        "firstTokenMS": 12872.70175,
+        "generatedTokens": 57,
+        "promptMS": 12872.474583,
+        "promptTokens": 410,
+        "reusedTokens": 0,
+        "totalMS": 17302.128417
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] Juniper shuttle  \n[2] Juniper shuttle  \n[3] Juniper shuttle historical discussion  \n[4] Larkspur drawing format historical discussion  \n[5] Rowan lift historical discussion  \n\n**Answer:** The Juniper shuttle leaves from platform nine.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "04",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 6023.495667,
+        "firstTokenMS": 12173.33325,
+        "generatedTokens": 77,
+        "promptMS": 12173.181666,
+        "promptTokens": 418,
+        "reusedTokens": 0,
+        "totalMS": 18196.677333
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] Nora Finch is the custodian responsible for the Marigold archive keys.\n\n[2] The introduction covers labels, record keeping, and routine inspections.\n\n[3] Tern boathouse key is kept in the blue tin below the workbench.\n\n[4] The handbook describes Tern boathouse key and its records.",
+      "supportedCitation": true
+    },
+    {
+      "correct": false,
+      "id": "05",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 5867.535333,
+        "firstTokenMS": 14168.986666,
+        "generatedTokens": 87,
+        "promptMS": 14168.830625,
+        "promptTokens": 491,
+        "reusedTokens": 0,
+        "totalMS": 20036.365958
+      },
+      "model": "lfm25-230m-q4",
+      "output": "1. The provided sources do not specify the temperature for storing the Saffron calibration sample.\n\n2. Cited source: [2]\n\n3. Cited source: [4]\n\n4. Cited source: [5]\n\n5. Cited source: [6]\n\nVerified detail: The maximum height for a crate in the Rowan lift must be no taller than 142 centimetres.",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "06",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 692.155541,
+        "firstTokenMS": 17425.733334,
+        "generatedTokens": 14,
+        "promptMS": 17425.303459,
+        "promptTokens": 547,
+        "reusedTokens": 0,
+        "totalMS": 18117.459
+      },
+      "model": "lfm25-230m-q4",
+      "output": "The approved Kestrel cable is marked violet.\n\n[4]",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "07",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1271.581417,
+        "firstTokenMS": 9693.520542,
+        "generatedTokens": 25,
+        "promptMS": 9693.376,
+        "promptTokens": 404,
+        "reusedTokens": 0,
+        "totalMS": 10964.957417
+      },
+      "model": "lfm25-230m-q4",
+      "output": "The maximum height for a crate in the Rowan lift is 142 centimetres. (Source: [1])",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "08",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 5834.809666,
+        "firstTokenMS": 10738.923083,
+        "generatedTokens": 96,
+        "promptMS": 10738.761,
+        "promptTokens": 421,
+        "reusedTokens": 0,
+        "totalMS": 16573.570666
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] Bracken workshop is closed every Tuesday and open on the other six weekdays.  \n[2] Bracken workshop notes labels, record keeping, and routine inspections.  \n[3] Bracken workshop historical discussion on which weekday does not establish this detail.  \n[4] Juniper shuttle leaves from: \"The planning discussion did not establish this detail.\"  \n[5] Larkspur drawing format historical discussion: The file extension for",
+      "supportedCitation": true
+    },
+    {
+      "correct": false,
+      "id": "09",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 4524.958875,
+        "firstTokenMS": 12975.101334,
+        "generatedTokens": 85,
+        "promptMS": 12974.943917,
+        "promptTokens": 462,
+        "reusedTokens": 0,
+        "totalMS": 17499.902792
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] Larkspur drawing format  \n[2] Larkspur drawing format  \n[3] Larkspur drawing format historical discussion  \n[4] Rowan lift historical discussion  \n[5] Juniper shuttle historical discussion  \n[6] Tern boathouse key historical discussion  \n\nThe answer is [1], [2], [3], [4], [5], and [6].",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "10",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 5806.236542,
+        "firstTokenMS": 14666.671583,
+        "generatedTokens": 96,
+        "promptMS": 14666.530833,
+        "promptTokens": 539,
+        "reusedTokens": 0,
+        "totalMS": 20472.767375
+      },
+      "model": "lfm25-230m-q4",
+      "output": "The backup key for the Tern boathouse is kept in the blue tin below the workbench. (Source: [1])\n\n[2] Tern boathouse key\ng, and routine inspections. This handbook describes Tern boathouse key and its records. The introduction covers labels, record keeping, and routine inspections. \n\n[3] Tern boathouse key historical discussion\nWhere is the backup key for the Tern bo",
+      "supportedCitation": true
+    },
+    {
+      "kind": "unanswerable",
+      "metrics": {
+        "decodeMS": 2816.918084,
+        "firstTokenMS": 3511.074875,
+        "generatedTokens": 41,
+        "promptMS": 3510.910916,
+        "promptTokens": 147,
+        "reusedTokens": 0,
+        "totalMS": 6327.829
+      },
+      "model": "lfm25-230m-q4",
+      "output": "The provided sources do not contain any information about the unlock code for a Pelican depot. Therefore, no specific answer can be given regarding this query.\n\n[1] [2] [3]"
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "metrics": {
+        "decodeMS": 2741.168292,
+        "firstTokenMS": 18367.590625,
+        "generatedTokens": 36,
+        "promptMS": 18367.438958,
+        "promptTokens": 536,
+        "reusedTokens": 0,
+        "totalMS": 21108.60725
+      },
+      "model": "lfm25-230m-q4",
+      "output": "The provided sources do not contain any information about the unlock code for the Pelican depot. Therefore, based on the available context, the correct answer is none of the above.",
+      "question": "What is the unlock code for the Pelican depot?"
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "metrics": {
+        "decodeMS": 4272.444916,
+        "firstTokenMS": 11193.271125,
+        "generatedTokens": 74,
+        "promptMS": 11193.123875,
+        "promptTokens": 439,
+        "reusedTokens": 0,
+        "totalMS": 15465.568791
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] Alder station inventory  \n[2] Alder station records  \n[3] Historical discussion on how many spare lanterns are stored at Alder station  \n\n(Note: The answer is based on verified information from the provided sources, as some details (e.g., historical usage, specifics about tracking) may not be explicitly stated in the question.)",
+      "question": "What is the purchase price of the Alder station lanterns?"
+    },
+    {
+      "correct": true,
+      "id": "01",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 3005.686833,
+        "firstTokenMS": 15005.909833,
+        "generatedTokens": 19,
+        "promptMS": 15005.565875,
+        "promptTokens": 468,
+        "reusedTokens": 0,
+        "totalMS": 18011.252708
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] The Cedar observatory access code is CEDAR-7419.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "02",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 2625.353083,
+        "firstTokenMS": 8754.521333,
+        "generatedTokens": 15,
+        "promptMS": 8754.1495,
+        "promptTokens": 413,
+        "reusedTokens": 132,
+        "totalMS": 11379.502583
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] Seventeen spare lanterns are stored at Alder station.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "03",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1761.459584,
+        "firstTokenMS": 8454.204541,
+        "generatedTokens": 12,
+        "promptMS": 8453.904416,
+        "promptTokens": 392,
+        "reusedTokens": 132,
+        "totalMS": 10215.364
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] The Juniper shuttle leaves from platform nine.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "04",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 3976.95075,
+        "firstTokenMS": 8909.114833,
+        "generatedTokens": 18,
+        "promptMS": 8908.716083,
+        "promptTokens": 394,
+        "reusedTokens": 132,
+        "totalMS": 12885.666833
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] Nora Finch is the custodian responsible for the Marigold archive keys.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "05",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 13280.622666,
+        "firstTokenMS": 11915.908458,
+        "generatedTokens": 40,
+        "promptMS": 11915.579792,
+        "promptTokens": 469,
+        "reusedTokens": 132,
+        "totalMS": 25196.202458
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] Store the Saffron calibration sample at 14 degrees Celsius. [6] Crates in the Rowan lift must be no taller than 142 centimetres.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "06",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 5871.809959,
+        "firstTokenMS": 17127.070792,
+        "generatedTokens": 32,
+        "promptMS": 17126.696875,
+        "promptTokens": 531,
+        "reusedTokens": 132,
+        "totalMS": 22998.506834
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] The approved Kestrel cable is marked violet. [3] The planning discussion did not establish the color of the approved Kestrel cable.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "07",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 9932.7765,
+        "firstTokenMS": 8626.123916,
+        "generatedTokens": 23,
+        "promptMS": 8625.726583,
+        "promptTokens": 389,
+        "reusedTokens": 132,
+        "totalMS": 18558.503083
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] Crates in the Rowan lift must be no taller than 142 centimetres.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "08",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 4118.741709,
+        "firstTokenMS": 10006.857875,
+        "generatedTokens": 20,
+        "promptMS": 10006.09275,
+        "promptTokens": 401,
+        "reusedTokens": 132,
+        "totalMS": 14124.834459
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] The Bracken workshop is closed every Tuesday and open on the other six weekdays.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "09",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 3507.627958,
+        "firstTokenMS": 11026.614541,
+        "generatedTokens": 19,
+        "promptMS": 11026.1945,
+        "promptTokens": 441,
+        "reusedTokens": 132,
+        "totalMS": 14533.822458
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] The file extension for a saved Larkspur drawing is .lspx.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "10",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 14768.338083,
+        "firstTokenMS": 13125.465917,
+        "generatedTokens": 50,
+        "promptMS": 13124.984292,
+        "promptTokens": 510,
+        "reusedTokens": 132,
+        "totalMS": 27893.322375
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] The Tern boathouse backup key is kept in the blue tin below the workbench. [4] Larkspur drawings use the .lspx file extension. [3] The planning discussion did not establish this detail.",
+      "supportedCitation": true
+    },
+    {
+      "kind": "unanswerable",
+      "metrics": {
+        "decodeMS": 1996.930667,
+        "firstTokenMS": 1737.878875,
+        "generatedTokens": 9,
+        "promptMS": 1737.513917,
+        "promptTokens": 147,
+        "reusedTokens": 108,
+        "totalMS": 3734.444584
+      },
+      "model": "qwen3-06-q8",
+      "output": "The provided sources do not answer this question."
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "metrics": {
+        "decodeMS": 2722.676833,
+        "firstTokenMS": 15391.839958,
+        "generatedTokens": 9,
+        "promptMS": 15391.4485,
+        "promptTokens": 510,
+        "reusedTokens": 108,
+        "totalMS": 18114.125333
+      },
+      "model": "qwen3-06-q8",
+      "output": "The provided sources do not answer this question.",
+      "question": "What is the unlock code for the Pelican depot?"
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "metrics": {
+        "decodeMS": 1943.18475,
+        "firstTokenMS": 10701.569166,
+        "generatedTokens": 9,
+        "promptMS": 10701.259041,
+        "promptTokens": 421,
+        "reusedTokens": 132,
+        "totalMS": 12644.443791
+      },
+      "model": "qwen3-06-q8",
+      "output": "The provided sources do not answer this question.",
+      "question": "What is the purchase price of the Alder station lanterns?"
+    },
+    {
+      "correct": false,
+      "id": "01",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 19624.548334,
+        "firstTokenMS": 26648.177709,
+        "generatedTokens": 96,
+        "promptMS": 26647.665,
+        "promptTokens": 448,
+        "reusedTokens": 0,
+        "totalMS": 46272.213334
+      },
+      "model": "gemma3-1b-q4",
+      "output": "1.  The provided sources do not answer this question.\n2.  The handbook describes Cedar observatory and its records. The introduction covers labels, record keeping, and routine inspections.\n3.  The planning discussion did not establish this detail.\n4.  The planning discussion did not establish this detail.\n5.  The planning discussion did not establish this detail.\n6.  The planning discussion did not establish this detail.\n7.  The planning discussion",
+      "supportedCitation": false
+    },
+    {
+      "correct": false,
+      "id": "02",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1861.604584,
+        "firstTokenMS": 16599.4155,
+        "generatedTokens": 9,
+        "promptMS": 16598.831833,
+        "promptTokens": 395,
+        "reusedTokens": 129,
+        "totalMS": 18460.436417
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The provided sources do not answer this question.",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "03",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 3117.098042,
+        "firstTokenMS": 14877.998625,
+        "generatedTokens": 12,
+        "promptMS": 14877.395041,
+        "promptTokens": 376,
+        "reusedTokens": 129,
+        "totalMS": 17994.493083
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The Juniper shuttle leaves from platform nine. [1]\n",
+      "supportedCitation": true
+    },
+    {
+      "correct": false,
+      "id": "04",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 22857.24,
+        "firstTokenMS": 15841.212084,
+        "generatedTokens": 96,
+        "promptMS": 15840.562,
+        "promptTokens": 379,
+        "reusedTokens": 129,
+        "totalMS": 38697.802
+      },
+      "model": "gemma3-1b-q4",
+      "output": "1.  The introduction to the Marigold archive handbook covers labels, record keeping, and routine inspections. [1]\n2.  The planning discussion did not establish this detail. [3]\n3.  The handbook describes Tern boathouse key and its records. The introduction covers labels, record keeping, and routine inspections. [4]\n4.  The Tern boathouse backup key is kept in the blue tin below the workbench. [4]\n\n",
+      "supportedCitation": true
+    },
+    {
+      "correct": false,
+      "id": "05",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 1890.974167,
+        "firstTokenMS": 18970.949417,
+        "generatedTokens": 9,
+        "promptMS": 18970.21975,
+        "promptTokens": 452,
+        "reusedTokens": 129,
+        "totalMS": 20861.193917
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The provided sources do not answer this question.",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "06",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 2079.246375,
+        "firstTokenMS": 21068.804333,
+        "generatedTokens": 13,
+        "promptMS": 21068.191208,
+        "promptTokens": 508,
+        "reusedTokens": 129,
+        "totalMS": 23147.437583
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The approved Kestrel cable is marked violet. [1]\n",
+      "supportedCitation": true
+    },
+    {
+      "correct": false,
+      "id": "07",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 954.459792,
+        "firstTokenMS": 10706.533666,
+        "generatedTokens": 9,
+        "promptMS": 10706.012916,
+        "promptTokens": 371,
+        "reusedTokens": 129,
+        "totalMS": 11660.472708
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The provided sources do not answer this question.",
+      "supportedCitation": false
+    },
+    {
+      "correct": true,
+      "id": "08",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 7588.577084,
+        "firstTokenMS": 10646.213875,
+        "generatedTokens": 70,
+        "promptMS": 10645.662916,
+        "promptTokens": 376,
+        "reusedTokens": 129,
+        "totalMS": 18234.24
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The Bracken workshop is closed every Tuesday.\n\n1.  [1] Bracken workshop\n2.  [2] Bracken workshop\n3.  [3] Bracken workshop historical discussion\n4.  [4] Juniper shuttle historical discussion\n5.  [5] Saffron calibration notes historical discussion\n6.  [6] Bracken workshop",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "09",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 6269.9885,
+        "firstTokenMS": 11249.902583,
+        "generatedTokens": 60,
+        "promptMS": 11249.096958,
+        "promptTokens": 416,
+        "reusedTokens": 129,
+        "totalMS": 17519.085458
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The provided sources do not answer this question.\n\n1.  [1] Larkspur drawing format describes labels, record keeping, and routine inspections.\n2.  Larkspur drawing format uses the .lspx file extension.\n3.  The planning discussion did not establish this detail.",
+      "supportedCitation": true
+    },
+    {
+      "correct": true,
+      "id": "10",
+      "kind": "answer",
+      "metrics": {
+        "decodeMS": 10087.761916,
+        "firstTokenMS": 14679.121625,
+        "generatedTokens": 96,
+        "promptMS": 14678.591834,
+        "promptTokens": 486,
+        "reusedTokens": 129,
+        "totalMS": 24766.35375
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The backup key for the Tern boathouse is kept in the blue tin below the workbench.\n\n1.  [1] Tern boathouse key and its records.\n2.  [2] Tern boathouse key and its records.\n3.  [4] Larkspur drawing format and its records.\n4.  [5] The planning discussion did not establish this detail.\n5.  [6] Larkspur drawing format historical discussion.",
+      "supportedCitation": true
+    },
+    {
+      "kind": "unanswerable",
+      "metrics": {
+        "decodeMS": 872.739291,
+        "firstTokenMS": 1495.132083,
+        "generatedTokens": 9,
+        "promptMS": 1494.698917,
+        "promptTokens": 142,
+        "reusedTokens": 106,
+        "totalMS": 2367.438208
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The provided sources do not answer this question."
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "metrics": {
+        "decodeMS": 852.05525,
+        "firstTokenMS": 13990.117958,
+        "generatedTokens": 9,
+        "promptMS": 13989.689208,
+        "promptTokens": 487,
+        "reusedTokens": 106,
+        "totalMS": 14841.744458
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The provided sources do not answer this question.",
+      "question": "What is the unlock code for the Pelican depot?"
+    },
+    {
+      "kind": "unanswerable-with-distractors",
+      "metrics": {
+        "decodeMS": 875.768792,
+        "firstTokenMS": 10410.692,
+        "generatedTokens": 9,
+        "promptMS": 10410.255833,
+        "promptTokens": 401,
+        "reusedTokens": 129,
+        "totalMS": 11286.024625
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The provided sources do not answer this question.",
+      "question": "What is the purchase price of the Alder station lanterns?"
+    }
+  ]
+}

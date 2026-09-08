@@ -30,7 +30,11 @@ extension AppState {
         }
         await importArchive(source.appendingPathComponent("Vendor/smoke-wikipedia.zim"))
         if let error { throw PocketError.message(error) }
-        _ = try await knowledge.importURL(source.appendingPathComponent("Tests/Fixtures/Field notes.md")) { _ in }
+        let localFile = AppPaths.exports.appendingPathComponent("Field notes.md")
+        if !FileManager.default.fileExists(atPath: localFile.path) {
+            try FileManager.default.copyItem(at: source.appendingPathComponent("Tests/Fixtures/Field notes.md"), to: localFile)
+        }
+        _ = try await knowledge.importURL(localFile) { _ in }
         await refreshKnowledge()
         try Data().write(to: marker, options: .atomic)
     }

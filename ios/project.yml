@@ -87,6 +87,16 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: com.ethanrimes.thimvale.uitests
 schemes:
+  ThimvaleExperiments:
+    build:
+      targets:
+        Thimvale: all
+    test:
+      targets:
+        - ThimvaleIntegrationTests
+      environmentVariables:
+        THIMVALE_EXPERIMENTS: '1'
+        THIMVALE_TEST_SESSION: '304C10D1-536B-4819-93CA-BC35C6E80247'
   Thimvale:
     build:
       targets:

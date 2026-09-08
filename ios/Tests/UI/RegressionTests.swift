@@ -191,6 +191,27 @@ private extension XCUIElement {
         XCTAssertTrue(app.textFields["knowledgeSearch"].exists)
     }
 
+    func testImportedLocalFileSearchAndCitationAfterRelaunch() throws {
+        let app = try makeApp(fixtures: true, wikipediaOnly: true)
+        // The fixture copies a real Markdown file into the app's local Exports
+        // folder, then imports its URL with the same service as the Files picker.
+        app.terminate(); app.launch()
+        app.selectMainTab("Knowledge")
+        let search = app.textFields["knowledgeSearch"]
+        reveal(search, in: app)
+        search.tap(); search.typeText("Which channel does the emergency radio use?\n")
+        let result = app.buttons.containing(.staticText, identifier: "Field notes.md").firstMatch
+        XCTAssertTrue(result.waitForExistence(timeout: 30))
+        reveal(result, in: app); result.tap()
+        XCTAssertTrue(app.navigationBars["Evidence"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS 'channel seven'")).firstMatch.exists)
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS 'Exports/Field notes.md'")).firstMatch.exists)
+        capture(app, "Imported local Markdown source after relaunch")
+        app.buttons["Done"].tap()
+        app.selectMainTab("Chat")
+        XCTAssertTrue(app.buttons["modelPicker"].exists)
+    }
+
     func testManualWikipediaBrowsingWithoutAModel() throws {
         let app = try makeApp(fixtures: true, wikipediaOnly: true)
         XCTAssertFalse(app.staticTexts["modelMemoryState"].exists)
@@ -282,10 +303,18 @@ private extension XCUIElement {
         // The dismissed sheet remains in the accessibility tree during animation.
         // Do not mistake its old Deny button for a newly requested tool.
         XCTAssertTrue(app.buttons["allowTool"].waitForNonExistence(timeout: 10))
-        XCTAssertTrue(app.staticTexts["liveModelOutput"].waitForExistence(timeout: 120))
-        XCTAssertFalse(app.buttons["New conversation"].isEnabled)
+        // A short answer can finish while the approval sheet is disappearing.
+        // Do not require a transient streaming view to remain visible afterward.
+        // testLiveTokensStopAndBackgroundModelRelease covers live UI streaming
+        // with a deliberately long request; native tests verify token callbacks.
+        let live = app.staticTexts["liveModelOutput"]
+        let responseVisible = NSPredicate { _, _ in
+            live.exists || (app.buttons["New conversation"].isEnabled && app.buttons["messageSources"].exists)
+        }
+        let visible = XCTNSPredicateExpectation(predicate: responseVisible, object: app)
+        XCTAssertEqual(XCTWaiter.wait(for: [visible], timeout: 120), .completed)
         XCTAssertFalse(app.staticTexts["eventOutput"].exists, "Raw output stays collapsed; the reply streams in the conversation")
-        capture(app, "Live Work model output and tool activity")
+        capture(app, "Work model response and tool activity")
         // Hosted simulator runners can be much slower than a local Mac. This is
         // still a bounded wait for real inference, not a sleep or fixture answer.
         let deadline = Date().addingTimeInterval(240)

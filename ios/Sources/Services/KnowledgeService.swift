@@ -50,7 +50,9 @@ enum WikipediaCatalog {
 actor KnowledgeService {
     private let store: KnowledgeStore
     private var archives: [String: PMArchive] = [:]
-    init() throws { store = try KnowledgeStore(url: AppPaths.root.appendingPathComponent("knowledge.sqlite")) }
+    init(storeURL: URL = AppPaths.root.appendingPathComponent("knowledge.sqlite")) throws {
+        store = try KnowledgeStore(url: storeURL)
+    }
     func documents() throws -> [KnowledgeDocument] { try store.documents() }
     func hasSemanticSearch() -> Bool { store.hasSemanticSearch }
     func remove(_ id: String) throws { try store.remove(id: id) }
@@ -144,20 +146,14 @@ actor KnowledgeService {
         return blocks.isEmpty ? try doc.text() : blocks.joined(separator: "\n\n")
     }
     func search(_ query: String, archiveFiles: [String]) throws -> [Citation] {
-        var results = try store.search(query, limit: 5)
+        var results = try store.search(query, limit: 10)
         let terms = KnowledgeStore.searchTerms(query)
         let keywords = Set(terms)
+        let semantic = store.semanticScorer(query: query)
         for filename in WikipediaEdition.preferredFiles(archiveFiles) {
             try Task.checkCancellation()
             let archive = try archive(filename)
-            var articles = try archive.search(query, limit: 6)
-            if articles.isEmpty {
-                // Use plain search terms for libzim, not SQLite's quoted-OR expression.
-                if !terms.isEmpty { articles = try archive.search(terms.joined(separator: " "), limit: 6) }
-                if articles.isEmpty {
-                    for term in terms.prefix(3) { articles += try archive.search(term, limit: 2) }
-                }
-            }
+            var articles = try WikipediaDiscovery.articles(in: archive, query: query)
             var seen = Set<String>()
             articles = articles.filter { seen.insert($0["path"] ?? $0["title"] ?? "").inserted }
             // A definition of a named article should not be diluted by similarly named variants.
@@ -175,9 +171,9 @@ actor KnowledgeService {
                 }.sorted { $0.1 > $1.1 }.prefix(12)
                 let definition = query.lowercased().hasPrefix("what is") || terms.joined(separator: " ") == title.lowercased()
                 let scored: [(chunk: TextChunker.Chunk, score: Double)] = ranked.map { chunk, lexical in
-                    let semantic = store.semanticScore(query: query, passage: chunk.text) * 2
+                    let similarity = semantic(EvidenceSelection.window(chunk.text, query: query).text) * 2
                     let introductionBonus: Double = definition && chunk.offset == 0 ? 1 : 0
-                    return (chunk, lexical + semantic + introductionBonus)
+                    return (chunk, lexical + similarity + introductionBonus)
                 }
                 let best = scored.max { left, right in
                     left.score == right.score ? left.chunk.offset > right.chunk.offset : left.score < right.score
@@ -188,6 +184,7 @@ actor KnowledgeService {
             }
         }
         // The selected excerpt is always an exact chunk from the stored source, never an LLM summary.
-        return Array(results.prefix(10))
+        // Rank across local documents and packs together; neither source type gets an automatic monopoly.
+        return EvidenceSelection.rerank(results, query: query, limit: 10, semantic: semantic)
     }
 }
