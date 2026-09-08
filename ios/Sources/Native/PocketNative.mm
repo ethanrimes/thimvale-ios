@@ -11,6 +11,7 @@
 #include <vector>
 #include <algorithm>
 #include <mutex>
+#include <chrono>
 #include <os/proc.h>
 
 static void PMError(NSError **error, NSString *message) {
@@ -30,12 +31,16 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
     llama_context *_context;
     std::atomic<bool> _cancelled;
     std::unique_ptr<minja::chat_template> _template;
+    NSDictionary<NSString *, NSNumber *> *_generationStatistics;
+    std::vector<llama_token> _cachedTokens;
 }
 - (instancetype)init {
-    if ((self = [super init])) { _model = nullptr; _context = nullptr; _cancelled = false; }
+    if ((self = [super init])) { _model = nullptr; _context = nullptr; _cancelled = false; _reusePromptCache = YES; }
     return self;
 }
 - (void)unload {
+    std::vector<llama_token>().swap(_cachedTokens);
+    _generationStatistics = @{};
     _template.reset();
     if (_context) { llama_free(_context); _context = nullptr; }
     if (_model) { llama_model_free(_model); _model = nullptr; }
@@ -43,6 +48,7 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
 - (void)dealloc { [self unload]; }
 - (void)cancel { _cancelled.store(true); }
 - (void)resetCancellation { _cancelled.store(false); }
+- (NSDictionary<NSString *, NSNumber *> *)generationStatistics { return _generationStatistics ?: @{}; }
 - (BOOL)loadModelAtPath:(NSString *)path contextSize:(int)contextSize error:(NSError **)error {
     [self unload];
 #if TARGET_OS_IOS && !TARGET_OS_SIMULATOR
@@ -71,9 +77,9 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
     if (!_model) { PMError(error, @"Could not load this GGUF. Check available memory and model compatibility."); return NO; }
     auto config = llama_context_default_params();
     config.n_ctx = std::min(std::max(contextSize, 512), llama_model_n_ctx_train(_model));
-    config.n_batch = 256;
-    config.n_ubatch = 128;
-    config.n_threads = (int)std::max(1L, std::min(6L, (long)NSProcessInfo.processInfo.processorCount - 2));
+    config.n_batch = _batchSize > 0 ? std::clamp(_batchSize, 32, 512) : 256;
+    config.n_ubatch = _microBatchSize > 0 ? std::clamp(_microBatchSize, 32, (int)config.n_batch) : std::min(128, (int)config.n_batch);
+    config.n_threads = _threadCount > 0 ? std::clamp(_threadCount, 1, 8) : (int)std::max(1L, std::min(6L, (long)NSProcessInfo.processInfo.processorCount - 2));
     config.n_threads_batch = config.n_threads;
     config.abort_callback = [](void *data) { return static_cast<std::atomic<bool> *>(data)->load(); };
     config.abort_callback_data = &_cancelled;
@@ -90,6 +96,9 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
     return YES;
 }
 - (NSString *)generateMessages:(NSArray<NSDictionary<NSString *,NSString *> *> *)messages maxTokens:(int)maxTokens temperature:(float)temperature onToken:(void (^)(NSString *))onToken error:(NSError **)error {
+    using Clock = std::chrono::steady_clock;
+    const auto started = Clock::now();
+    _generationStatistics = @{};
     if (!_model || !_context || !_template) { PMError(error, @"Select a downloaded model first."); return nil; }
     try {
         auto inputs = minja::chat_template_inputs();
@@ -116,50 +125,91 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
             if (inputs.messages.size() <= 3) throw std::runtime_error("This message and its evidence exceed the model context. Use a shorter question or fewer sources.");
             inputs.messages.erase(inputs.messages.begin() + 1, inputs.messages.begin() + 3);
         }
-        llama_memory_clear(llama_get_memory(_context), true);
-        auto batch = llama_batch_init(256, 0, 1);
+        auto memory = llama_get_memory(_context);
+        size_t reused = 0;
+        if (_reusePromptCache) {
+            while (reused < tokens.size() && reused < _cachedTokens.size() && tokens[reused] == _cachedTokens[reused]) ++reused;
+            // Re-evaluate one token for fresh logits when the entire prompt is already cached.
+            if (reused == tokens.size()) --reused;
+            if (reused > 0 && llama_memory_seq_pos_max(memory, 0) != (llama_pos)_cachedTokens.size() - 1) reused = 0;
+            // A sliding-window cache may have evicted keys needed by an earlier position.
+            // Trimming cannot restore those keys. Only append when that history is incomplete.
+            if (reused > 0 && reused < _cachedTokens.size() && llama_memory_seq_pos_min(memory, 0) > 0) reused = 0;
+            // A recurrent/hybrid model may not support trimming its historical state.
+            // Append-only continuations need no trim; any failed rollback gets a clean prefill.
+            if (reused > 0 && reused < _cachedTokens.size() && !llama_memory_seq_rm(memory, 0, (llama_pos)reused, -1)) reused = 0;
+        }
+        if (reused == 0) llama_memory_clear(memory, true);
+        _cachedTokens.assign(tokens.begin(), tokens.begin() + reused);
+        const int batchSize = (int)llama_n_batch(_context);
+        auto batch = llama_batch_init(batchSize, 0, 1);
         struct BatchGuard { llama_batch b; ~BatchGuard() { llama_batch_free(b); } } batchGuard{batch};
-        auto fill = [&](const llama_token *values, int size, int position) {
+        auto fill = [&](const llama_token *values, int size, int position, bool logits = true) {
             batch.n_tokens = size;
             for (int i = 0; i < size; ++i) {
                 batch.token[i] = values[i]; batch.pos[i] = position + i;
                 batch.n_seq_id[i] = 1; batch.seq_id[i][0] = 0;
-                batch.logits[i] = (i == size - 1);
+                batch.logits[i] = logits && (i == size - 1);
             }
         };
-        for (int offset = 0; offset < tokens.size(); offset += 256) {
+        for (int offset = (int)reused; offset < tokens.size(); offset += batchSize) {
             if (_cancelled.load()) throw std::runtime_error("Generation stopped.");
-            int count = std::min(256, (int)tokens.size() - offset);
-            fill(tokens.data() + offset, count, offset);
+            int count = std::min(batchSize, (int)tokens.size() - offset);
+            // Intermediate prompt batches do not need a vocabulary projection or CPU logits transfer.
+            fill(tokens.data() + offset, count, offset, offset + count == tokens.size());
             if (llama_decode(_context, batch) != 0) throw std::runtime_error(_cancelled.load() ? "Generation stopped." : "The model could not process this prompt.");
+            _cachedTokens.insert(_cachedTokens.end(), tokens.begin() + offset, tokens.begin() + offset + count);
         }
         llama_sampler *sampler = llama_sampler_chain_init(llama_sampler_chain_default_params());
         struct SamplerGuard { llama_sampler *s; ~SamplerGuard() { llama_sampler_free(s); } } samplerGuard{sampler};
         llama_sampler_chain_add(sampler, llama_sampler_init_penalties(llama_vocab_n_tokens(vocab), 64, 1.1f, 0, 0));
-        llama_sampler_chain_add(sampler, llama_sampler_init_top_k(40));
-        llama_sampler_chain_add(sampler, llama_sampler_init_top_p(0.9f, 1));
-        llama_sampler_chain_add(sampler, llama_sampler_init_temp(std::max(0.05f, temperature)));
-        uint32_t seed = LLAMA_DEFAULT_SEED;
+        if (temperature <= 0) {
+            llama_sampler_chain_add(sampler, llama_sampler_init_greedy());
+        } else {
+            llama_sampler_chain_add(sampler, llama_sampler_init_top_k(40));
+            llama_sampler_chain_add(sampler, llama_sampler_init_top_p(0.9f, 1));
+            llama_sampler_chain_add(sampler, llama_sampler_init_temp(std::max(0.05f, temperature)));
+            uint32_t seed = LLAMA_DEFAULT_SEED;
 #if DEBUG && TARGET_OS_SIMULATOR
-        // Real inference, reproducible sampling in isolated regression sessions only.
-        NSString *testSession = NSProcessInfo.processInfo.environment[@"THIMVALE_TEST_SESSION"];
-        if (testSession.length && [[NSUUID alloc] initWithUUIDString:testSession]) seed = 42;
+            // Real inference, reproducible sampling in isolated regression sessions only.
+            NSString *testSession = NSProcessInfo.processInfo.environment[@"THIMVALE_TEST_SESSION"];
+            if (testSession.length && [[NSUUID alloc] initWithUUIDString:testSession]) seed = 42;
 #endif
-        llama_sampler_chain_add(sampler, llama_sampler_init_dist(seed));
+            llama_sampler_chain_add(sampler, llama_sampler_init_dist(seed));
+        }
         NSMutableString *output = [NSMutableString new];
         std::string pending;
+        const auto promptDone = Clock::now();
+        double firstTokenMS = 0;
+        int emitted = 0;
         for (int generated = 0; generated < maxTokens; ++generated) {
             if (_cancelled.load()) throw std::runtime_error("Generation stopped.");
             llama_token token = llama_sampler_sample(sampler, _context, -1);
             if (llama_vocab_is_eog(vocab, token)) break;
+            if (emitted++ == 0) firstTokenMS = std::chrono::duration<double, std::milli>(Clock::now() - started).count();
             pending += piece(vocab, token);
             NSString *chunk = [[NSString alloc] initWithBytes:pending.data() length:pending.size() encoding:NSUTF8StringEncoding];
             if (chunk) { [output appendString:chunk]; onToken(chunk); pending.clear(); }
             fill(&token, 1, (int)tokens.size() + generated);
             if (llama_decode(_context, batch) != 0) throw std::runtime_error(_cancelled.load() ? "Generation stopped." : "Generation failed. Try a smaller model or context.");
+            _cachedTokens.push_back(token);
         }
+        const auto ended = Clock::now();
+        _generationStatistics = @{
+            @"promptTokens": @(tokens.size()), @"generatedTokens": @(emitted),
+            @"reusedTokens": @(reused),
+            @"promptMS": @(std::chrono::duration<double, std::milli>(promptDone - started).count()),
+            @"firstTokenMS": @(firstTokenMS),
+            @"decodeMS": @(std::chrono::duration<double, std::milli>(ended - promptDone).count()),
+            @"totalMS": @(std::chrono::duration<double, std::milli>(ended - started).count())
+        };
         return output;
-    } catch (const std::exception &e) { PMError(error, [NSString stringWithUTF8String:e.what()]); return nil; }
+    } catch (const std::exception &e) {
+        // A failed/aborted decode may have partially changed the native state.
+        _cachedTokens.clear();
+        llama_memory_clear(llama_get_memory(_context), true);
+        PMError(error, [NSString stringWithUTF8String:e.what()]); return nil;
+    }
 }
 @end
 

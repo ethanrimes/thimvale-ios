@@ -1,0 +1,1836 @@
+{
+  "log": "thimvale-experiment-imported-files.log",
+  "overall_test_run_succeeded": true,
+  "test_case": null,
+  "summary": [
+    {
+      "kind": "imported-file-answer",
+      "model": "lfm25-230m-q4",
+      "samples": 9,
+      "median_firstTokenMS": 4608.493166,
+      "median_totalMS": 5665.800875,
+      "median_promptTokens": 316,
+      "median_reusedTokens": 0,
+      "median_decode_tokens_per_second": 44.04615137020956
+    },
+    {
+      "kind": "imported-file-answer",
+      "model": "qwen3-06-q8",
+      "samples": 9,
+      "median_firstTokenMS": 3446.601625,
+      "median_totalMS": 4310.879833,
+      "median_promptTokens": 303,
+      "median_reusedTokens": 132,
+      "median_decode_tokens_per_second": 11.30859916774666
+    },
+    {
+      "kind": "imported-file-answer",
+      "model": "gemma3-1b-q4",
+      "samples": 9,
+      "median_firstTokenMS": 5420.806458,
+      "median_totalMS": 9233.3735,
+      "median_promptTokens": 305,
+      "median_reusedTokens": 129,
+      "median_decode_tokens_per_second": 11.023814824094122
+    },
+    {
+      "kind": "retrieval",
+      "variant": "legacy",
+      "samples": 10,
+      "median_elapsedMS": 5.0005316734313965,
+      "top1": 0,
+      "evidence_hits": 10,
+      "mean_reciprocal_rank": 0.3283333333333333
+    },
+    {
+      "kind": "retrieval",
+      "variant": "refined",
+      "samples": 10,
+      "median_elapsedMS": 150.12800693511963,
+      "top1": 10,
+      "evidence_hits": 10,
+      "mean_reciprocal_rank": 1.0
+    },
+    {
+      "kind": "wikipedia-discovery",
+      "samples": 3,
+      "median_elapsedMS": 10.37299633026123
+    },
+    {
+      "kind": "wikipedia-title-aware",
+      "samples": 3,
+      "median_elapsedMS": 83.7780237197876
+    }
+  ],
+  "records": [
+    {
+      "expected": [
+        "ASTER-6382"
+      ],
+      "expectedPhrasesPresent": 1,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 3430.125875,
+        "firstTokenMS": 7263.207334,
+        "generatedTokens": 82,
+        "promptMS": 7263.015,
+        "promptTokens": 328,
+        "reusedTokens": 0,
+        "totalMS": 10693.140875
+      },
+      "model": "lfm25-230m-q4",
+      "output": "The Aster cabinet access code is **ASTER-6382**. \n\n*Source: [1] Notes.md*  \n*Citation: Note 1.*  \n\n*Note: The provided source does not specify the exact citation for \"astere\" (e.g., \"sources/astere\" or similar), but it is implied to be a general reference to an asteroid tracking system.",
+      "question": "What is the Aster cabinet access code?",
+      "sources": [
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 3096",
+          "id": "1"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "6"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "7"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "8"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "red envelope"
+      ],
+      "expectedPhrasesPresent": 0,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 1727.937875,
+        "firstTokenMS": 6318.295625,
+        "generatedTokens": 59,
+        "promptMS": 6318.105709,
+        "promptTokens": 322,
+        "reusedTokens": 0,
+        "totalMS": 8046.043584
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] Notes.md  \n[2] workshop.html  \n[3] notes.md  \n[4] notes.md  \n[5] samples.json  \n[6] markers.csv  \n\nCitations: [1], [2], [3], [4], [5], [6].",
+      "question": "Where is the Birch cabinet spare key?",
+      "sources": [
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 3096",
+          "id": "4"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "6"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "7"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "8"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "Mina Vale"
+      ],
+      "expectedPhrasesPresent": 1,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 1610.417959,
+        "firstTokenMS": 4608.493166,
+        "generatedTokens": 56,
+        "promptMS": 4608.341916,
+        "promptTokens": 262,
+        "reusedTokens": 0,
+        "totalMS": 6218.759875
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] Mina Vale maintains the Cobalt survey notebook.  \n[2] markers.csv projects, marker_color,status  \n[3] annex.pdf \u00b7 page 1 GORSE-2846  \n\nCitations: [1], [2], [3].",
+      "question": "Who maintains the Cobalt survey notebook?",
+      "sources": [
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "4"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "turquoise"
+      ],
+      "expectedPhrasesPresent": 0,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 1031.332625,
+        "firstTokenMS": 4503.164917,
+        "generatedTokens": 44,
+        "promptMS": 4503.030417,
+        "promptTokens": 284,
+        "reusedTokens": 0,
+        "totalMS": 5534.363042
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] markers.csv  \n[2] notes.md  \n[3] samples.json  \n[4] workshop.html  \n[5] maintainer.txt  \n\nThe approved Dune marker is **orange**.",
+      "question": "What color is the approved Dune marker?",
+      "sources": [
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "5"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "shelf eight"
+      ],
+      "expectedPhrasesPresent": 0,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 1237.275625,
+        "firstTokenMS": 4198.695334,
+        "generatedTokens": 55,
+        "promptMS": 4198.51325,
+        "promptTokens": 286,
+        "reusedTokens": 0,
+        "totalMS": 5435.788875
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] samples.json  \n[2] maintainer.txt  \n[3] notes.md  \n[4] markers.csv  \n[5] annex.pdf \u00b7 page 2  \n\nCitations: [1], [2], [3], [4], [5].",
+      "question": "Which shelf holds the Elm samples?",
+      "sources": [
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "5"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "white pouch"
+      ],
+      "expectedPhrasesPresent": 0,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 1089.766041,
+        "firstTokenMS": 4163.772,
+        "generatedTokens": 48,
+        "promptMS": 4163.646542,
+        "promptTokens": 283,
+        "reusedTokens": 0,
+        "totalMS": 5253.412583
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] workshop.html  \n[2] notes.md  \n[3] samples.json  \n[4] markers.csv  \n[5] maintainer.txt  \n\nThese citations are based on the provided sources and do not require additional information.",
+      "question": "Where is the Fern workshop backup key?",
+      "sources": [
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "5"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "GORSE-2846"
+      ],
+      "expectedPhrasesPresent": 0,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 1071.981333,
+        "firstTokenMS": 4889.656208,
+        "generatedTokens": 49,
+        "promptMS": 4889.48725,
+        "promptTokens": 328,
+        "reusedTokens": 0,
+        "totalMS": 5961.468583
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] annex.pdf  \n[2] annex.pdf  \n[3] notes.md  \n[4] notes.md  \n[5] samples.json  \n\nCitations: [1], [2], [3], [4], [5].",
+      "question": "What is the Gorse annex gate code?",
+      "sources": [
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 3096",
+          "id": "3"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "6"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "7"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "ASTER-6382",
+        "GORSE-2846"
+      ],
+      "expectedPhrasesPresent": 2,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 714.931916,
+        "firstTokenMS": 4951.03875,
+        "generatedTokens": 33,
+        "promptMS": 4950.868959,
+        "promptTokens": 335,
+        "reusedTokens": 0,
+        "totalMS": 5665.800875
+      },
+      "model": "lfm25-230m-q4",
+      "output": "The Aster cabinet access code is ASTER-6382 and the Gorse annex gate code is GORSE-2846.\n\n(Source: [3])",
+      "question": "What are the Aster cabinet access code and the Gorse annex gate code?",
+      "sources": [
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 3096",
+          "id": "2"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "6"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "7"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "8"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "9"
+        }
+      ],
+      "supportingSourcesCited": 0
+    },
+    {
+      "expected": [],
+      "expectedPhrasesPresent": 0,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 1105.449542,
+        "firstTokenMS": 4556.949416,
+        "generatedTokens": 52,
+        "promptMS": 4556.819291,
+        "promptTokens": 316,
+        "reusedTokens": 0,
+        "totalMS": 5662.268833
+      },
+      "model": "lfm25-230m-q4",
+      "output": "[1] Maintainer.txt  \n[2] notes.md  \n[3] notes.md  \n[4] markers.csv  \n[5] notes.md  \n\nCitations: [1], [2], [3], [4], [5].",
+      "question": "What is the purchase price of the Cobalt survey notebook?",
+      "sources": [
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 2065",
+          "id": "3"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "6"
+        }
+      ],
+      "supportingSourcesCited": 0
+    },
+    {
+      "expected": [
+        "ASTER-6382"
+      ],
+      "expectedPhrasesPresent": 1,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 1735.926583,
+        "firstTokenMS": 6350.044333,
+        "generatedTokens": 20,
+        "promptMS": 6349.802833,
+        "promptTokens": 317,
+        "reusedTokens": 0,
+        "totalMS": 8085.729416
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] notes.md  \nThe Aster cabinet access code is ASTER-6382.",
+      "question": "What is the Aster cabinet access code?",
+      "sources": [
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 3096",
+          "id": "1"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "6"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "7"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "8"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "red envelope"
+      ],
+      "expectedPhrasesPresent": 0,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 398.712083,
+        "firstTokenMS": 3912.554833,
+        "generatedTokens": 3,
+        "promptMS": 3912.16775,
+        "promptTokens": 305,
+        "reusedTokens": 135,
+        "totalMS": 4310.879833
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1]",
+      "question": "Where is the Birch cabinet spare key?",
+      "sources": [
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 3096",
+          "id": "4"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "6"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "7"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "8"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "Mina Vale"
+      ],
+      "expectedPhrasesPresent": 0,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 297.15825,
+        "firstTokenMS": 2786.792959,
+        "generatedTokens": 3,
+        "promptMS": 2786.363959,
+        "promptTokens": 255,
+        "reusedTokens": 132,
+        "totalMS": 3083.522209
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1]",
+      "question": "Who maintains the Cobalt survey notebook?",
+      "sources": [
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "4"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "turquoise"
+      ],
+      "expectedPhrasesPresent": 0,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 281.030709,
+        "firstTokenMS": 2941.741042,
+        "generatedTokens": 3,
+        "promptMS": 2941.492458,
+        "promptTokens": 269,
+        "reusedTokens": 132,
+        "totalMS": 3222.523167
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1]",
+      "question": "What color is the approved Dune marker?",
+      "sources": [
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "5"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "shelf eight"
+      ],
+      "expectedPhrasesPresent": 1,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 873.712584,
+        "firstTokenMS": 2908.616875,
+        "generatedTokens": 10,
+        "promptMS": 2908.262583,
+        "promptTokens": 272,
+        "reusedTokens": 132,
+        "totalMS": 3781.975167
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] shelf eight holds the Elm samples.",
+      "question": "Which shelf holds the Elm samples?",
+      "sources": [
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "5"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "white pouch"
+      ],
+      "expectedPhrasesPresent": 0,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 367.60025,
+        "firstTokenMS": 2865.974458,
+        "generatedTokens": 3,
+        "promptMS": 2865.72125,
+        "promptTokens": 268,
+        "reusedTokens": 132,
+        "totalMS": 3233.3215
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1]",
+      "question": "Where is the Fern workshop backup key?",
+      "sources": [
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "5"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "GORSE-2846"
+      ],
+      "expectedPhrasesPresent": 1,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 1059.417709,
+        "firstTokenMS": 3895.282625,
+        "generatedTokens": 12,
+        "promptMS": 3894.948916,
+        "promptTokens": 315,
+        "reusedTokens": 132,
+        "totalMS": 4954.366625
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] GORSE-2846.",
+      "question": "What is the Gorse annex gate code?",
+      "sources": [
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 3096",
+          "id": "3"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "6"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "7"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "ASTER-6382",
+        "GORSE-2846"
+      ],
+      "expectedPhrasesPresent": 2,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 3063.411459,
+        "firstTokenMS": 3446.601625,
+        "generatedTokens": 35,
+        "promptMS": 3446.270666,
+        "promptTokens": 324,
+        "reusedTokens": 158,
+        "totalMS": 6509.682125
+      },
+      "model": "qwen3-06-q8",
+      "output": "[1] Gorse annex gate code is GORSE-2846.  \n[2] Aster cabinet access code is ASTER-6382.",
+      "question": "What are the Aster cabinet access code and the Gorse annex gate code?",
+      "sources": [
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 3096",
+          "id": "2"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "6"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "7"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "8"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "9"
+        }
+      ],
+      "supportingSourcesCited": 2
+    },
+    {
+      "expected": [],
+      "expectedPhrasesPresent": 0,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 795.854541,
+        "firstTokenMS": 3683.433375,
+        "generatedTokens": 9,
+        "promptMS": 3683.065334,
+        "promptTokens": 303,
+        "reusedTokens": 132,
+        "totalMS": 4478.919875
+      },
+      "model": "qwen3-06-q8",
+      "output": "The provided sources do not answer this question.",
+      "question": "What is the purchase price of the Cobalt survey notebook?",
+      "sources": [
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 2065",
+          "id": "3"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "6"
+        }
+      ],
+      "supportingSourcesCited": 0
+    },
+    {
+      "expected": [
+        "ASTER-6382"
+      ],
+      "expectedPhrasesPresent": 1,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 3613.883333,
+        "firstTokenMS": 10085.542666,
+        "generatedTokens": 39,
+        "promptMS": 10085.1725,
+        "promptTokens": 324,
+        "reusedTokens": 0,
+        "totalMS": 13699.055833
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The Aster cabinet access code is ASTER-6382. This code is no longer valid. [1]\n\nAnswer:\n1. The provided sources do not answer this question.",
+      "question": "What is the Aster cabinet access code?",
+      "sources": [
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 3096",
+          "id": "1"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "6"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "7"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "8"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "red envelope"
+      ],
+      "expectedPhrasesPresent": 1,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 6710.905375,
+        "firstTokenMS": 5723.844875,
+        "generatedTokens": 73,
+        "promptMS": 5723.442167,
+        "promptTokens": 311,
+        "reusedTokens": 133,
+        "totalMS": 12434.347542
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The Birch cabinet spare key is kept in the red envelope behind the desk, as stated in [1]. The Fern workshop backup key is in the white pouch, as stated in [2]. The Aster cabinet access code is ASTER-6382, which was previously valid, as stated in [3].  The provided sources do not answer this question.",
+      "question": "Where is the Birch cabinet spare key?",
+      "sources": [
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 3096",
+          "id": "4"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "6"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "7"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "8"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "Mina Vale"
+      ],
+      "expectedPhrasesPresent": 1,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 1462.552583,
+        "firstTokenMS": 3878.742292,
+        "generatedTokens": 16,
+        "promptMS": 3878.347667,
+        "promptTokens": 253,
+        "reusedTokens": 129,
+        "totalMS": 5340.90025
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The maintainer of the Cobalt survey notebook is Mina Vale. [1]\n",
+      "question": "Who maintains the Cobalt survey notebook?",
+      "sources": [
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "4"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "turquoise"
+      ],
+      "expectedPhrasesPresent": 1,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 7362.6635,
+        "firstTokenMS": 4438.066916,
+        "generatedTokens": 81,
+        "promptMS": 4437.53825,
+        "promptTokens": 268,
+        "reusedTokens": 129,
+        "totalMS": 11800.20175
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The Dune marker is turquoise, as stated in [1]. [2] also states that the Dune marker is approved. [5] indicates Mina Vale maintains the Cobalt survey notebook, which is a Dune project.\n\nBibliography:\n[1] markers.csv\n[2] notes.md\n[3] samples.json\n[4] workshop.html\n[5] maintainer.txt",
+      "question": "What color is the approved Dune marker?",
+      "sources": [
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "5"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "shelf eight"
+      ],
+      "expectedPhrasesPresent": 1,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 1513.344083,
+        "firstTokenMS": 4614.05725,
+        "generatedTokens": 17,
+        "promptMS": 4613.410917,
+        "promptTokens": 273,
+        "reusedTokens": 129,
+        "totalMS": 6126.755
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The Elm samples are stored on shelf eight in the provided sources. [1]\n",
+      "question": "Which shelf holds the Elm samples?",
+      "sources": [
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "5"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "white pouch"
+      ],
+      "expectedPhrasesPresent": 1,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 4813.604959,
+        "firstTokenMS": 4420.356375,
+        "generatedTokens": 54,
+        "promptMS": 4419.768541,
+        "promptTokens": 268,
+        "reusedTokens": 129,
+        "totalMS": 9233.3735
+      },
+      "model": "gemma3-1b-q4",
+      "output": "1.  The Fern workshop backup key is in the white pouch [1].\n2.  The Birch cabinet spare key is kept in the red envelope behind the desk [2].\n3.  The Cobalt survey notebook is maintained by Mina Vale [5].\n\n",
+      "question": "Where is the Fern workshop backup key?",
+      "sources": [
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "5"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "GORSE-2846"
+      ],
+      "expectedPhrasesPresent": 1,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 8436.281041,
+        "firstTokenMS": 5995.354708,
+        "generatedTokens": 93,
+        "promptMS": 5994.959,
+        "promptTokens": 322,
+        "reusedTokens": 129,
+        "totalMS": 14431.240041
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The Gorse annex gate code is GORSE-2846. [1]\nThe Gorse annex inspection journal contains no gate code. [2]\nThe Aster cabinet access code is ASTER-6382, which is no longer valid. [3]\nThe Birch cabinet spare key is kept in the red envelope behind the desk. [4]\nThe Elm samples project has a storage location of shelf eight. [5]",
+      "question": "What is the Gorse annex gate code?",
+      "sources": [
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 3096",
+          "id": "3"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "6"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "7"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [
+        "ASTER-6382",
+        "GORSE-2846"
+      ],
+      "expectedPhrasesPresent": 2,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 3579.161959,
+        "firstTokenMS": 5473.255041,
+        "generatedTokens": 40,
+        "promptMS": 5472.857666,
+        "promptTokens": 331,
+        "reusedTokens": 157,
+        "totalMS": 9052.019625
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The Aster cabinet access code is ASTER-6382, which is no longer valid. The Gorse annex gate code is GORSE-2846. [1]\n",
+      "question": "What are the Aster cabinet access code and the Gorse annex gate code?",
+      "sources": [
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 3096",
+          "id": "2"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 0",
+          "id": "3"
+        },
+        {
+          "file": "Library/annex.pdf#page=1 \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "6"
+        },
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "7"
+        },
+        {
+          "file": "Library/samples.json \u00b7 character 0",
+          "id": "8"
+        },
+        {
+          "file": "Library/workshop.html \u00b7 character 0",
+          "id": "9"
+        }
+      ],
+      "supportingSourcesCited": 1
+    },
+    {
+      "expected": [],
+      "expectedPhrasesPresent": 0,
+      "kind": "imported-file-answer",
+      "metrics": {
+        "decodeMS": 802.143667,
+        "firstTokenMS": 5420.806458,
+        "generatedTokens": 9,
+        "promptMS": 5420.419416,
+        "promptTokens": 305,
+        "reusedTokens": 129,
+        "totalMS": 6222.563083
+      },
+      "model": "gemma3-1b-q4",
+      "output": "The provided sources do not answer this question.",
+      "question": "What is the purchase price of the Cobalt survey notebook?",
+      "sources": [
+        {
+          "file": "Library/maintainer.txt \u00b7 character 0",
+          "id": "1"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 0",
+          "id": "2"
+        },
+        {
+          "file": "Library/Aster/notes.md \u00b7 character 2065",
+          "id": "3"
+        },
+        {
+          "file": "Library/markers.csv \u00b7 character 0",
+          "id": "4"
+        },
+        {
+          "file": "Library/Birch/notes.md \u00b7 character 0",
+          "id": "5"
+        },
+        {
+          "file": "Library/annex.pdf#page=2 \u00b7 character 0",
+          "id": "6"
+        }
+      ],
+      "supportingSourcesCited": 0
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 4.878997802734375,
+      "evidenceHit": true,
+      "id": "01",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Cedar observatory historical discussion",
+        "Cedar observatory",
+        "Cedar observatory",
+        "Cedar observatory",
+        "Juniper shuttle historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 102.5630235671997,
+      "evidenceHit": true,
+      "id": "01",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Cedar observatory",
+        "Cedar observatory",
+        "Cedar observatory historical discussion",
+        "Juniper shuttle historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 5.122065544128418,
+      "evidenceHit": true,
+      "id": "02",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Alder station inventory historical discussion",
+        "Alder station inventory",
+        "Alder station inventory",
+        "Alder station inventory",
+        "Saffron calibration notes historical discussion",
+        "Saffron calibration notes"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 208.42790603637695,
+      "evidenceHit": true,
+      "id": "02",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Alder station inventory",
+        "Alder station inventory historical discussion",
+        "Alder station inventory",
+        "Rowan lift historical discussion",
+        "Tern boathouse key historical discussion",
+        "Juniper shuttle historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 4.536032676696777,
+      "evidenceHit": true,
+      "id": "03",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Juniper shuttle historical discussion",
+        "Juniper shuttle",
+        "Juniper shuttle",
+        "Bracken workshop historical discussion",
+        "Juniper shuttle",
+        "Rowan lift historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 167.32704639434814,
+      "evidenceHit": true,
+      "id": "03",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Juniper shuttle",
+        "Juniper shuttle",
+        "Juniper shuttle historical discussion",
+        "Larkspur drawing format historical discussion",
+        "Rowan lift historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "2"
+      ],
+      "elapsedMS": 5.263090133666992,
+      "evidenceHit": true,
+      "id": "04",
+      "kind": "retrieval",
+      "rank": 2,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Marigold archive",
+        "Marigold archive",
+        "Marigold archive",
+        "Marigold archive historical discussion",
+        "Tern boathouse key"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 75.17004013061523,
+      "evidenceHit": true,
+      "id": "04",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Marigold archive",
+        "Marigold archive",
+        "Marigold archive historical discussion",
+        "Tern boathouse key"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "5"
+      ],
+      "elapsedMS": 5.495905876159668,
+      "evidenceHit": true,
+      "id": "05",
+      "kind": "retrieval",
+      "rank": 5,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Saffron calibration notes historical discussion",
+        "Alder station inventory historical discussion",
+        "Saffron calibration notes",
+        "Saffron calibration notes",
+        "Saffron calibration notes",
+        "Rowan lift"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 118.66796016693115,
+      "evidenceHit": true,
+      "id": "05",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Saffron calibration notes",
+        "Saffron calibration notes historical discussion",
+        "Saffron calibration notes",
+        "Juniper shuttle historical discussion",
+        "Rowan lift historical discussion",
+        "Rowan lift"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 4.791021347045898,
+      "evidenceHit": true,
+      "id": "06",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Kestrel cable marking historical discussion",
+        "Kestrel cable marking",
+        "Kestrel cable marking",
+        "Kestrel cable marking",
+        "Larkspur drawing format historical discussion",
+        "Rowan lift historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 170.34494876861572,
+      "evidenceHit": true,
+      "id": "06",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Kestrel cable marking",
+        "Kestrel cable marking",
+        "Kestrel cable marking historical discussion",
+        "Larkspur drawing format historical discussion",
+        "Rowan lift historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 6.522059440612793,
+      "evidenceHit": true,
+      "id": "07",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Rowan lift historical discussion",
+        "Rowan lift",
+        "Rowan lift",
+        "Rowan lift",
+        "Bracken workshop historical discussion",
+        "Tern boathouse key historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 169.05105113983154,
+      "evidenceHit": true,
+      "id": "07",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Rowan lift",
+        "Rowan lift",
+        "Rowan lift historical discussion",
+        "Larkspur drawing format historical discussion",
+        "Tern boathouse key historical discussion",
+        "Alder station inventory historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 4.615068435668945,
+      "evidenceHit": true,
+      "id": "08",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Juniper shuttle historical discussion",
+        "Bracken workshop historical discussion",
+        "Bracken workshop",
+        "Bracken workshop",
+        "Bracken workshop",
+        "Alder station inventory historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 132.9289674758911,
+      "evidenceHit": true,
+      "id": "08",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Bracken workshop",
+        "Bracken workshop",
+        "Bracken workshop historical discussion",
+        "Juniper shuttle historical discussion",
+        "Larkspur drawing format historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "4"
+      ],
+      "elapsedMS": 5.392909049987793,
+      "evidenceHit": true,
+      "id": "09",
+      "kind": "retrieval",
+      "rank": 4,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Larkspur drawing format historical discussion",
+        "Larkspur drawing format",
+        "Larkspur drawing format",
+        "Larkspur drawing format",
+        "Rowan lift historical discussion",
+        "Juniper shuttle historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 130.86092472076416,
+      "evidenceHit": true,
+      "id": "09",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Larkspur drawing format",
+        "Larkspur drawing format",
+        "Larkspur drawing format historical discussion",
+        "Rowan lift historical discussion",
+        "Juniper shuttle historical discussion",
+        "Tern boathouse key historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 4.7149658203125,
+      "evidenceHit": true,
+      "id": "10",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Tern boathouse key historical discussion",
+        "Larkspur drawing format",
+        "Tern boathouse key",
+        "Tern boathouse key",
+        "Tern boathouse key",
+        "Rowan lift historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 222.34797477722168,
+      "evidenceHit": true,
+      "id": "10",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Tern boathouse key",
+        "Tern boathouse key",
+        "Tern boathouse key historical discussion",
+        "Larkspur drawing format",
+        "Rowan lift historical discussion",
+        "Larkspur drawing format historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "elapsedMS": 36.566972732543945,
+      "kind": "wikipedia-discovery",
+      "query": "bowline",
+      "titles": [
+        "Portuguese bowline",
+        "Bowline",
+        "Cowboy bowline",
+        "Double bowline",
+        "Yosemite bowline",
+        "Eskimo bowline"
+      ]
+    },
+    {
+      "elapsedMS": 27.091026306152344,
+      "kind": "wikipedia-title-aware",
+      "query": "bowline",
+      "titles": [
+        "Bowline",
+        "Running bowline",
+        "Portuguese bowline",
+        "Cowboy bowline",
+        "Double bowline",
+        "Yosemite bowline"
+      ]
+    },
+    {
+      "elapsedMS": 10.37299633026123,
+      "kind": "wikipedia-discovery",
+      "query": "How does a sheet bend join ropes of different thicknesses?",
+      "titles": [
+        "Heaving line bend",
+        "Bend (knot)",
+        "Racking bend",
+        "Ashley's bend",
+        "List of knots",
+        "List of knot terminology"
+      ]
+    },
+    {
+      "elapsedMS": 110.1529598236084,
+      "kind": "wikipedia-title-aware",
+      "query": "How does a sheet bend join ropes of different thicknesses?",
+      "titles": [
+        "Sheet bend",
+        "Heaving line bend",
+        "Cowboy bowline",
+        "Single carrick bend",
+        "Bend (knot)",
+        "Racking bend"
+      ]
+    },
+    {
+      "elapsedMS": 4.528045654296875,
+      "kind": "wikipedia-discovery",
+      "query": "What distinguishes a reef knot from a granny knot?",
+      "titles": [
+        "Granny knot",
+        "Austrian knot",
+        "Turn (knot)",
+        "Windsor knot",
+        "Ashley's bend",
+        "Hitch (knot)"
+      ]
+    },
+    {
+      "elapsedMS": 83.7780237197876,
+      "kind": "wikipedia-title-aware",
+      "query": "What distinguishes a reef knot from a granny knot?",
+      "titles": [
+        "Granny knot",
+        "Reef knot",
+        "Granny knot (mathematics)",
+        "List of knot theory topics",
+        "Austrian knot",
+        "Thief knot"
+      ]
+    }
+  ]
+}

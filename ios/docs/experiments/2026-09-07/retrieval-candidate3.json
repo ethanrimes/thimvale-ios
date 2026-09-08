@@ -1,0 +1,529 @@
+{
+  "log": "thimvale-experiment-retrieval-candidate3.log",
+  "summary": [
+    {
+      "kind": "retrieval",
+      "variant": "legacy",
+      "samples": 10,
+      "median_elapsedMS": 4.943966865539551,
+      "top1": 0,
+      "evidence_hits": 10,
+      "mean_reciprocal_rank": 0.3283333333333333
+    },
+    {
+      "kind": "retrieval",
+      "variant": "refined",
+      "samples": 10,
+      "median_elapsedMS": 150.04843473434448,
+      "top1": 10,
+      "evidence_hits": 10,
+      "mean_reciprocal_rank": 1.0
+    },
+    {
+      "kind": "wikipedia-discovery",
+      "samples": 3,
+      "median_elapsedMS": 8.864998817443848
+    },
+    {
+      "kind": "wikipedia-title-aware",
+      "samples": 3,
+      "median_elapsedMS": 70.24598121643066
+    }
+  ],
+  "records": [
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 4.822969436645508,
+      "evidenceHit": true,
+      "id": "01",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Cedar observatory historical discussion",
+        "Cedar observatory",
+        "Cedar observatory",
+        "Cedar observatory",
+        "Juniper shuttle historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 88.33801746368408,
+      "evidenceHit": true,
+      "id": "01",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Cedar observatory",
+        "Cedar observatory",
+        "Cedar observatory historical discussion",
+        "Juniper shuttle historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 4.905939102172852,
+      "evidenceHit": true,
+      "id": "02",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Alder station inventory historical discussion",
+        "Alder station inventory",
+        "Alder station inventory",
+        "Alder station inventory",
+        "Saffron calibration notes historical discussion",
+        "Saffron calibration notes"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 188.55595588684082,
+      "evidenceHit": true,
+      "id": "02",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Alder station inventory",
+        "Alder station inventory historical discussion",
+        "Alder station inventory",
+        "Rowan lift historical discussion",
+        "Tern boathouse key historical discussion",
+        "Juniper shuttle historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 4.2639970779418945,
+      "evidenceHit": true,
+      "id": "03",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Juniper shuttle historical discussion",
+        "Juniper shuttle",
+        "Juniper shuttle",
+        "Bracken workshop historical discussion",
+        "Juniper shuttle",
+        "Rowan lift historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 153.11694145202637,
+      "evidenceHit": true,
+      "id": "03",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Juniper shuttle",
+        "Juniper shuttle",
+        "Juniper shuttle historical discussion",
+        "Larkspur drawing format historical discussion",
+        "Rowan lift historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "2"
+      ],
+      "elapsedMS": 4.250049591064453,
+      "evidenceHit": true,
+      "id": "04",
+      "kind": "retrieval",
+      "rank": 2,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Marigold archive",
+        "Marigold archive",
+        "Marigold archive",
+        "Marigold archive historical discussion",
+        "Tern boathouse key"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 65.92702865600586,
+      "evidenceHit": true,
+      "id": "04",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Marigold archive",
+        "Marigold archive",
+        "Marigold archive historical discussion",
+        "Tern boathouse key"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "5"
+      ],
+      "elapsedMS": 4.98199462890625,
+      "evidenceHit": true,
+      "id": "05",
+      "kind": "retrieval",
+      "rank": 5,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Saffron calibration notes historical discussion",
+        "Alder station inventory historical discussion",
+        "Saffron calibration notes",
+        "Saffron calibration notes",
+        "Saffron calibration notes",
+        "Rowan lift"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 100.350022315979,
+      "evidenceHit": true,
+      "id": "05",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Saffron calibration notes",
+        "Saffron calibration notes historical discussion",
+        "Saffron calibration notes",
+        "Juniper shuttle historical discussion",
+        "Rowan lift historical discussion",
+        "Rowan lift"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 4.225015640258789,
+      "evidenceHit": true,
+      "id": "06",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Kestrel cable marking historical discussion",
+        "Kestrel cable marking",
+        "Kestrel cable marking",
+        "Kestrel cable marking",
+        "Larkspur drawing format historical discussion",
+        "Rowan lift historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 153.905987739563,
+      "evidenceHit": true,
+      "id": "06",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Kestrel cable marking",
+        "Kestrel cable marking",
+        "Kestrel cable marking historical discussion",
+        "Larkspur drawing format historical discussion",
+        "Rowan lift historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 5.656957626342773,
+      "evidenceHit": true,
+      "id": "07",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Rowan lift historical discussion",
+        "Rowan lift",
+        "Rowan lift",
+        "Rowan lift",
+        "Bracken workshop historical discussion",
+        "Tern boathouse key historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 165.68398475646973,
+      "evidenceHit": true,
+      "id": "07",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Rowan lift",
+        "Rowan lift",
+        "Rowan lift historical discussion",
+        "Larkspur drawing format historical discussion",
+        "Tern boathouse key historical discussion",
+        "Alder station inventory historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 4.986047744750977,
+      "evidenceHit": true,
+      "id": "08",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Juniper shuttle historical discussion",
+        "Bracken workshop historical discussion",
+        "Bracken workshop",
+        "Bracken workshop",
+        "Bracken workshop",
+        "Alder station inventory historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 138.51702213287354,
+      "evidenceHit": true,
+      "id": "08",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Bracken workshop",
+        "Bracken workshop",
+        "Bracken workshop historical discussion",
+        "Juniper shuttle historical discussion",
+        "Larkspur drawing format historical discussion",
+        "Saffron calibration notes historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "4"
+      ],
+      "elapsedMS": 5.671024322509766,
+      "evidenceHit": true,
+      "id": "09",
+      "kind": "retrieval",
+      "rank": 4,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Larkspur drawing format historical discussion",
+        "Larkspur drawing format",
+        "Larkspur drawing format",
+        "Larkspur drawing format",
+        "Rowan lift historical discussion",
+        "Juniper shuttle historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 146.9799280166626,
+      "evidenceHit": true,
+      "id": "09",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "odd",
+      "titles": [
+        "Larkspur drawing format",
+        "Larkspur drawing format",
+        "Larkspur drawing format historical discussion",
+        "Rowan lift historical discussion",
+        "Juniper shuttle historical discussion",
+        "Tern boathouse key historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "answerSourceIDs": [
+        "3"
+      ],
+      "elapsedMS": 5.3119659423828125,
+      "evidenceHit": true,
+      "id": "10",
+      "kind": "retrieval",
+      "rank": 3,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Tern boathouse key historical discussion",
+        "Larkspur drawing format",
+        "Tern boathouse key",
+        "Tern boathouse key",
+        "Tern boathouse key",
+        "Rowan lift historical discussion"
+      ],
+      "variant": "legacy"
+    },
+    {
+      "answerSourceIDs": [
+        "1"
+      ],
+      "elapsedMS": 239.5709753036499,
+      "evidenceHit": true,
+      "id": "10",
+      "kind": "retrieval",
+      "rank": 1,
+      "semantic": true,
+      "split": "even",
+      "titles": [
+        "Tern boathouse key",
+        "Tern boathouse key",
+        "Tern boathouse key historical discussion",
+        "Larkspur drawing format",
+        "Rowan lift historical discussion",
+        "Larkspur drawing format historical discussion"
+      ],
+      "variant": "refined"
+    },
+    {
+      "elapsedMS": 17.773985862731934,
+      "kind": "wikipedia-discovery",
+      "query": "bowline",
+      "titles": [
+        "Portuguese bowline",
+        "Bowline",
+        "Cowboy bowline",
+        "Double bowline",
+        "Yosemite bowline",
+        "Eskimo bowline"
+      ]
+    },
+    {
+      "elapsedMS": 22.476911544799805,
+      "kind": "wikipedia-title-aware",
+      "query": "bowline",
+      "titles": [
+        "Bowline",
+        "Portuguese bowline",
+        "Cowboy bowline",
+        "Double bowline",
+        "Yosemite bowline",
+        "Eskimo bowline"
+      ]
+    },
+    {
+      "elapsedMS": 8.864998817443848,
+      "kind": "wikipedia-discovery",
+      "query": "How does a sheet bend join ropes of different thicknesses?",
+      "titles": [
+        "Heaving line bend",
+        "Bend (knot)",
+        "Racking bend",
+        "Ashley's bend",
+        "List of knots",
+        "List of knot terminology"
+      ]
+    },
+    {
+      "elapsedMS": 81.5960168838501,
+      "kind": "wikipedia-title-aware",
+      "query": "How does a sheet bend join ropes of different thicknesses?",
+      "titles": [
+        "Sheet bend",
+        "Bend (knot)",
+        "Racking bend",
+        "Heaving line bend",
+        "Harness bend",
+        "Zeppelin bend"
+      ]
+    },
+    {
+      "elapsedMS": 4.828929901123047,
+      "kind": "wikipedia-discovery",
+      "query": "What distinguishes a reef knot from a granny knot?",
+      "titles": [
+        "Granny knot",
+        "Austrian knot",
+        "Turn (knot)",
+        "Windsor knot",
+        "Ashley's bend",
+        "Hitch (knot)"
+      ]
+    },
+    {
+      "elapsedMS": 70.24598121643066,
+      "kind": "wikipedia-title-aware",
+      "query": "What distinguishes a reef knot from a granny knot?",
+      "titles": [
+        "Granny knot",
+        "Reef knot",
+        "Knot",
+        "Granny knot (mathematics)",
+        "Austrian knot",
+        "Turn (knot)"
+      ]
+    }
+  ]
+}

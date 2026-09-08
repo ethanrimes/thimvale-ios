@@ -195,16 +195,19 @@ final class KnowledgeStore: @unchecked Sendable {
         return result
     }
 
-    static func searchTerms(_ query: String) -> [String] {
+    static func queryTokens(_ query: String) -> [String] {
         let stop = Set(["the", "a", "an", "is", "are", "was", "what", "why", "how", "does", "do", "of", "to", "and", "in", "for", "it", "me", "about", "answer", "briefly", "using", "sources", "source", "please", "tell", "explain", "could", "would", "should", "can", "you", "my", "from", "with", "this", "that", "these", "those"])
         let words = query.lowercased().components(separatedBy: CharacterSet.alphanumerics.inverted).filter { !$0.isEmpty && !stop.contains($0) }
-        return NSOrderedSet(array: Array(words.prefix(20))).array.compactMap { $0 as? String }
+        return Array(words.prefix(20))
+    }
+    static func searchTerms(_ query: String) -> [String] {
+        NSOrderedSet(array: queryTokens(query)).array.compactMap { $0 as? String }
     }
     static func lexicalQuery(_ query: String) -> String {
         searchTerms(query).map { "\"\($0)\"" }.joined(separator: " OR ")
     }
 
-    func search(_ query: String, limit: Int = 6) throws -> [Citation] {
+    func search(_ query: String, limit: Int = 6, refine: Bool = true) throws -> [Citation] {
         guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return [] }
         var scores: [Int64: Double] = [:]
         let lexical = Self.lexicalQuery(query)
@@ -251,13 +254,26 @@ final class KnowledgeStore: @unchecked Sendable {
             let offset = sqlite3_column_int64(statement, 2)
             let excerpt = try CompactText.decode(data(statement, 3), originalBytes: Int(sqlite3_column_int64(statement, 4)))
             results.append(Citation(id: "K" + String(StableID.hash("\(document):\(row)").prefix(8)), title: text(statement, 0), location: "\(location) · character \(offset)", excerpt: excerpt, sourceURL: location.hasPrefix("https://") ? location : nil))
-            if results.count >= min(max(limit, 1), 20) { break }
+            if results.count >= (refine ? 30 : min(max(limit, 1), 20)) { break }
         }
-        return results
+        return refine ? EvidenceSelection.rerank(results, query: query, limit: min(max(limit, 1), 20), semantic: semanticScorer(query: query)) : results
     }
 
     func semanticScore(query: String, passage: String) -> Double {
-        guard let a = embedding?.vector(for: query), let b = embedding?.vector(for: passage) else { return 0 }
-        return BinaryVector.similarity(BinaryVector.encode(a), BinaryVector.encode(b))
+        semanticScorer(query: query)(passage)
+    }
+
+    /// Keep the compressed on-disk vectors; use full precision only for the small reranking shortlist.
+    /// The query is embedded once, not again for every candidate passage.
+    func semanticScorer(query: String) -> (String) -> Double {
+        guard let embedding, let a = embedding.vector(for: query) else { return { _ in 0 } }
+        let normA = a.reduce(0) { $0 + $1 * $1 }
+        return { passage in
+            guard let b = embedding.vector(for: passage), a.count == b.count else { return 0 }
+            var dot = 0.0, normB = 0.0
+            for (left, right) in zip(a, b) { dot += left * right; normB += right * right }
+            guard normA > 0, normB > 0 else { return 0 }
+            return max(0, min(1, dot / sqrt(normA * normB)))
+        }
     }
 }
