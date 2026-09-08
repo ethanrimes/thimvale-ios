@@ -24,6 +24,8 @@ struct ChatMessage: Codable, Identifiable, Sendable {
     var activity: [String] = []
     // Optional so conversations saved before the live activity feed still decode.
     var events: [AgentEvent]?
+    // Optional for compatibility with conversations saved before attachments.
+    var attachments: [ChatAttachment]?
     var date = Date()
 }
 
@@ -63,6 +65,13 @@ struct ModelEntry: Codable, Identifiable, Hashable, Sendable {
     var preferredQuant = "Q4_K_M"
     var localFilename: String?
     var license: String?
+    var vision: Bool?
+    var projectorFilename: String?
+    var repositoryRevision: String?
+    var visionLabel: String {
+        if vision == true { return "Vision" }
+        return family == "Imported" || family == "Hugging Face" ? "Vision unverified" : "Text only"
+    }
     var isDownloaded: Bool { localFilename != nil }
     var needsHigherMemory: Bool { minimumMemoryGB >= 12 }
     var isFourBillionClass: Bool {
@@ -72,7 +81,7 @@ struct ModelEntry: Codable, Identifiable, Hashable, Sendable {
     }
     func matchesLibrarySearch(_ query: String) -> Bool {
         let query = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        return query.isEmpty || "\(name) \(family) \(parameters) \(summary)".localizedCaseInsensitiveContains(query)
+        return query.isEmpty || "\(name) \(family) \(parameters) \(summary) \(visionLabel)".localizedCaseInsensitiveContains(query)
     }
 }
 

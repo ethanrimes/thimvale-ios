@@ -14,7 +14,9 @@ Wikipedia uses Kiwix's existing compressed ZIM corpus and embedded full-text ind
 
 ## Scope
 
-Text generation only in the first release, even for multimodal model families. GGUF compatibility depends on the pinned llama.cpp runtime and device memory. No arbitrary shell, cross-app filesystem access, silent background agent execution, or unlimited tool loop. Web access transmits only the explicit tool query; users can disable it independently.
+Text and image input, with text output. Images use the bundled llama.cpp MTMD encoder and a matching mmproj GGUF. Image requests clear the text-prefix cache and track multimodal decoder positions separately; projector and model lifetimes are shared. Audio/video input is not implemented. GGUF compatibility depends on the pinned runtime and device memory. No arbitrary shell, cross-app filesystem access, silent background agent execution, or unlimited tool loop. Web access transmits only the explicit tool query; users can disable it independently.
+
+Chat attachments are explicit, conversation-local snapshots, not folder grants. A coordinated security-scoped read extracts bounded text or normalizes an image to a metadata-free JPEG. Text is shortlisted and semantically reranked without writing to the knowledge index; every attached document gets a candidate before extra excerpts fill the context budget. Source IDs retain file identity even for identical filenames. Images are passed as pixels, not URLs or filename-only placeholders. The user's question follows the attachment context, which matters for small models. See [attachment limits and validation](attachments-and-vision.md).
 
 ## Validation
 

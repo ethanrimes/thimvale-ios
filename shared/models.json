@@ -4,40 +4,44 @@
     "name": "Qwen 3.5",
     "family": "Qwen",
     "repository": "unsloth/Qwen3.5-0.8B-GGUF",
-    "summary": "Qwen 3.5 at 0.8B parameters. Text mode.",
+    "summary": "Qwen 3.5 at 0.8B parameters, with image understanding.",
     "parameters": "0.8B",
     "minimumMemoryGB": 4,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": true
   },
   {
     "id": "qwen35-2",
     "name": "Qwen 3.5",
     "family": "Qwen",
     "repository": "unsloth/Qwen3.5-2B-GGUF",
-    "summary": "Qwen 3.5 at 2B parameters. Text mode.",
+    "summary": "Qwen 3.5 at 2B parameters, with image understanding.",
     "parameters": "2B",
     "minimumMemoryGB": 6,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": true
   },
   {
     "id": "qwen35-4",
     "name": "Qwen 3.5",
     "family": "Qwen",
     "repository": "unsloth/Qwen3.5-4B-GGUF",
-    "summary": "Qwen 3.5 at 4B parameters. Text mode; needs a higher-memory phone.",
+    "summary": "Qwen 3.5 at 4B parameters. Text and images; needs a higher-memory phone.",
     "parameters": "4B",
     "minimumMemoryGB": 8,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": true
   },
   {
     "id": "qwen35-9",
     "name": "Qwen 3.5",
     "family": "Qwen",
     "repository": "unsloth/Qwen3.5-9B-GGUF",
-    "summary": "9B text model. Q4 weights alone are about 5.7 GB; needs substantial free memory. Image input is not enabled.",
+    "summary": "9B vision-language model. Q4 weights alone are about 5.7 GB, plus its vision file and runtime memory.",
     "parameters": "9B",
     "minimumMemoryGB": 12,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": true
   },
   {
     "id": "qwen3-06",
@@ -47,7 +51,8 @@
     "summary": "Lightweight multilingual chat.",
     "parameters": "0.6B",
     "preferredQuant": "Q8_0",
-    "minimumMemoryGB": 4
+    "minimumMemoryGB": 4,
+    "vision": false
   },
   {
     "id": "qwen3-17",
@@ -57,7 +62,8 @@
     "summary": "Multilingual text generation at 1.7B parameters.",
     "parameters": "1.7B",
     "preferredQuant": "Q8_0",
-    "minimumMemoryGB": 6
+    "minimumMemoryGB": 6,
+    "vision": false
   },
   {
     "id": "qwen3-4",
@@ -67,7 +73,8 @@
     "summary": "Qwen's 4B multilingual text model.",
     "parameters": "4B",
     "minimumMemoryGB": 8,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "qwen3-4-instruct2507",
@@ -77,7 +84,8 @@
     "summary": "The July 2025 instruction-tuned 4B edition. Non-thinking text generation.",
     "parameters": "4B",
     "minimumMemoryGB": 8,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "gemma3-1",
@@ -87,37 +95,41 @@
     "summary": "Google's 1B instruction model.",
     "parameters": "1B",
     "minimumMemoryGB": 4,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "gemma3-4",
     "name": "Gemma 3",
     "family": "Gemma",
     "repository": "ggml-org/gemma-3-4b-it-GGUF",
-    "summary": "Google's 4B instruction model. Text mode; image input is not enabled.",
+    "summary": "Google's 4B instruction model for text and images. The 1B edition is text only.",
     "parameters": "4B",
     "minimumMemoryGB": 8,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": true
   },
   {
     "id": "gemma4-e2",
     "name": "Gemma 4",
     "family": "Gemma",
     "repository": "google/gemma-4-E2B-it-qat-q4_0-gguf",
-    "summary": "The E2B edition. Text mode; needs a higher-memory phone.",
+    "summary": "The E2B edition with image understanding. Needs a higher-memory phone.",
     "parameters": "E2B",
     "preferredQuant": "Q4_0",
-    "minimumMemoryGB": 8
+    "minimumMemoryGB": 8,
+    "vision": true
   },
   {
     "id": "gemma4-e4",
     "name": "Gemma 4 E4B",
     "family": "Gemma",
     "repository": "google/gemma-4-E4B-it-qat-q4_0-gguf",
-    "summary": "Google's E4B edition with quantization-aware weights. E4B is an effective-size label, not total weight count: the Q4 download is about 5.2 GB. Text only.",
+    "summary": "Google's E4B vision-language edition. E4B is an effective-size label, not total weight count: the Q4 download is about 5.2 GB, before the vision file.",
     "parameters": "E4B",
     "preferredQuant": "Q4_0",
-    "minimumMemoryGB": 12
+    "minimumMemoryGB": 12,
+    "vision": true
   },
   {
     "id": "liquid25-230",
@@ -127,7 +139,8 @@
     "summary": "230M-parameter text model from Liquid AI.",
     "parameters": "230M",
     "minimumMemoryGB": 4,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "liquid25-350",
@@ -137,7 +150,8 @@
     "summary": "Liquid AI's 350M text model. A small download for short text tasks.",
     "parameters": "350M",
     "minimumMemoryGB": 4,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "liquid25-12-instruct",
@@ -147,7 +161,8 @@
     "summary": "The 1.2B instruction-tuned LFM 2.5 edition.",
     "parameters": "1.2B",
     "minimumMemoryGB": 4,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "liquid2-12",
@@ -157,7 +172,8 @@
     "summary": "Designed for efficient inference on edge devices.",
     "parameters": "1.2B",
     "minimumMemoryGB": 4,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "liquid25-26",
@@ -167,7 +183,8 @@
     "summary": "2.6B-parameter text model from Liquid AI.",
     "parameters": "2.6B",
     "minimumMemoryGB": 6,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "liquid2-26-exp",
@@ -177,7 +194,8 @@
     "summary": "The experimental 2.6B LFM 2 edition, separate from LFM 2.5.",
     "parameters": "2.6B",
     "minimumMemoryGB": 6,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "liquid25-8-a1",
@@ -187,7 +205,8 @@
     "summary": "Mixture-of-experts model with about 1B active parameters per token. All experts still need storage and memory; Q4 weights are about 5.2 GB.",
     "parameters": "8B (1B active)",
     "minimumMemoryGB": 12,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "liquid-rag",
@@ -197,7 +216,8 @@
     "summary": "Specialized for answering from retrieved documents.",
     "parameters": "1.2B",
     "minimumMemoryGB": 4,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "granite4-micro",
@@ -207,7 +227,8 @@
     "summary": "IBM's Granite 4.0 Micro instruction model.",
     "parameters": "3B",
     "minimumMemoryGB": 6,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "granite4-350",
@@ -217,7 +238,8 @@
     "summary": "IBM's dense 350M instruction model; distinct from the hybrid H-350M edition.",
     "parameters": "350M",
     "minimumMemoryGB": 4,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "granite41-8",
@@ -227,7 +249,8 @@
     "summary": "IBM's 8B instruction model. Q4 weights are about 5.3 GB before runtime memory and context.",
     "parameters": "8B",
     "minimumMemoryGB": 12,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "granite42-3",
@@ -237,7 +260,8 @@
     "summary": "A recent small Granite model for text tasks.",
     "parameters": "3B",
     "minimumMemoryGB": 6,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "phi4-mini",
@@ -247,7 +271,8 @@
     "summary": "Microsoft's Phi 4 Mini instruction model.",
     "parameters": "3.8B",
     "minimumMemoryGB": 8,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "llama32-1",
@@ -257,7 +282,8 @@
     "summary": "Meta's lightweight instruction model.",
     "parameters": "1B",
     "minimumMemoryGB": 4,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "llama32-3",
@@ -267,7 +293,8 @@
     "summary": "Meta's 3B instruction model.",
     "parameters": "3B",
     "minimumMemoryGB": 6,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "smollm2-360",
@@ -277,7 +304,8 @@
     "summary": "Hugging Face's 360M instruction model.",
     "parameters": "360M",
     "preferredQuant": "Q8_0",
-    "minimumMemoryGB": 4
+    "minimumMemoryGB": 4,
+    "vision": false
   },
   {
     "id": "smollm2-17",
@@ -287,17 +315,30 @@
     "summary": "Hugging Face's 1.7B instruction model.",
     "parameters": "1.7B",
     "minimumMemoryGB": 4,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "ministral3",
     "name": "Ministral 3",
     "family": "Mistral",
     "repository": "unsloth/Ministral-3-3B-Instruct-2512-GGUF",
-    "summary": "Mistral's small instruction model, in text mode.",
+    "summary": "Mistral's small instruction model with image understanding.",
     "parameters": "3B",
     "minimumMemoryGB": 6,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": true
+  },
+  {
+    "id": "smolvlm-256",
+    "name": "SmolVLM",
+    "family": "SmolVLM",
+    "repository": "ggml-org/SmolVLM-256M-Instruct-GGUF",
+    "summary": "A small vision-language model for basic image descriptions. Q8 model plus F16 vision file is about 365 MB. Limited detail and reasoning at this size.",
+    "parameters": "256M",
+    "preferredQuant": "Q8_0",
+    "minimumMemoryGB": 4,
+    "vision": true
   },
   {
     "id": "minicpm5-1",
@@ -307,7 +348,8 @@
     "summary": "OpenBMB's 1B text model, using its official GGUF release.",
     "parameters": "1B",
     "minimumMemoryGB": 4,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "minicpm5-2",
@@ -317,7 +359,8 @@
     "summary": "OpenBMB's 2B edition; about 2.5B total parameters. Official GGUF, with a 1.6 GB Q4 download.",
     "parameters": "2.5B",
     "minimumMemoryGB": 6,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "nanbeige41-3",
@@ -327,7 +370,8 @@
     "summary": "Nanbeige's 4.1 edition, separate from 4.2. About 3.9B total parameters; community GGUF with a 2.6 GB Q4 download.",
     "parameters": "3.9B",
     "minimumMemoryGB": 8,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "nanbeige42-3",
@@ -337,7 +381,8 @@
     "summary": "3B non-embedding parameters; about 4.2B total in the GGUF. Community quantization of Nanbeige's text model.",
     "parameters": "4.2B",
     "minimumMemoryGB": 8,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "nemotron3-nano-4",
@@ -347,7 +392,8 @@
     "summary": "NVIDIA's hybrid 4B text model. Official 2.8 GB Q4 download. Uses NVIDIA's Nemotron Open Model License.",
     "parameters": "4B",
     "minimumMemoryGB": 8,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "g9v3-3",
@@ -357,7 +403,8 @@
     "summary": "AI9Stars' dense 3B text model. Community GGUF quantization.",
     "parameters": "3B",
     "minimumMemoryGB": 6,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "ling3-tiny",
@@ -367,7 +414,8 @@
     "summary": "7.9B total parameters with 1.3B active per token. Tiny describes compute, not download size: Q4 weights are about 4.9 GB. Community GGUF quantization.",
     "parameters": "7.9B (1.3B active)",
     "minimumMemoryGB": 12,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "falcon-h1r-7",
@@ -377,7 +425,8 @@
     "summary": "TII's 7B hybrid reasoning model. Q4 weights are about 4.6 GB; generated reasoning also uses the token budget.",
     "parameters": "7B",
     "minimumMemoryGB": 12,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   },
   {
     "id": "ornith1-9",
@@ -387,6 +436,7 @@
     "summary": "Ornith AI's 9B text model. Q4 weights are about 5.6 GB before runtime memory and context.",
     "parameters": "9B",
     "minimumMemoryGB": 12,
-    "preferredQuant": "Q4_K_M"
+    "preferredQuant": "Q4_K_M",
+    "vision": false
   }
 ]

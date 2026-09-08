@@ -9,6 +9,8 @@ final class ScriptedInference: InferenceServing, @unchecked Sendable {
     private var loadCount = 0
     private var generationCount = 0
     private var cancellation = 0
+    private var prompts: [[ChatMessage]] = []
+    private var imagesReceived: [Int] = []
     let scripts: [[String]]
     let loadDelay: Duration
     let tokenDelay: Duration
@@ -16,6 +18,12 @@ final class ScriptedInference: InferenceServing, @unchecked Sendable {
         self.scripts = scripts; self.loadDelay = loadDelay; self.tokenDelay = tokenDelay
     }
     var snapshot: (model: URL?, loads: Int, generations: Int) { lock.withLock { (resident, loadCount, generationCount) } }
+    var receivedPrompts: [[ChatMessage]] { lock.withLock { prompts } }
+    var receivedImageCounts: [Int] { lock.withLock { imagesReceived } }
+    func generate(model: URL, messages: [ChatMessage], images: [Data], projector: URL?, maxTokens: Int, onToken: @escaping @Sendable (String) -> Void) async throws -> String {
+        lock.withLock { imagesReceived.append(images.count) }
+        return try await generate(model: model, messages: messages, maxTokens: maxTokens, onToken: onToken)
+    }
     func load(model: URL) async throws {
         try await Task.sleep(for: loadDelay)
         try Task.checkCancellation()
@@ -24,6 +32,7 @@ final class ScriptedInference: InferenceServing, @unchecked Sendable {
     }
     func generate(model: URL, messages: [ChatMessage], maxTokens: Int, onToken: @escaping @Sendable (String) -> Void) async throws -> String {
         let (script, ticket) = lock.withLock {
+            prompts.append(messages)
             let script = scripts[min(generationCount, scripts.count - 1)]
             generationCount += 1
             return (script, cancellation)

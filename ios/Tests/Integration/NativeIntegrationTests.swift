@@ -5,7 +5,7 @@ import UIKit
 final class NativeIntegrationTests: XCTestCase {
     func testExpandedCatalogUsesDistinctModelsAndHonestMemoryLabels() throws {
         let models = ModelCatalog.models
-        XCTAssertEqual(models.count, 39)
+        XCTAssertEqual(models.count, 40)
         XCTAssertEqual(Set(models.map(\.repository)).count, models.count)
         XCTAssertEqual(Set(ModelCatalog.families), Set(models.map(\.family)))
         XCTAssertEqual(ModelCatalog.families.count, Set(ModelCatalog.families).count)
@@ -58,6 +58,10 @@ final class NativeIntegrationTests: XCTestCase {
         let value = try XCTUnwrap(Bundle.main.object(forInfoDictionaryKey: "ITSAppUsesNonExemptEncryption") as? NSNumber)
         XCTAssertEqual(CFGetTypeID(value), CFBooleanGetTypeID())
         XCTAssertFalse(value.boolValue)
+    }
+    func testBuiltAppExposesDocumentsToFilesPicker() throws {
+        XCTAssertEqual(Bundle.main.object(forInfoDictionaryKey: "UIFileSharingEnabled") as? Bool, true)
+        XCTAssertEqual(Bundle.main.object(forInfoDictionaryKey: "LSSupportsOpeningDocumentsInPlace") as? Bool, true)
     }
 
     func testBuiltAppSupportsAllIPadOrientations() throws {

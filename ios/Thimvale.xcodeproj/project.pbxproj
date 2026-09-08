@@ -27,6 +27,7 @@
 		564BCBFA4F610AF0FDD736D8 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DB03CF18C9B2F0BF0D6DBF /* AppState.swift */; };
 		594DC7CC1A5BE14D08FE9C91 /* EvidenceSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA02E1C3496B6A882DED7E15 /* EvidenceSelectionTests.swift */; };
 		5DF0FC6E7A78D669E87F6CF8 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6253D593DAF82B23921DCFBA /* ChatView.swift */; };
+		5E876F5AF5CBDF9B3BCAF84E /* ChatAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6977C58A160EEB33085945 /* ChatAttachment.swift */; };
 		6473A8C94BAB8E613E5CA702 /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E86637CAFBCA4757E53E81B /* PermissionsView.swift */; };
 		66329FF06BCD5BBA4E081F52 /* PocketNative.mm in Sources */ = {isa = PBXBuildFile; fileRef = CD20EB2896B4E451BC31795C /* PocketNative.mm */; };
 		68790E9012B6429028CCBA48 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CD305C9E0F424ADF690F0164 /* libsqlite3.tbd */; };
@@ -41,6 +42,7 @@
 		928EA2BB9F441E138E7B6D3E /* WikipediaBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DCD4B665EE48392978E32E /* WikipediaBrowserView.swift */; };
 		937D40969F660B148AFE7DB7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF77756BFA5D937486BD4BAB /* Accelerate.framework */; };
 		9E45272FF9E05A52265DFD51 /* RegressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C397F5A5FFFB1B1106466AE /* RegressionTests.swift */; };
+		A09FEBBC97FC2460C4DC62C3 /* ChatAttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264546E92718CBCCE76B9CD1 /* ChatAttachmentTests.swift */; };
 		A26F78BFB1B22FC88E8C7B3B /* NaturalLanguage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B530C020F7FC7DA6E3D19E24 /* NaturalLanguage.framework */; };
 		AB75D618DC92BE58FED597DD /* SecureWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517AD785AE11E50416C7FFB4 /* SecureWorkspace.swift */; };
 		B32F16606DC041F7EDEE2556 /* UITestFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C207699C99A875193347D66 /* UITestFixtures.swift */; };
@@ -55,6 +57,7 @@
 		CCCCBF14B838D53874FEFB4C /* Domain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431DC86216F17A76AB258A60 /* Domain.swift */; };
 		CE4B7D725E3314E74AD064C1 /* ModelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0FCF291A58466FE3B6E696 /* ModelsView.swift */; };
 		CF8090F947E668BC5F4943C4 /* CoreKiwix.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A44C74D1648428BFDA710B9 /* CoreKiwix.xcframework */; };
+		DBF0ACD3E56D7AF8BB952FC5 /* ChatAttachmentReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FAAEA82C10691634B198BD9 /* ChatAttachmentReader.swift */; };
 		E4A8C45439D744F408E19EA5 /* SessionAndStreamingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A3FE24B08D8D347952B733 /* SessionAndStreamingTests.swift */; };
 		EADEC2F25BC54E710A838D79 /* AppPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0FEA8A1215DF3AED84DC1A /* AppPaths.swift */; };
 		EBB920453BDB652960B70400 /* LocalFileKnowledgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C111AD6C077AB0C7411796D9 /* LocalFileKnowledgeTests.swift */; };
@@ -102,6 +105,8 @@
 		0F0FEA8A1215DF3AED84DC1A /* AppPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPaths.swift; sourceTree = "<group>"; };
 		1875DEFDEAC8968B4914DB84 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		1C207699C99A875193347D66 /* UITestFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestFixtures.swift; sourceTree = "<group>"; };
+		1FAAEA82C10691634B198BD9 /* ChatAttachmentReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAttachmentReader.swift; sourceTree = "<group>"; };
+		264546E92718CBCCE76B9CD1 /* ChatAttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAttachmentTests.swift; sourceTree = "<group>"; };
 		2E0FCF291A58466FE3B6E696 /* ModelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsView.swift; sourceTree = "<group>"; };
 		31028C82AA37E45AC573A9ED /* LICENSES */ = {isa = PBXFileReference; lastKnownFileType = folder; path = LICENSES; sourceTree = SOURCE_ROOT; };
 		3D337AE3A5EBEE2CBB63C4C6 /* ThimvaleIntegrationTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ThimvaleIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -142,6 +147,7 @@
 		C606A53FE66305C0FF9F0979 /* WikipediaUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikipediaUpdatesView.swift; sourceTree = "<group>"; };
 		C762D7A0EB5F4FC204A5D54D /* PromptCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptCacheTests.swift; sourceTree = "<group>"; };
 		C7C5B0FC658E961CEF73CDCE /* WikipediaUpdateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikipediaUpdateTests.swift; sourceTree = "<group>"; };
+		CB6977C58A160EEB33085945 /* ChatAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAttachment.swift; sourceTree = "<group>"; };
 		CCBCAB99D251C969E4C52435 /* llama.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = llama.xcframework; path = Vendor/llama.xcframework; sourceTree = "<group>"; };
 		CD20EB2896B4E451BC31795C /* PocketNative.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PocketNative.mm; sourceTree = "<group>"; };
 		CD305C9E0F424ADF690F0164 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -182,6 +188,7 @@
 			children = (
 				F495D8D1E827A37C96F198DF /* AppNotices.swift */,
 				0F0FEA8A1215DF3AED84DC1A /* AppPaths.swift */,
+				1FAAEA82C10691634B198BD9 /* ChatAttachmentReader.swift */,
 				E38E5B758C66CB4DBC099D2C /* Downloads.swift */,
 				B4FECAAE4D7FB0F96F7F67EE /* InferenceService.swift */,
 				4DEC295E5CE3BF0222AB00B3 /* KnowledgeService.swift */,
@@ -205,6 +212,7 @@
 		0E5169A6500B8ACD43891B9D /* Integration */ = {
 			isa = PBXGroup;
 			children = (
+				264546E92718CBCCE76B9CD1 /* ChatAttachmentTests.swift */,
 				EA02E1C3496B6A882DED7E15 /* EvidenceSelectionTests.swift */,
 				4CFE0AD6B2DBFF9A84F3CBFA /* ExperimentTests.swift */,
 				C111AD6C077AB0C7411796D9 /* LocalFileKnowledgeTests.swift */,
@@ -320,6 +328,7 @@
 			isa = PBXGroup;
 			children = (
 				9542E361F5976D1F9CC2278E /* AppIdentity.swift */,
+				CB6977C58A160EEB33085945 /* ChatAttachment.swift */,
 				431DC86216F17A76AB258A60 /* Domain.swift */,
 				7404B208B8B9FB271D2D90BE /* EvidencePrompt.swift */,
 				987D5B37E1FDE20CBB1911C0 /* EvidenceSelection.swift */,
@@ -458,6 +467,8 @@
 				6A3BDCBEB5AC84A6E88FD54F /* AppNotices.swift in Sources */,
 				EADEC2F25BC54E710A838D79 /* AppPaths.swift in Sources */,
 				564BCBFA4F610AF0FDD736D8 /* AppState.swift in Sources */,
+				5E876F5AF5CBDF9B3BCAF84E /* ChatAttachment.swift in Sources */,
+				DBF0ACD3E56D7AF8BB952FC5 /* ChatAttachmentReader.swift in Sources */,
 				5DF0FC6E7A78D669E87F6CF8 /* ChatView.swift in Sources */,
 				7CF09B3CB455664F4F46CC55 /* CitationText.swift in Sources */,
 				09C0BD9F35BE036DC28DEBD9 /* Design.swift in Sources */,
@@ -491,6 +502,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A09FEBBC97FC2460C4DC62C3 /* ChatAttachmentTests.swift in Sources */,
 				594DC7CC1A5BE14D08FE9C91 /* EvidenceSelectionTests.swift in Sources */,
 				8DA430B8DA2617A4709A5F8F /* ExperimentTests.swift in Sources */,
 				EBB920453BDB652960B70400 /* LocalFileKnowledgeTests.swift in Sources */,
@@ -558,11 +570,11 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(inherited) $(PROJECT_DIR)/Vendor";
+				INFOPLIST_FILE = "Config/App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Thimvale;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIFileSharingEnabled = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
@@ -755,11 +767,11 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(inherited) $(PROJECT_DIR)/Vendor";
+				INFOPLIST_FILE = "Config/App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Thimvale;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIFileSharingEnabled = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;

@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct ChatView: View {
     @Bindable var state: AppState
@@ -6,6 +7,8 @@ struct ChatView: View {
     @State private var history = false
     @State private var settings = false
     @State private var source: Citation?
+    @State private var attachFiles = false
+    @State private var imagePreview: ChatAttachment?
     @State private var expandedEvents: Set<UUID> = []
     @FocusState private var composing: Bool
 
@@ -51,6 +54,8 @@ struct ChatView: View {
                                 Color.clear.frame(height: 1).id("bottom")
                             }.padding(22)
                         }.accessibilityIdentifier("chatTranscript")
+                        .scrollDismissesKeyboard(.interactively)
+                        .simultaneousGesture(TapGesture().onEnded { composing = false })
                         .onChange(of: state.current.messages.last?.content) { _, _ in proxy.scrollTo(state.current.messages.last?.id, anchor: .bottom) }
                         .onChange(of: state.isGenerating) { _, _ in proxy.scrollTo("status", anchor: .bottom) }
                         .onChange(of: state.current.messages.last?.events?.count) { _, _ in proxy.scrollTo("bottom", anchor: .bottom) }
@@ -71,12 +76,33 @@ struct ChatView: View {
                     Button { state.newConversation() } label: { Image(systemName: "square.and.pencil") }.disabled(state.isGenerating).accessibilityLabel("New conversation")
                     Button { settings = true } label: { Image(systemName: "gearshape") }.accessibilityLabel("Settings")
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { composing = false }.accessibilityIdentifier("dismissChatKeyboard")
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $history) { historySheet }
             .sheet(isPresented: $settings) { SettingsView(state: state) }
             .sheet(item: $source) { CitationView(citation: $0) }
-            .onChange(of: state.conversationID) { _, _ in expandedEvents.removeAll() }
+            .sheet(item: $imagePreview) { file in
+                NavigationStack {
+                    Group {
+                        if let data = file.imageData, let uiImage = UIImage(data: data) {
+                            Image(uiImage: uiImage).resizable().scaledToFit().padding()
+                        }
+                    }.navigationTitle(file.name).navigationBarTitleDisplayMode(.inline)
+                        .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { imagePreview = nil } } }
+                }
+            }
+            .fileImporter(isPresented: $attachFiles, allowedContentTypes: [.plainText, .pdf, .commaSeparatedText, .json, .html, .image, .data], allowsMultipleSelection: true) { result in
+                switch result {
+                case .success(let urls): Task { await state.addChatAttachments(urls) }
+                case .failure(let error):
+                    if (error as NSError).code != NSUserCancelledError { state.error = error.localizedDescription }
+                }
+            }
+            .onChange(of: state.conversationID) { _, _ in expandedEvents.removeAll(); composing = false; draft = "" }
         }
     }
 
@@ -103,7 +129,8 @@ struct ChatView: View {
                     Button { state.selectedTab = 3 } label: { Label("Edit tool permissions", systemImage: "hand.raised").font(.caption) }
                 }
             }.padding(.horizontal, 26).padding(.bottom, 24)
-        }
+        }.scrollDismissesKeyboard(.interactively)
+            .background(Palette.background.onTapGesture { composing = false })
     }
     private func suggestion(_ title: String, subtitle: String, symbol: String, prompt: String) -> some View {
         Button { draft = prompt; composing = true } label: {
@@ -117,7 +144,13 @@ struct ChatView: View {
     }
     private var composer: some View {
         VStack(spacing: 9) {
+            if !state.pendingChatAttachments.isEmpty { attachmentStrip(state.pendingChatAttachments, removable: true) }
+            if state.isAddingChatAttachments { ProgressView(state.chatAttachmentStatus).font(.caption).accessibilityIdentifier("readingChatAttachments") }
             HStack(alignment: .bottom, spacing: 12) {
+                Button { composing = false; attachFiles = true } label: {
+                    Image(systemName: "paperclip").font(.system(size: 19)).foregroundStyle(Palette.accent).frame(width: 32, height: 38)
+                }.disabled(state.isGenerating || state.isAddingChatAttachments || state.remainingChatAttachments == 0)
+                    .accessibilityLabel("Attach files or images").accessibilityIdentifier("attachChatFiles")
                 TextField(state.current.mode == .work ? "Describe a task" : "Message", text: $draft, axis: .vertical)
                     .font(.subheadline).lineLimit(1...5).focused($composing).padding(.vertical, 10).accessibilityIdentifier("messageInput")
                     .onChange(of: draft) { _, _ in state.modelSession.touch() }
@@ -130,12 +163,38 @@ struct ChatView: View {
                 } label: {
                     Image(systemName: state.isGenerating ? "stop.fill" : "arrow.up").font(.system(size: 16, weight: .semibold)).foregroundStyle(Palette.background)
                         .frame(width: 38, height: 38).background(Palette.accent, in: Circle())
-                }.disabled(!state.isGenerating && draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }.disabled(!state.isGenerating && (state.isAddingChatAttachments || (draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && state.pendingChatAttachments.isEmpty)))
                     .accessibilityLabel(state.isGenerating ? "Stop generation" : "Send message").accessibilityIdentifier("sendMessage")
             }.padding(12).background(Palette.surface, in: RoundedRectangle(cornerRadius: 24)).overlay(RoundedRectangle(cornerRadius: 24).stroke(Palette.line))
-            Text(state.current.mode == .chat ? "Your conversation stays on this iPhone." : "Tools follow your permissions. Web search uses the internet.")
+            Text(!state.pendingChatAttachments.isEmpty || !state.conversationAttachments.isEmpty ? "Files stay in this chat. Long files use relevant passages." : state.current.mode == .chat ? "Your conversation stays on this iPhone." : "Tools follow your permissions. Web search uses the internet.")
                 .font(.system(size: 10)).foregroundStyle(Palette.muted)
         }.padding(.horizontal, 18).padding(.top, 8).padding(.bottom, 8).background(Palette.background)
+    }
+    private func attachmentStrip(_ files: [ChatAttachment], removable: Bool) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(files) { file in
+                    HStack(spacing: 6) {
+                        Button {
+                            composing = false
+                            if file.isImage { imagePreview = file } else { source = file.preview }
+                        } label: {
+                            HStack(spacing: 7) {
+                                if let data = file.imageData, let preview = UIImage(data: data) {
+                                    Image(uiImage: preview).resizable().scaledToFill().frame(width: 28, height: 28).clipShape(RoundedRectangle(cornerRadius: 5))
+                                } else { Image(systemName: "doc.text") }
+                                Text(file.name).font(.caption).lineLimit(1)
+                            }.foregroundStyle(Palette.ink)
+                        }.buttonStyle(.plain).accessibilityLabel("Preview " + file.name)
+                        if removable {
+                            Button { state.removeChatAttachment(file.id) } label: { Image(systemName: "xmark.circle.fill").foregroundStyle(Palette.muted).frame(width: 28, height: 28) }
+                                .buttonStyle(.plain).accessibilityLabel("Remove attachment " + file.name)
+                        }
+                    }.padding(.horizontal, 10).padding(.vertical, 6).background(Palette.surface, in: RoundedRectangle(cornerRadius: 12))
+                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Palette.line))
+                }
+            }
+        }.accessibilityIdentifier(removable ? "pendingChatAttachments" : "sentChatAttachments")
     }
     private func messageView(_ message: ChatMessage) -> some View {
         let liveAnswer = AppState.streamingAnswer(message, mode: state.current.mode)
@@ -146,6 +205,7 @@ struct ChatView: View {
                 Spacer()
                 if !message.content.isEmpty { ShareLink(item: message.content) { Image(systemName: "square.and.arrow.up").font(.caption) }.accessibilityLabel("Share message") }
             }
+            if let files = message.attachments, !files.isEmpty { attachmentStrip(files, removable: false) }
             if !message.activity.isEmpty {
                 DisclosureGroup("\(message.activity.count) work step\(message.activity.count == 1 ? "" : "s")") {
                     ForEach(Array(message.activity.enumerated()), id: \.offset) { _, item in Text(item).font(.caption).frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 3) }
@@ -206,15 +266,15 @@ struct CitationView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    Eyebrow(text: "Source \(citation.id)")
+                    Eyebrow(text: citation.id == "File" ? "Attachment" : "Source \(citation.id)")
                     Text(citation.title).font(.system(.largeTitle, design: .serif))
                     Text(citation.location).font(.caption).foregroundStyle(Palette.muted).textSelection(.enabled)
                     Divider()
                     Text(citation.excerpt).font(.body).lineSpacing(6).textSelection(.enabled)
-                    Text("This is the original retrieved passage. A citation identifies evidence; it does not guarantee the model interpreted it correctly.").font(.caption).foregroundStyle(Palette.muted)
+                    if citation.id != "File" { Text("This is the original retrieved passage. A citation identifies evidence; it does not guarantee the model interpreted it correctly.").font(.caption).foregroundStyle(Palette.muted) }
                     if let link = citation.sourceURL, let url = URL(string: link), url.scheme == "https" { Link("Open original source online", destination: url).font(.subheadline) }
                 }.padding(24)
-            }.background(Palette.background).navigationTitle("Evidence").navigationBarTitleDisplayMode(.inline).toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+            }.background(Palette.background).navigationTitle(citation.id == "File" ? "File preview" : "Evidence").navigationBarTitleDisplayMode(.inline).toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
         }
     }
 }

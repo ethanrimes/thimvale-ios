@@ -15,6 +15,7 @@ for line in source.split("actor ModelHub")[0].splitlines():
     fields = {key: json.loads('"' + value + '"') for key, value in fields.items()}
     fields["minimumMemoryGB"] = int(re.search(r'minimumMemoryGB: (\d+)', line)[1])
     fields.setdefault("preferredQuant", "Q4_K_M")
+    fields["vision"] = 'vision: true' in line
     fields["summary"] = fields["summary"].replace("iPhone", "phone")
     entries.append(fields)
 assert len(entries) >= 39 and len({item["id"] for item in entries}) == len(entries)

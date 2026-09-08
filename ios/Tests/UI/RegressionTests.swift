@@ -5,11 +5,12 @@ private extension XCUIElement {
 }
 
 @MainActor final class RegressionTests: XCTestCase {
-    private func makeApp(fixtures: Bool = false, wikipediaOnly: Bool = false, activityFixture: Bool = false) throws -> XCUIApplication {
+    private func makeApp(fixtures: Bool = false, wikipediaOnly: Bool = false, activityFixture: Bool = false, attachmentFiles: Bool = false) throws -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: "com.ethanrimes.thimvale")
         app.launchEnvironment["THIMVALE_TEST_SESSION"] = UUID().uuidString
         if activityFixture { app.launchEnvironment["THIMVALE_UI_ACTIVITY_FIXTURE"] = "1" }
         if wikipediaOnly { app.launchEnvironment["THIMVALE_UI_WIKI_ONLY"] = "1" }
+        if attachmentFiles { app.launchEnvironment["THIMVALE_UI_ATTACHMENT_FILES"] = "1" }
         if fixtures {
             let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
             guard FileManager.default.fileExists(atPath: root.appendingPathComponent("Vendor/smoke-model.gguf").path),
@@ -34,6 +35,82 @@ private extension XCUIElement {
         XCTAssertTrue(app.textFields["modelSearch"].exists)
         app.selectMainTab("Chat")
         XCTAssertEqual(input.value as? String, "Explain how a bowline works.")
+    }
+
+    func testChatKeyboardDoneAndFilesPickerCancelPreserveDraft() throws {
+        let app = try makeApp()
+        let input = app.textFields["messageInput"]
+        input.tap(); input.typeText("Keep this message")
+        XCTAssertTrue(app.buttons["dismissChatKeyboard"].waitForExistence(timeout: 5))
+        app.buttons["dismissChatKeyboard"].tap()
+        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5))
+        XCTAssertEqual(input.value as? String, "Keep this message")
+        input.tap(); input.typeText(" while I browse")
+        let editedDraft = input.value as? String
+        XCTAssertTrue(editedDraft?.contains("Keep this message") == true)
+        XCTAssertTrue(editedDraft?.contains(" while I browse") == true)
+        app.buttons["attachChatFiles"].tap(); dismissFiles(app)
+        XCTAssertEqual(input.value as? String, editedDraft)
+        XCTAssertFalse(app.alerts.firstMatch.exists)
+        app.selectMainTab("Models"); app.selectMainTab("Chat")
+        XCTAssertEqual(input.value as? String, editedDraft)
+        capture(app, "Chat composer after dismissing keyboard")
+    }
+
+    func testVisionFilterAndVariantLabels() throws {
+        let app = try makeApp()
+        app.selectMainTab("Models")
+        let toggle = app.switches["visionModelsFilter"]
+        XCTAssertTrue(toggle.waitForExistence(timeout: 5))
+        toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.94, dy: 0.5)).tap()
+        let search = app.textFields["modelSearch"]
+        search.tap(); search.typeText("SmolVLM\n")
+        let model = app.buttons["model_smolvlm-256"]
+        reveal(model, in: app)
+        XCTAssertTrue(model.exists)
+        XCTAssertTrue(model.staticTexts["Vision"].exists)
+        capture(app, "Vision model filter")
+    }
+    func testTranscriptTapDismissesKeyboardWithoutLosingDraft() throws {
+        let app = try makeApp(activityFixture: true)
+        let input = app.textFields["messageInput"]
+        input.tap(); input.typeText("An unsent follow-up")
+        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
+        app.scrollViews["chatTranscript"].coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.25)).tap()
+        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5))
+        XCTAssertEqual(input.value as? String, "An unsent follow-up")
+    }
+
+    func testAttachMultipleFilesFromSystemPicker() throws {
+        let app = try makeApp(attachmentFiles: true)
+        app.buttons["attachChatFiles"].tap()
+        XCTAssertTrue(app.buttons["Cancel"].firstMatch.waitForExistence(timeout: 20))
+        let browse = app.buttons["Browse"].firstMatch
+        if browse.exists { browse.tap() }
+        let local = app.staticTexts["On My iPhone"].firstMatch
+        if !local.exists, browse.exists { browse.tap() }
+        XCTAssertTrue(local.waitForExistence(timeout: 5), app.debugDescription)
+        local.tap()
+        XCTAssertTrue(app.staticTexts["Thimvale"].firstMatch.waitForExistence(timeout: 5), app.debugDescription)
+        app.staticTexts["Thimvale"].firstMatch.tap()
+        let folder = app.staticTexts["Chat attachment samples"].firstMatch
+        XCTAssertTrue(folder.waitForExistence(timeout: 5)); folder.tap()
+        let first = app.staticTexts["Arrival"].firstMatch
+        XCTAssertTrue(first.waitForExistence(timeout: 5), app.debugDescription)
+        first.tap()
+        app.staticTexts["Packing"].firstMatch.tap()
+        let open = app.buttons["Open"].firstMatch
+        XCTAssertTrue(open.waitForExistence(timeout: 5)); open.tap()
+        let preview = app.buttons["Preview Arrival.txt"]
+        XCTAssertTrue(preview.waitForExistence(timeout: 15), app.debugDescription)
+        XCTAssertTrue(app.buttons["Preview Packing.txt"].exists)
+        preview.tap()
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS '4829'")).firstMatch.waitForExistence(timeout: 5))
+        app.buttons["Done"].firstMatch.tap()
+        app.buttons["Remove attachment Arrival.txt"].tap()
+        XCTAssertFalse(preview.exists)
+        XCTAssertTrue(app.buttons["Preview Packing.txt"].exists)
+        capture(app, "Selected file context")
     }
 
     func testColdLaunchAndBackgroundReturn() throws {
