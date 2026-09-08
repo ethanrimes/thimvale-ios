@@ -90,7 +90,11 @@ struct ModelsView: View {
                         ContentUnavailableView(scope == "Hugging Face" && !searched ? "Search Hugging Face" : "No models found", systemImage: "square.stack.3d.up", description: Text(scope == "Hugging Face" ? "Search or enter an owner/model repository. Image input needs a matching mmproj GGUF." : "Try another filter, download a model, or import a GGUF from Files."))
                     } else {
                         SectionHeading(title: scope == "Downloaded" ? "On this iPhone" : "Model library", detail: "\(visible.count) models")
-                        LazyVStack(spacing: 10) { ForEach(visible) { model in modelRow(model) } }
+                        // Curated and Hub results are small. Keep row layout eager
+                        // while typing: the count and suggested card change as the
+                        // keyboard resizes the scroll view. Avoid coupling nested
+                        // lazy-row sizing to those simultaneous transitions.
+                        VStack(spacing: 10) { ForEach(visible) { model in modelRow(model) } }
                     }
                     Button { repositoryPrompt = true } label: { Label("Open a Hugging Face repository", systemImage: "link").font(.subheadline).frame(maxWidth: .infinity).padding(18).background(Palette.tint, in: RoundedRectangle(cornerRadius: 18)) }
                     Text("Memory guidance is approximate. Actual support depends on the architecture, quantization, context, and free memory. Models have individual licenses.").font(.caption).foregroundStyle(Palette.muted).lineSpacing(3)

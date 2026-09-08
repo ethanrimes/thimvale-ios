@@ -79,8 +79,8 @@ final class ChatAttachmentTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: file) }
         await state.addChatAttachments([file])
         XCTAssertTrue(state.send("What color is this image? Answer with the color only."))
-        for _ in 0..<1_500 { if !state.isGenerating { break }; try await Task.sleep(for: .milliseconds(20)) }
-        XCTAssertFalse(state.isGenerating); XCTAssertNil(state.error)
+        try await finish(state, timeout: .seconds(180))
+        XCTAssertNil(state.error)
         XCTAssertTrue(state.current.messages.last?.content.lowercased().contains("blue") == true, state.current.messages.last?.content ?? "no response")
         XCTAssertEqual(state.selectedModel?.visionLabel, "Vision")
         XCTAssertTrue(state.current.messages.last?.events?.contains { $0.title == "Reading images" && !$0.text.isEmpty } == true)
@@ -89,8 +89,8 @@ final class ChatAttachmentTests: XCTestCase {
         let released = await inference.residency(); XCTAssertNil(released.path)
         state.activate()
         XCTAssertTrue(state.send("What color did I attach?"))
-        for _ in 0..<1_500 { if !state.isGenerating { break }; try await Task.sleep(for: .milliseconds(20)) }
-        XCTAssertFalse(state.isGenerating); XCTAssertNil(state.error)
+        try await finish(state, timeout: .seconds(180))
+        XCTAssertNil(state.error)
         let reloaded = await inference.residency(); XCTAssertEqual(reloaded.loads, resident.loads + 1)
         XCTAssertTrue(state.current.messages.last?.content.lowercased().contains("blue") == true)
     }
@@ -108,8 +108,8 @@ final class ChatAttachmentTests: XCTestCase {
         await state.addChatAttachments([file])
         for tool in ToolName.allCases { state.policy[tool] = .deny }
         XCTAssertTrue(state.send("What is the gate code in my attached file?"))
-        for _ in 0..<1_500 { if !state.isGenerating { break }; try await Task.sleep(for: .milliseconds(20)) }
-        XCTAssertFalse(state.isGenerating); XCTAssertNil(state.error)
+        try await finish(state, timeout: .seconds(180))
+        XCTAssertNil(state.error)
         let answer = try XCTUnwrap(state.current.messages.last)
         XCTAssertTrue(answer.content.contains("4829"), answer.content)
         XCTAssertTrue(answer.citations.first?.excerpt.contains("4829") == true)
@@ -178,12 +178,44 @@ final class ChatAttachmentTests: XCTestCase {
         for tool in ToolName.allCases { state.policy[tool] = .deny }
         return state
     }
-    @MainActor private func finish(_ state: AppState) async throws {
-        for _ in 0..<500 {
-            if !state.isGenerating { return }
-            try await Task.sleep(for: .milliseconds(10))
+    private struct GenerationTimeout: Error, CustomStringConvertible {
+        let description: String
+    }
+    @MainActor private func finish(_ state: AppState, timeout: Duration = .seconds(5)) async throws {
+        // Real inference includes cold model/projector loading and an optional
+        // citation retry. It is not a 30-second throughput assertion: hosted
+        // simulators can be substantially slower than a developer's Mac.
+        let clock = ContinuousClock()
+        let start = clock.now
+        let deadline = start.advanced(by: timeout)
+        while state.isGenerating {
+            if clock.now >= deadline {
+                let detail = "Generation exceeded \(timeout): status=\(state.status), model=\(state.modelSession.label), responseCharacters=\(state.current.messages.last?.content.count ?? 0)"
+                state.stop()
+                // Drain cancellation before teardown; never send a follow-up or
+                // inspect final citations while the previous turn is in flight.
+                let cancellationDeadline = clock.now.advanced(by: .seconds(10))
+                while state.isGenerating, clock.now < cancellationDeadline {
+                    try await Task.sleep(for: .milliseconds(20))
+                }
+                throw GenerationTimeout(description: detail + "; cancellationCompleted=\(!state.isGenerating)")
+            }
+            try await Task.sleep(for: .milliseconds(20))
         }
-        XCTFail("Generation did not finish")
+        print("Chat generation completed in \(start.duration(to: clock.now)) (budget \(timeout))")
+    }
+    @MainActor func testGenerationDeadlineCancelsAndThrowsInsteadOfContinuing() async throws {
+        let inference = ScriptedInference([["Delayed answer"]], tokenDelay: .seconds(2))
+        let state = try state(inference); defer { state.suspend() }
+        XCTAssertTrue(state.send("Hello"))
+        do {
+            try await finish(state, timeout: .milliseconds(40))
+            XCTFail("An unfinished generation must fail the wait")
+        } catch let error as GenerationTimeout {
+            XCTAssertTrue(error.description.contains("status="))
+            XCTAssertTrue(error.description.contains("cancellationCompleted=true"), error.description)
+        }
+        XCTAssertFalse(state.isGenerating)
     }
     @MainActor func testFilesAreChatContextWithoutKnowledgeImportOrToolGrants() async throws {
         let inference = ScriptedInference([["The gate code is 4829 [1]."]], tokenDelay: .milliseconds(1))

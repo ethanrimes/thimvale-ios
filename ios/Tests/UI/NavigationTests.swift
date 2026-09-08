@@ -51,7 +51,10 @@ final class NavigationTests: XCTestCase {
         capture(app, name: "Models")
         app.textFields["modelSearch"].tap()
         app.textFields["modelSearch"].typeText("Granite\n")
-        XCTAssertTrue(app.buttons.containing(.staticText, identifier: "Granite 4 Micro").firstMatch.waitForExistence(timeout: 5))
+        // Query the row's stable identifier, not every descendant while the
+        // filtered list and keyboard are changing.
+        XCTAssertTrue(app.buttons["model_granite4-micro"].waitForExistence(timeout: 10))
+        XCTAssertFalse(app.buttons["model_qwen35-08"].exists)
         app.selectMainTab("Permissions")
         XCTAssertTrue(app.segmentedControls["permission_search_knowledge"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.segmentedControls["permission_list_files"].exists)
@@ -59,6 +62,34 @@ final class NavigationTests: XCTestCase {
         app.selectMainTab("Knowledge")
         XCTAssertTrue(app.buttons["exploreWikipedia"].waitForExistence(timeout: 5))
         capture(app, name: "Knowledge")
+    }
+    @MainActor func testSearchStaysResponsiveWhileResultsAndKeyboardChange() {
+        let app = makeApp(); app.launch()
+        XCTAssertTrue(app.buttons["modelPicker"].waitForExistence(timeout: 15))
+        app.selectMainTab("Models")
+        let search = app.textFields["modelSearch"]
+        XCTAssertTrue(search.waitForExistence(timeout: 5))
+        // Exercise the first-letter transition seen in the cloud recording,
+        // then restore the full catalog/suggested card with the keyboard open.
+        for _ in 0..<3 {
+            search.tap()
+            search.typeText("G")
+            XCTAssertEqual(search.value as? String, "G")
+            search.typeText("ranite")
+            XCTAssertTrue(app.buttons["model_granite4-micro"].waitForExistence(timeout: 5))
+            XCTAssertFalse(app.buttons["model_qwen35-08"].exists)
+            search.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 7))
+            search.typeText("Qwen\n")
+            XCTAssertTrue(app.buttons["model_qwen35-08"].waitForExistence(timeout: 5))
+            XCTAssertFalse(app.buttons["model_granite4-micro"].exists)
+            XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5))
+            search.tap()
+            search.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 4))
+        }
+        app.buttons["Done"].tap()
+        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5))
+        app.selectMainTab("Chat")
+        XCTAssertTrue(app.textFields["messageInput"].waitForExistence(timeout: 5))
     }
     @MainActor private func capture(_ app: XCUIApplication, name: String) {
         let screenshot = XCTAttachment(screenshot: app.screenshot())
