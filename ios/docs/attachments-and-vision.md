@@ -1,5 +1,7 @@
 # Chat attachments and image input
 
+<img src="screenshots/chat-attachments.png" width="230" alt="A file selected for chat context"> <img src="screenshots/chat-image.png" width="230" alt="A real local vision model answers a question about an attached image">
+
 ## Using it
 
 1. Tap the paperclip beside the chat field. Select one or more files in Apple's Files picker, then Open. JPEG/PNG/HEIC images can be selected there too.

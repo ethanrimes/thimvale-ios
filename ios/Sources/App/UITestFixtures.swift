@@ -1,11 +1,29 @@
 #if DEBUG && targetEnvironment(simulator)
 import Foundation
+import UIKit
 
 extension AppState {
     /// Real local artifacts, imported through production services into an isolated test session.
     /// This entry point is absent from device and Release builds.
     func prepareUITestFixtures() async throws {
         guard AppPaths.testSession != nil else { return }
+        if let path = ProcessInfo.processInfo.environment["THIMVALE_UI_VISION_FIXTURES"] {
+            let source = URL(fileURLWithPath: path)
+            await importModel(source.appendingPathComponent("Vendor/vision-model.gguf"))
+            if let error { throw PocketError.message(error) }
+            guard let model = selectedModel else { throw PocketError.message("Vision test model is missing.") }
+            await importProjector(source.appendingPathComponent("Vendor/vision-projector.gguf"), model: model)
+            if let error { throw PocketError.message(error) }
+            let format = UIGraphicsImageRendererFormat(); format.scale = 1
+            let photo = UIGraphicsImageRenderer(size: CGSize(width: 256, height: 256), format: format).jpegData(withCompressionQuality: 0.9) { context in
+                UIColor.blue.setFill(); context.fill(CGRect(x: 0, y: 0, width: 256, height: 256))
+            }
+            let url = AppPaths.exports.appendingPathComponent("Picture.jpg")
+            try photo.write(to: url, options: .atomic)
+            await addChatAttachments([url])
+            if let error { throw PocketError.message(error) }
+            return
+        }
         if ProcessInfo.processInfo.environment["THIMVALE_UI_ATTACHMENT_FILES"] == "1" {
             let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
             let fixtureFolder = documents.appendingPathComponent("Chat attachment samples", isDirectory: true)
