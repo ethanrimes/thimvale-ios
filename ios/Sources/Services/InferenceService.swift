@@ -3,8 +3,16 @@ import Foundation
 protocol InferenceServing: AnyObject, Sendable {
     func load(model: URL) async throws
     func generate(model: URL, messages: [ChatMessage], maxTokens: Int, onToken: @escaping @Sendable (String) -> Void) async throws -> String
+    func generate(model: URL, messages: [ChatMessage], images: [Data], projector: URL?, maxTokens: Int, onToken: @escaping @Sendable (String) -> Void) async throws -> String
     func cancel()
     func unload()
+}
+
+extension InferenceServing {
+    func generate(model: URL, messages: [ChatMessage], images: [Data], projector: URL?, maxTokens: Int, onToken: @escaping @Sendable (String) -> Void) async throws -> String {
+        guard images.isEmpty else { throw PocketError.message("This inference service does not support images.") }
+        return try await generate(model: model, messages: messages, maxTokens: maxTokens, onToken: onToken)
+    }
 }
 
 final class InferenceService: InferenceServing, @unchecked Sendable {
@@ -45,10 +53,17 @@ final class InferenceService: InferenceServing, @unchecked Sendable {
         try await perform { try self.ensureLoaded(model) }
     }
     func generate(model: URL, messages: [ChatMessage], maxTokens: Int = 768, onToken: @escaping @Sendable (String) -> Void) async throws -> String {
+        try await generate(model: model, messages: messages, images: [], projector: nil, maxTokens: maxTokens, onToken: onToken)
+    }
+    func generate(model: URL, messages: [ChatMessage], images: [Data], projector: URL?, maxTokens: Int, onToken: @escaping @Sendable (String) -> Void) async throws -> String {
         try await perform {
             try self.ensureLoaded(model)
+            if !images.isEmpty {
+                guard let projector else { throw PocketError.message("Download this model’s matching vision file first.") }
+                try self.engine.loadVision(atPath: projector.path)
+            }
             let payload = messages.map { ["role": $0.role, "content": $0.content] }
-            return try self.engine.generateMessages(payload, maxTokens: Int32(maxTokens), temperature: 0.6, onToken: onToken)
+            return try self.engine.generateMessages(payload, images: images, maxTokens: Int32(maxTokens), temperature: 0.6, onToken: onToken)
         }
     }
     private func perform<T>(_ work: @escaping () throws -> T) async throws -> T {

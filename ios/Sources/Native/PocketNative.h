@@ -13,6 +13,13 @@ NS_ASSUME_NONNULL_BEGIN
 /// Counts and monotonic timings only; never contains prompts or generated text.
 @property(nonatomic, readonly) NSDictionary<NSString *, NSNumber *> *generationStatistics;
 - (BOOL)loadModelAtPath:(NSString *)path contextSize:(int)contextSize error:(NSError **)error;
+- (BOOL)loadVisionAtPath:(NSString *)path error:(NSError **)error;
+- (nullable NSString *)generateMessages:(NSArray<NSDictionary<NSString *, NSString *> *> *)messages
+                                images:(NSArray<NSData *> *)images
+                             maxTokens:(int)maxTokens
+                           temperature:(float)temperature
+                               onToken:(void (^)(NSString *))onToken
+                                 error:(NSError **)error;
 - (nullable NSString *)generateMessages:(NSArray<NSDictionary<NSString *, NSString *> *> *)messages
                              maxTokens:(int)maxTokens
                            temperature:(float)temperature

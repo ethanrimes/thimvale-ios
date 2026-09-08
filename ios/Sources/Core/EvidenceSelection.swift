@@ -81,7 +81,9 @@ enum EvidenceSelection {
         var seen = Set<String>()
         var perSource: [String: Int] = [:]
         for row in scored {
-            let key = row.citation.sourceURL ?? row.citation.location.components(separatedBy: " · character ")[0]
+            let key = row.citation.sourceURL ?? (row.citation.id.hasPrefix("A") && row.citation.location.hasPrefix("Attachment · ")
+                ? row.citation.id.components(separatedBy: ":")[0]
+                : row.citation.location.components(separatedBy: " · character ")[0])
             let fingerprint = row.window.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.joined(separator: " ")
             guard perSource[key, default: 0] < 2, seen.insert(key + ":" + fingerprint).inserted else { continue }
             selected.append(row.citation)

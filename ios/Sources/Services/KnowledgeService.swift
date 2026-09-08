@@ -55,6 +55,12 @@ actor KnowledgeService {
     }
     func documents() throws -> [KnowledgeDocument] { try store.documents() }
     func hasSemanticSearch() -> Bool { store.hasSemanticSearch }
+    func attachmentEvidence(_ files: [ChatAttachment], question: String) throws -> [Citation] {
+        try Task.checkCancellation()
+        let ranked = EvidenceSelection.rerank(try ChatAttachment.candidates(from: files, question: question), query: question,
+                                             limit: 30, semantic: store.semanticScorer(query: question))
+        return ChatAttachment.diverse(ranked, limit: 6)
+    }
     func remove(_ id: String) throws { try store.remove(id: id) }
     func closeArchive(_ filename: String) { archives[filename] = nil }
 

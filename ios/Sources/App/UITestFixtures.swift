@@ -6,6 +6,13 @@ extension AppState {
     /// This entry point is absent from device and Release builds.
     func prepareUITestFixtures() async throws {
         guard AppPaths.testSession != nil else { return }
+        if ProcessInfo.processInfo.environment["THIMVALE_UI_ATTACHMENT_FILES"] == "1" {
+            let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            let fixtureFolder = documents.appendingPathComponent("Chat attachment samples", isDirectory: true)
+            try FileManager.default.createDirectory(at: fixtureFolder, withIntermediateDirectories: true)
+            try Data("The observatory opens at 21:30. The entry code is 4829.".utf8).write(to: fixtureFolder.appendingPathComponent("Arrival.txt"), options: .atomic)
+            try Data("Bring a red flashlight. Meet at the east gate.".utf8).write(to: fixtureFolder.appendingPathComponent("Packing.txt"), options: .atomic)
+        }
         // A presentation-only fixture, separate from the real inference tests.
         if ProcessInfo.processInfo.environment["THIMVALE_UI_ACTIVITY_FIXTURE"] == "1" {
             let event = AgentEvent(kind: .tool, title: "Search knowledge", state: .completed,

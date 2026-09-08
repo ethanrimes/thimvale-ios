@@ -7,6 +7,7 @@ struct ModelsView: View {
     @State private var family = "All"
     @State private var scope = "Discover"
     @State private var sizeFilter = "All sizes"
+    @State private var visionOnly = false
     @State private var selected: ModelEntry?
     @State private var importFile = false
     @State private var hubResults: [ModelEntry] = []
@@ -19,6 +20,7 @@ struct ModelsView: View {
         let all = scope == "Hugging Face" ? hubResults : state.models
         return all.filter { model in
             (scope != "Downloaded" || model.isDownloaded)
+                && (!visionOnly || model.vision == true || model.projectorFilename != nil)
                 && (family == "All" || model.family == family || scope == "Hugging Face")
                 && (scope != "Discover" || sizeFilter != "4B class" || model.isFourBillionClass)
                 && (scope != "Discover" || sizeFilter != "Higher RAM" || model.needsHigherMemory)
@@ -34,7 +36,10 @@ struct ModelsView: View {
                         Text("Choose a model").font(.system(size: 34, design: .serif)).tracking(-1)
                         Text("Download a model or import a GGUF file.").font(.subheadline).foregroundStyle(Palette.muted)
                     }
-                    Picker("Model source", selection: $scope) { ForEach(["Discover", "Downloaded", "Hugging Face"], id: \.self) { Text($0) } }.pickerStyle(.segmented).onChange(of: scope) { _, _ in family = "All"; sizeFilter = "All sizes" }
+                    Picker("Model source", selection: $scope) { ForEach(["Discover", "Downloaded", "Hugging Face"], id: \.self) { Text($0) } }.pickerStyle(.segmented).onChange(of: scope) { _, _ in family = "All"; sizeFilter = "All sizes"; visionOnly = false }
+                    if scope != "Hugging Face" {
+                        Toggle(isOn: $visionOnly) { Label("Vision models", systemImage: "eye") }.font(.subheadline).accessibilityIdentifier("visionModelsFilter")
+                    }
                     HStack {
                         Image(systemName: "magnifyingglass").foregroundStyle(Palette.muted)
                         TextField(scope == "Hugging Face" ? "Search Hugging Face GGUF models" : "Search models or families", text: $query).font(.subheadline).autocorrectionDisabled().textInputAutocapitalization(.never).focused($searchFocused).submitLabel(.search).onSubmit { searchFocused = false; if scope == "Hugging Face" { searchHub() } }.accessibilityIdentifier("modelSearch")
@@ -64,9 +69,9 @@ struct ModelsView: View {
                         }
                     }
                     if !state.activeJobs.isEmpty {
-                        VStack(spacing: 10) { ForEach(state.activeJobs.filter { $0.kind == .model }) { job in DownloadRow(center: state.downloads, job: job) } }
+                        VStack(spacing: 10) { ForEach(state.activeJobs.filter { $0.kind != .wikipedia }) { job in DownloadRow(center: state.downloads, job: job) } }
                     }
-                    if scope == "Discover", sizeFilter == "All sizes", family == "All", query.isEmpty, let recommended = state.models.first {
+                    if scope == "Discover", !visionOnly, sizeFilter == "All sizes", family == "All", query.isEmpty, let recommended = state.models.first {
                         Button { selected = recommended } label: {
                             Card {
                                 VStack(alignment: .leading, spacing: 14) {
@@ -82,7 +87,7 @@ struct ModelsView: View {
                     }
                     if hubSearching { ProgressView("Searching Hugging Face…").frame(maxWidth: .infinity).padding() }
                     else if visible.isEmpty {
-                        ContentUnavailableView(scope == "Hugging Face" && !searched ? "Search Hugging Face" : "No models found", systemImage: "square.stack.3d.up", description: Text(scope == "Hugging Face" ? "Search or enter an owner/model repository. Single-file text GGUFs are supported." : "Try another filter, download a model, or import a GGUF from Files."))
+                        ContentUnavailableView(scope == "Hugging Face" && !searched ? "Search Hugging Face" : "No models found", systemImage: "square.stack.3d.up", description: Text(scope == "Hugging Face" ? "Search or enter an owner/model repository. Image input needs a matching mmproj GGUF." : "Try another filter, download a model, or import a GGUF from Files."))
                     } else {
                         SectionHeading(title: scope == "Downloaded" ? "On this iPhone" : "Model library", detail: "\(visible.count) models")
                         LazyVStack(spacing: 10) { ForEach(visible) { model in modelRow(model) } }
@@ -128,6 +133,8 @@ struct ModelsView: View {
                 VStack(alignment: .leading, spacing: 5) {
                     Text(model.name).font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink).lineLimit(2)
                     Text("\(model.parameters) · \(model.family)").font(.caption).foregroundStyle(Palette.muted)
+                    Label(model.visionLabel, systemImage: model.visionLabel == "Vision" ? "eye" : "text.alignleft")
+                        .font(.caption2).foregroundStyle(model.visionLabel == "Vision" ? Palette.accent : Palette.muted)
                     if model.needsHigherMemory { Text("Higher RAM · 12+ GB suggested").font(.caption2).foregroundStyle(Palette.muted) }
                     if state.selectedModelID == model.id { Text(state.modelSession.label).font(.caption2).foregroundStyle(Palette.accent) }
                 }
@@ -149,15 +156,21 @@ struct ModelDetailView: View {
     @State private var loading = false
     @State private var loadError: String?
     @State private var confirmDelete = false
+    @State private var projectors: [HubFile] = []
+    @State private var selectedProjector: String?
+    @State private var importVision = false
+    @State private var confirmDeleteVision = false
     private var current: ModelEntry { state.models.first { $0.id == model.id } ?? model }
     private var selected: HubFile? { files.first { $0.id == selectedFile } }
-    private var job: DownloadJob? { state.downloads.jobs.first { $0.model?.id == model.id && $0.state != .ready } }
+    private var job: DownloadJob? { state.downloads.jobs.first { $0.kind == .model && $0.model?.id == model.id && $0.state != .ready } }
+    private var visionJob: DownloadJob? { state.downloads.jobs.first { $0.kind == .projector && $0.filename == current.projectorFilename && $0.state != .ready } }
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     FamilyIcon(family: model.family)
                     VStack(alignment: .leading, spacing: 8) { Text(model.name).font(.system(.largeTitle, design: .serif)); Text("\(model.parameters) · \(model.family)").font(.subheadline).foregroundStyle(Palette.accent); Text(model.summary).font(.subheadline).foregroundStyle(Palette.muted).lineSpacing(4) }
+                    Label(current.vision == true ? "Vision · text and images" : current.visionLabel, systemImage: current.vision == true ? "eye" : "text.alignleft").font(.subheadline).foregroundStyle(Palette.accent).accessibilityIdentifier("modelCapability")
                     if current.isDownloaded {
                         Card { Label("Downloaded on this iPhone", systemImage: "checkmark.circle.fill").foregroundStyle(Palette.accent) }
                         Button("Use this model") { state.selectModel(current); state.selectedTab = 0; dismiss() }.buttonStyle(PrimaryButton()).disabled(state.isGenerating)
@@ -170,14 +183,16 @@ struct ModelDetailView: View {
                             Card {
                                 VStack(alignment: .leading, spacing: 14) {
                                     HStack { Text("Download size").foregroundStyle(Palette.muted); Spacer(); Text(selected.sizeLabel).fontWeight(.semibold) }
-                                    HStack { Text("Format").foregroundStyle(Palette.muted); Spacer(); Text("GGUF · text") }
+                                    HStack { Text("Format").foregroundStyle(Palette.muted); Spacer(); Text("GGUF · model weights") }
                                     if model.minimumMemoryGB > 0 { HStack { Text("Suggested device RAM").foregroundStyle(Palette.muted); Spacer(); Text("\(model.minimumMemoryGB)+ GB") } }
                                     Text(selected.path).font(.caption.monospaced()).foregroundStyle(Palette.muted).lineLimit(3)
                                 }.font(.subheadline)
                             }
                             if model.minimumMemoryGB > Int(ProcessInfo.processInfo.physicalMemory / 1_000_000_000) { Label("This model may exceed your device's memory. A smaller model is recommended.", systemImage: "exclamationmark.triangle").font(.caption).foregroundStyle(.orange) }
                             Button("Download · \(selected.sizeLabel)") {
-                                do { try state.download(selected, model: model, license: license) } catch { state.error = error.localizedDescription }
+                                do {
+                                    try state.download(selected, model: model, license: license)
+                                } catch { state.error = error.localizedDescription }
                             }.buttonStyle(PrimaryButton())
                         }
                         DisclosureGroup("Choose quantization (\(files.count) files)") {
@@ -188,6 +203,38 @@ struct ModelDetailView: View {
                             }
                         }.font(.subheadline)
                     }
+                    if current.vision == true || !projectors.isEmpty || current.family == "Imported" || current.family == "Hugging Face" {
+                        Card {
+                            VStack(alignment: .leading, spacing: 14) {
+                                Label("Image input", systemImage: "photo").font(.headline)
+                                if state.projectorURL(for: current) != nil {
+                                    Text("Vision file installed. Attach an image in Chat; compatibility is checked on first use.").font(.subheadline)
+                                    Button("Remove vision file", role: .destructive) { confirmDeleteVision = true }.disabled(state.isGenerating || state.importing)
+                                } else {
+                                    Text("Image input needs a separate vision file (mmproj) made for these exact model weights. It uses additional storage and memory. Audio and video are not supported.").font(.caption).foregroundStyle(Palette.muted)
+                                    if !current.isDownloaded { Text("Download the model above, then add its vision file here.").font(.subheadline) }
+                                    else if let visionJob { DownloadRow(center: state.downloads, job: visionJob) }
+                                    else if loading { ProgressView("Finding vision files…") }
+                                    else if !projectors.isEmpty {
+                                        Picker("Vision file", selection: $selectedProjector) {
+                                            ForEach(projectors) { file in Text(file.path + " · " + file.sizeLabel).tag(Optional(file.id)) }
+                                        }.pickerStyle(.menu)
+                                        if let file = projectors.first(where: { $0.id == selectedProjector }) {
+                                            Button("Download vision file · \(file.sizeLabel)") {
+                                                do { try state.downloadProjector(file, model: current) } catch { state.error = error.localizedDescription }
+                                            }.disabled(state.isGenerating || state.importing).accessibilityIdentifier("downloadVisionFile")
+                                        }
+                                    } else if current.isDownloaded, !current.repository.isEmpty {
+                                        Text(loadError ?? "No vision file found in this repository. You can import a matching one from Files.").font(.caption).foregroundStyle(Palette.muted)
+                                        Button("Check repository again") { Task { await load() } }
+                                    }
+                                    if current.isDownloaded {
+                                        Button("Import matching vision file") { importVision = true }.disabled(state.isGenerating || state.importing).accessibilityIdentifier("importVisionFile")
+                                    }
+                                }
+                            }
+                        }
+                    }
                     if !model.repository.isEmpty {
                         Link(destination: URL(string: "https://huggingface.co/")!.appendingPathComponent(model.repository)) { Label("Model card & license", systemImage: "arrow.up.right.square").font(.subheadline) }
                         Text("License: \(license ?? current.license ?? "see model card"). By downloading, you agree to the model publisher's terms. Some repositories require a Hugging Face token in Settings.").font(.caption).foregroundStyle(Palette.muted)
@@ -196,7 +243,14 @@ struct ModelDetailView: View {
                 }.padding(24)
             }.background(Palette.background).navigationTitle("Model details").navigationBarTitleDisplayMode(.inline)
                 .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
-                .task { if !current.isDownloaded { await load() } }
+                .task(id: current.localFilename) { if !model.repository.isEmpty || !current.isDownloaded { await load() } }
+                .fileImporter(isPresented: $importVision, allowedContentTypes: [.data]) { result in
+                    switch result {
+                    case .success(let url): Task { await state.importProjector(url, model: current) }
+                    case .failure(let error): if (error as NSError).code != NSUserCancelledError { state.error = error.localizedDescription }
+                    }
+                }
+                .confirmationDialog("Remove the vision file? The text model will stay downloaded.", isPresented: $confirmDeleteVision, titleVisibility: .visible) { Button("Remove vision file", role: .destructive) { state.removeProjector(current) } }
                 .confirmationDialog("Delete \(current.name) from this iPhone? You can download it again.", isPresented: $confirmDelete, titleVisibility: .visible) { Button("Delete model", role: .destructive) { state.removeModel(current); dismiss() } }
         }
     }
@@ -204,8 +258,9 @@ struct ModelDetailView: View {
         loading = true; loadError = nil
         defer { loading = false }
         do {
-            let response = try await state.hub.files(in: model.repository)
-            files = response.0; license = response.1
+            let response = try await state.hub.assets(in: model.repository, revision: current.repositoryRevision)
+            files = response.weights; license = response.license; projectors = response.projectors
+            selectedProjector = projectors.first { $0.path.localizedCaseInsensitiveContains("f16") || $0.path.localizedCaseInsensitiveContains("f32") }?.id ?? projectors.first?.id
             selectedFile = files.first { $0.path.localizedCaseInsensitiveContains(model.preferredQuant) }?.id ?? files.first?.id
         } catch { loadError = error.localizedDescription }
     }

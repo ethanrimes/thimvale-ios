@@ -1,5 +1,7 @@
 #import "PocketNative.h"
 #include <llama/llama.h>
+#include <llama/mtmd.h>
+#include <llama/mtmd-helper.h>
 #include <minja/chat-template.hpp>
 #include <zim/archive.h>
 #include <zim/search.h>
@@ -33,6 +35,9 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
     std::unique_ptr<minja::chat_template> _template;
     NSDictionary<NSString *, NSNumber *> *_generationStatistics;
     std::vector<llama_token> _cachedTokens;
+    mtmd_context *_vision;
+    NSString *_visionPath;
+    std::string _imageMarker;
 }
 - (instancetype)init {
     if ((self = [super init])) { _model = nullptr; _context = nullptr; _cancelled = false; _reusePromptCache = YES; }
@@ -42,6 +47,8 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
     std::vector<llama_token>().swap(_cachedTokens);
     _generationStatistics = @{};
     _template.reset();
+    if (_vision) { mtmd_free(_vision); _vision = nullptr; }
+    _visionPath = nil;
     if (_context) { llama_free(_context); _context = nullptr; }
     if (_model) { llama_model_free(_model); _model = nullptr; }
 }
@@ -64,6 +71,8 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
         llama_backend_init();
         // Prevent prompts or generated text from entering OS logs.
         llama_log_set([](ggml_log_level, const char *, void *) {}, nullptr);
+        mtmd_helper_log_set([](ggml_log_level, const char *, void *) {}, nullptr);
+        mtmd_log_set([](ggml_log_level, const char *, void *) {}, nullptr);
     });
     auto parameters = llama_model_default_params();
     parameters.load_mode = LLAMA_LOAD_MODE_MMAP;
@@ -89,22 +98,76 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
         const char *source = llama_model_chat_template(_model, nullptr);
         if (!source) throw std::runtime_error("This GGUF does not include a chat template. Choose an instruction-tuned model.");
         const auto *vocab = llama_model_get_vocab(_model);
-        _template = std::make_unique<minja::chat_template>(source, piece(vocab, llama_vocab_bos(vocab), true), piece(vocab, llama_vocab_eos(vocab), true));
+        std::string compatibleSource(source);
+        // Older minja supports str.capitalize(), but not the equivalent Jinja
+        // filter used by SmolVLM's published template. Keep its chat format intact.
+        for (const std::string expression : {"message['role'] | capitalize", "message[\"role\"] | capitalize"}) {
+            size_t offset = 0;
+            while ((offset = compatibleSource.find(expression, offset)) != std::string::npos) {
+                auto replacement = expression.substr(0, expression.find(" |")) + ".capitalize()";
+                compatibleSource.replace(offset, expression.size(), replacement); offset += replacement.size();
+            }
+        }
+        _template = std::make_unique<minja::chat_template>(compatibleSource, piece(vocab, llama_vocab_bos(vocab), true), piece(vocab, llama_vocab_eos(vocab), true));
     } catch (const std::exception &e) {
         [self unload]; PMError(error, [NSString stringWithFormat:@"Unsupported chat template: %s", e.what()]); return NO;
     }
     return YES;
 }
+- (BOOL)loadVisionAtPath:(NSString *)path error:(NSError **)error {
+    if (!_model) { PMError(error, @"Load a model before its vision file."); return NO; }
+    if (_vision && [_visionPath isEqualToString:path]) return YES;
+    if (_vision) { mtmd_free(_vision); _vision = nullptr; }
+    _visionPath = nil;
+    _cachedTokens.clear();
+    llama_memory_clear(llama_get_memory(_context), true);
+#if TARGET_OS_IOS && !TARGET_OS_SIMULATOR
+    uint64_t bytes = [[[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil] fileSize];
+    size_t available = os_proc_available_memory();
+    if (available && bytes + 384 * 1024 * 1024 > available) {
+        PMError(error, @"Not enough free memory for the vision file. Try a smaller vision model."); return NO;
+    }
+#endif
+    auto params = mtmd_context_params_default();
+    params.use_gpu = !TARGET_OS_SIMULATOR;
+    params.n_threads = llama_n_threads(_context);
+    params.warmup = false;
+    params.image_max_tokens = 512;
+    // A per-loaded-projector marker cannot be injected by a document or prompt.
+    _imageMarker = "<thimvale-image-" + std::string(NSUUID.UUID.UUIDString.UTF8String) + ">";
+    params.media_marker = _imageMarker.c_str();
+    params.progress_callback = [](float, void *data) { return !static_cast<std::atomic<bool> *>(data)->load(); };
+    params.progress_callback_user_data = &_cancelled;
+    try { _vision = mtmd_init_from_file(path.fileSystemRepresentation, _model, params); }
+    catch (const std::exception &) { _vision = nullptr; }
+    if (!_vision || !mtmd_support_vision(_vision)) {
+        if (_vision) { mtmd_free(_vision); _vision = nullptr; }
+        PMError(error, @"This vision file is unsupported or does not match the model. Use its matching mmproj GGUF."); return NO;
+    }
+    _visionPath = [path copy];
+    return YES;
+}
 - (NSString *)generateMessages:(NSArray<NSDictionary<NSString *,NSString *> *> *)messages maxTokens:(int)maxTokens temperature:(float)temperature onToken:(void (^)(NSString *))onToken error:(NSError **)error {
+    return [self generateMessages:messages images:@[] maxTokens:maxTokens temperature:temperature onToken:onToken error:error];
+}
+- (NSString *)generateMessages:(NSArray<NSDictionary<NSString *,NSString *> *> *)messages images:(NSArray<NSData *> *)images maxTokens:(int)maxTokens temperature:(float)temperature onToken:(void (^)(NSString *))onToken error:(NSError **)error {
     using Clock = std::chrono::steady_clock;
     const auto started = Clock::now();
     _generationStatistics = @{};
     if (!_model || !_context || !_template) { PMError(error, @"Select a downloaded model first."); return nil; }
+    if (images.count && (!_vision || images.count > 3)) { PMError(error, @"Images require a matching vision file. Attach up to three images per chat."); return nil; }
     try {
         auto inputs = minja::chat_template_inputs();
         inputs.messages = json::array();
         for (NSDictionary *message in messages) {
             inputs.messages.push_back({{"role", [message[@"role"] UTF8String]}, {"content", [message[@"content"] UTF8String]}});
+        }
+        if (images.count) {
+            if (inputs.messages.empty() || inputs.messages.back()["role"] != "user") throw std::runtime_error("An image request needs a user message.");
+            auto &content = inputs.messages.back()["content"];
+            std::string prefix;
+            for (NSUInteger i = 0; i < images.count; ++i) prefix += _imageMarker + "\n";
+            content = prefix + content.get<std::string>();
         }
         inputs.tools = json::array();
         inputs.extra_context = {{"enable_thinking", false}, {"thinking", false}};
@@ -112,14 +175,40 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
         const int capacity = (int)llama_n_ctx(_context);
         maxTokens = std::clamp(maxTokens, 1, capacity / 2);
         std::vector<llama_token> tokens;
+        std::unique_ptr<mtmd_input_chunks, decltype(&mtmd_input_chunks_free)> chunks(nullptr, mtmd_input_chunks_free);
+        std::vector<std::unique_ptr<mtmd_bitmap, decltype(&mtmd_bitmap_free)>> bitmaps;
+        std::vector<const mtmd_bitmap *> bitmapPointers;
+        if (images.count) {
+            chunks.reset(mtmd_input_chunks_init());
+            for (NSData *data in images) {
+                if (_cancelled.load()) throw std::runtime_error("Generation stopped.");
+                if (data.length > 1500000) throw std::runtime_error("Resize this image before sending it.");
+                auto decoded = mtmd_helper_bitmap_init_from_buf(_vision, (const unsigned char *)data.bytes, data.length, false, mtmd_helper_init_opt_default());
+                if (!decoded.bitmap) throw std::runtime_error("The model could not read this image.");
+                bitmaps.emplace_back(decoded.bitmap, mtmd_bitmap_free);
+                bitmapPointers.push_back(decoded.bitmap);
+            }
+        }
+        int promptTokens = 0;
         // Drop complete historical user/assistant pairs while preserving the system prompt and latest input.
         for (;;) {
             std::string prompt = _template->apply(inputs);
+            if (images.count) {
+                mtmd_input_text text{prompt.data(), prompt.size(), true, true};
+                if (mtmd_tokenize(_vision, chunks.get(), &text, bitmapPointers.data(), bitmapPointers.size()) != 0)
+                    throw std::runtime_error("This model could not prepare the images. Check its matching vision file.");
+                promptTokens = (int)mtmd_helper_get_n_tokens(chunks.get());
+                if (promptTokens + maxTokens <= capacity && mtmd_helper_get_n_pos(chunks.get()) + maxTokens <= capacity) break;
+                if (inputs.messages.size() <= 3) throw std::runtime_error("These images and messages exceed the model context. Start a new chat with fewer images or shorter text.");
+                inputs.messages.erase(inputs.messages.begin() + 1, inputs.messages.begin() + 3);
+                continue;
+            }
             int size = -llama_tokenize(vocab, prompt.data(), (int)prompt.size(), nullptr, 0, true, true);
             if (size <= 0) throw std::runtime_error("The model could not tokenize the conversation.");
             if (size + maxTokens <= capacity) {
                 tokens.resize(size);
                 llama_tokenize(vocab, prompt.data(), (int)prompt.size(), tokens.data(), size, true, true);
+                promptTokens = size;
                 break;
             }
             if (inputs.messages.size() <= 3) throw std::runtime_error("This message and its evidence exceed the model context. Use a shorter question or fewer sources.");
@@ -127,7 +216,7 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
         }
         auto memory = llama_get_memory(_context);
         size_t reused = 0;
-        if (_reusePromptCache) {
+        if (_reusePromptCache && images.count == 0) {
             while (reused < tokens.size() && reused < _cachedTokens.size() && tokens[reused] == _cachedTokens[reused]) ++reused;
             // Re-evaluate one token for fresh logits when the entire prompt is already cached.
             if (reused == tokens.size()) --reused;
@@ -152,6 +241,17 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
                 batch.logits[i] = logits && (i == size - 1);
             }
         };
+        llama_pos nextPosition = (llama_pos)tokens.size();
+        if (images.count) {
+            nextPosition = 0;
+            for (size_t i = 0; i < mtmd_input_chunks_size(chunks.get()); ++i) {
+                if (_cancelled.load()) throw std::runtime_error("Generation stopped.");
+                auto chunk = mtmd_input_chunks_get(chunks.get(), i);
+                if (mtmd_helper_eval_chunk_single(_vision, _context, chunk, nextPosition, 0, batchSize,
+                                                 i + 1 == mtmd_input_chunks_size(chunks.get()), &nextPosition) != 0)
+                    throw std::runtime_error(_cancelled.load() ? "Generation stopped." : "Image processing failed. Try a smaller image or vision model.");
+            }
+        }
         for (int offset = (int)reused; offset < tokens.size(); offset += batchSize) {
             if (_cancelled.load()) throw std::runtime_error("Generation stopped.");
             int count = std::min(batchSize, (int)tokens.size() - offset);
@@ -190,13 +290,13 @@ static std::string piece(const llama_vocab *vocab, llama_token token, bool speci
             pending += piece(vocab, token);
             NSString *chunk = [[NSString alloc] initWithBytes:pending.data() length:pending.size() encoding:NSUTF8StringEncoding];
             if (chunk) { [output appendString:chunk]; onToken(chunk); pending.clear(); }
-            fill(&token, 1, (int)tokens.size() + generated);
+            fill(&token, 1, nextPosition + generated);
             if (llama_decode(_context, batch) != 0) throw std::runtime_error(_cancelled.load() ? "Generation stopped." : "Generation failed. Try a smaller model or context.");
-            _cachedTokens.push_back(token);
+            if (images.count == 0) _cachedTokens.push_back(token);
         }
         const auto ended = Clock::now();
         _generationStatistics = @{
-            @"promptTokens": @(tokens.size()), @"generatedTokens": @(emitted),
+            @"promptTokens": @(promptTokens), @"generatedTokens": @(emitted), @"images": @(images.count),
             @"reusedTokens": @(reused),
             @"promptMS": @(std::chrono::duration<double, std::milli>(promptDone - started).count()),
             @"firstTokenMS": @(firstTokenMS),

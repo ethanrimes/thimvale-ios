@@ -2,7 +2,7 @@ import Foundation
 import Observation
 
 struct DownloadJob: Codable, Identifiable {
-    enum Kind: String, Codable { case model, wikipedia }
+    enum Kind: String, Codable { case model, projector, wikipedia }
     enum State: String, Codable { case downloading, paused, validating, ready, failed }
     var id: String
     var title: String
@@ -16,7 +16,7 @@ struct DownloadJob: Codable, Identifiable {
     var state: State = .downloading
     var error: String?
     var progress: Double { expectedBytes > 0 ? min(1, Double(received) / Double(expectedBytes)) : 0 }
-    var destination: URL { (kind == .model ? AppPaths.models : AppPaths.archives).appendingPathComponent(filename) }
+    var destination: URL { (kind == .wikipedia ? AppPaths.archives : AppPaths.models).appendingPathComponent(filename) }
 }
 
 @MainActor @Observable final class DownloadCenter: NSObject, URLSessionDownloadDelegate, @unchecked Sendable {
@@ -143,7 +143,7 @@ struct DownloadJob: Codable, Identifiable {
         persist()
         do {
             try await Task.detached(priority: .utility) {
-                try FileValidation.check(staged, magic: job.kind == .model ? [0x47, 0x47, 0x55, 0x46] : [0x5a, 0x49, 0x4d, 0x04], expectedBytes: job.expectedBytes)
+                try FileValidation.check(staged, magic: job.kind == .wikipedia ? [0x5a, 0x49, 0x4d, 0x04] : [0x47, 0x47, 0x55, 0x46], expectedBytes: job.expectedBytes)
                 if let digest = job.sha256, try FileValidation.sha256(staged) != digest.lowercased() { throw PocketError.message("Checksum verification failed. The downloaded file was not installed.") }
             }.value
             guard let index = jobs.firstIndex(where: { $0.id == id }) else { return }
