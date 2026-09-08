@@ -80,6 +80,28 @@ private extension XCUIElement {
         XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5))
         XCTAssertEqual(input.value as? String, "An unsent follow-up")
     }
+    func testRealImagePreviewAndLocalChatReply() throws {
+        let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        guard FileManager.default.fileExists(atPath: root.appendingPathComponent("Vendor/vision-projector.gguf").path) else { throw XCTSkip("Run scripts/fetch-vision-test-assets.sh") }
+        let app = XCUIApplication(bundleIdentifier: "com.ethanrimes.thimvale")
+        app.launchEnvironment["THIMVALE_TEST_SESSION"] = UUID().uuidString
+        // Real model/projector and image imported by production services; no canned output.
+        app.launchEnvironment["THIMVALE_UI_VISION_FIXTURES"] = root.path
+        app.launch()
+        let preview = app.buttons["Preview Picture.jpg"].firstMatch
+        XCTAssertTrue(preview.waitForExistence(timeout: 30)); preview.tap()
+        XCTAssertTrue(app.navigationBars["Picture.jpg"].waitForExistence(timeout: 5))
+        app.buttons["Done"].tap()
+        let input = app.textFields["messageInput"]
+        input.tap(); input.typeText("What color is this image? Answer with the color only.")
+        app.buttons["sendMessage"].tap()
+        let answer = app.staticTexts["assistantMessage"]
+        XCTAssertTrue(answer.waitForExistence(timeout: 45), app.debugDescription)
+        XCTAssertTrue(answer.label.lowercased().contains("blue"), answer.label)
+        XCTAssertTrue(preview.exists)
+        XCTAssertFalse(app.buttons["Remove attachment Picture.jpg"].exists)
+        capture(app, "Real local image answer")
+    }
 
     func testAttachMultipleFilesFromSystemPicker() throws {
         let app = try makeApp(attachmentFiles: true)
@@ -533,8 +555,17 @@ private extension XCUIElement {
     }
     private func dismissFiles(_ app: XCUIApplication) {
         let cancel = app.buttons["Cancel"].firstMatch
-        XCTAssertTrue(cancel.waitForExistence(timeout: 30)); cancel.tap()
-        XCTAssertTrue(cancel.waitForNonExistence(timeout: 5))
+        if cancel.waitForExistence(timeout: 5), cancel.isHittable {
+            cancel.tap()
+            XCTAssertTrue(cancel.waitForNonExistence(timeout: 5))
+        } else {
+            // Inside a remembered folder, iOS 26 replaces Cancel with navigation
+            // controls. The sheet can still be dismissed without selecting a folder.
+            XCTAssertTrue(app.buttons["Open"].firstMatch.waitForExistence(timeout: 10))
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.10))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.92)))
+            XCTAssertTrue(app.buttons["Open"].firstMatch.waitForNonExistence(timeout: 5))
+        }
     }
     private func capture(_ app: XCUIApplication, _ name: String) {
         let attachment = XCTAttachment(screenshot: app.screenshot())

@@ -2,6 +2,21 @@
 
 Environment: Apple Silicon Mac, Xcode 26.1.1, Swift 6.2.1, iPhone 17 Pro simulator running iOS 26.1. App deployment target: iOS 18.
 
+## September 7: chat attachments, vision, and keyboard dismissal
+
+[Attachment/vision behavior and limits](attachments-and-vision.md) now include a multiple-file picker, per-chat context, image inference through MTMD, and variant-specific Vision labels. The actual SmolVLM 256M and Qwen 3.5 0.8B GGUFs distinguished red from blue pixels with identical questions. The app-level SmolVLM test imported the projector, answered an image question, released memory in the background, reloaded, and answered a follow-up. Liquid answered an arrival-code question using an attached local text file with every tool denied. These small deterministic fixtures are integration checks, not general visual-reasoning or accuracy benchmarks.
+
+Local regression coverage totals **120 distinct passing iOS checks across the full run and targeted follow-ups**: 57 native integration, 27 UI, 13 core, and 23 release-configuration tests. Seven opt-in experiment cases were skipped by the normal scheme. The full native/UI result is `build/Logs/Test/Test-Thimvale-2026.09.07_21-07-12--0700.xcresult`; its only failing case was the picker-cancellation test. All other tests passed. The additional real image-preview/chat UI case passed in `Test-Thimvale-2026.09.07_21-21-01--0700.xcresult`. Two passing picker repeats verify the corrected dismissal behavior in `Test-Thimvale-2026.09.07_21-22-37--0700.xcresult`.
+
+Failures caught during implementation:
+
+- The generated plist omitted `UIFileSharingEnabled`, leaving On My iPhone empty. The explicit Boolean plist input fixed this; the system-picker UI then selected two real files and previewed/removed them. A built-bundle regression now checks both document-sharing keys.
+- SmolVLM's template used a Jinja filter absent from the pinned minja; the equivalent supported string method preserves its published format.
+- Putting image filenames after the question distracted the tiny model. Moving the user's question after attachment context fixed both the first answer and follow-up.
+- iOS 26 can remember a nested folder where no visible Cancel button exists. The accessibility tree also contains a non-interactive underlying Cancel element; tapping that is not a dismissal. The test now uses the real Cancel button when available or the system sheet's swipe-down gesture otherwise. No file/folder is selected by cancellation.
+
+The unsigned physical-device Release build passed with the encryption-exemption Boolean unchanged and both sharing keys present. Actionlint and catalog-sync checks passed. Android's incremental `testDebugUnitTest` build passed after exporting the 40-model catalog; Android image input is not claimed. The inspected [image-chat](screenshots/chat-image.png) and [file-attachment](screenshots/chat-attachments.png) screenshots come from real simulator UI tests. No physical-device Metal, memory-pressure, thermal, or general vision accuracy validation is claimed.
+
 ## Model lifetime, live activity, and icon update
 
 The [memory/activity change](model-session-and-activity.md) adds explicit preload and lifecycle state, ordered token streaming in Chat and every Work generation (including citation retries), and permission-checked tool event cards. The [new icon](app-icon.md) is an opaque 1024-square image; a native test also checks the primary icon compiled into the app. The device Release target builds with the original Boolean encryption exemption intact.
