@@ -1,0 +1,62 @@
+{
+  "date": "2026-09-27",
+  "host": {
+    "chip": "Apple M4",
+    "logicalCPUs": 10,
+    "memoryBytes": 25769803776,
+    "os": "macOS 26.5.1 (25F80)",
+    "xcode": "26.1.1 (17B100)"
+  },
+  "target": {
+    "kind": "iOS Simulator, arm64",
+    "deviceProfile": "iPhone 17 Pro",
+    "runtime": "iOS 26.1 (23B86)",
+    "physicalIPhone": false,
+    "buildConfiguration": "Release"
+  },
+  "runOrder": ["Thimvale first pass", "LLMFarm", "PocketPal", "Thimvale repeat"],
+  "measuredGenerations": 48,
+  "excludedWarmups": 12,
+  "conditions": {
+    "dedicatedHost": false,
+    "otherWorkloads": "Other development servers, another iOS simulator, an Android emulator, and browser automation remained active. No unrelated processes were stopped.",
+    "swap": "Approximately 17 GiB in use after setup; host load varied materially.",
+    "timingDiscipline": "All builds completed before each accepted inference run; only one study inference loop ran at a time. Read-only checks and lightweight report editing continued.",
+    "cache": "One excluded warmup and four measured fresh-context reloads per model; OS file cache not flushed.",
+    "ui": "Streaming adapter/API delivery, not normal chat rendering, tools, retrieval, or image input."
+  },
+  "sources": {
+    "Thimvale": {
+      "baseCommit": "de3ccc71afc7ab8ad56e7d30e8403c2849ee35ad",
+      "recommendationCommit": "19ebebc",
+      "nativeEngine": "llama.cpp b10830",
+      "simulatorFrameworkSHA256": "44aa746f36f8a3acbb7260e87cd44b2c0d026cc7588fc9495f210d51b46b731b",
+      "note": "This study adds opt-in test instrumentation; the native inference implementation is unchanged."
+    },
+    "PocketPal": {
+      "repository": "https://github.com/a-ghorbani/pocketpal-ai",
+      "commit": "ebe1425a569c56496eda15ae3a471c84773fdb05",
+      "version": "1.18.0",
+      "llamaRN": "0.13.0-rc.5",
+      "reactNative": "0.82.1",
+      "javascriptRuntime": "Hermes, production bytecode",
+      "yarn": "1.22.22",
+      "cocoaPods": "1.16.2",
+      "note": "Frozen Yarn dependencies; pod lockfile changed only its CocoaPods tool-version footer. Test-only automation patch; no engine changes."
+    },
+    "LLMFarm": {
+      "repository": "https://github.com/guinmoon/LLMFarm",
+      "commit": "ee6d251ab6fee083482fe1ee22f2291f4f7dfbaf",
+      "version": "1.6.0",
+      "coreSwiftCommit": "31d8d25ad6450b41a4e42e3acd1dc0dae3f1e20d",
+      "checkedOutLlamaSourceCommit": "e39502e74b46c54b359ddbbefc9bba4f98704906",
+      "simulatorFrameworkSHA256": "dd5105aed9d1e274d25e30802fd550af7d00650370c84f4c2041803406613caf",
+      "note": "Used the repository-supplied CPU XCFramework, not a rebuilt engine. The checked-out llama source revision is not asserted to be the provenance of that prebuilt binary."
+    }
+  },
+  "excludedPilots": [
+    "Initial LLMFarm run overlapped build activity and omitted automatic BOS insertion.",
+    "Initial PocketPal run overlapped JS rebundling, lacked raw events, registered GPU devices, and used repeat penalty 1.",
+    "Final PocketPal single-Gemma counter/CPU calibration used zero measured repetitions; excluded from speed summaries."
+  ]
+}

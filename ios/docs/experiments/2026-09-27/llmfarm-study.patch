@@ -1,0 +1,91 @@
+diff --git a/LLMFarm/Intents/LLMFarmShortcuts.swift b/LLMFarm/Intents/LLMFarmShortcuts.swift
+index a026da5..f36bf9b 100755
+--- a/LLMFarm/Intents/LLMFarmShortcuts.swift
++++ b/LLMFarm/Intents/LLMFarmShortcuts.swift
+@@ -6,7 +6,7 @@ struct LLMFarmShortcutsProvider: AppShortcutsProvider {
+         AppShortcut(
+             intent: LLMQueryIntent(),
+             phrases: [
+-                "Ask Local LLM"
++                "Ask \(.applicationName)"
+             ],
+             shortTitle: "Create query to local LLM model",
+             systemImageName: "brain.filled.head.profile"
+diff --git a/LLMFarm/LLMFarmApp.swift b/LLMFarm/LLMFarmApp.swift
+index 7a359be..2a66cab 100755
+--- a/LLMFarm/LLMFarmApp.swift
++++ b/LLMFarm/LLMFarmApp.swift
+@@ -7,6 +7,7 @@
+ 
+ import SwiftUI
+ import Darwin
++import llmfarm_core
+ //import llmfarm_core_cpp
+ 
+ 
+@@ -64,6 +65,65 @@ struct LLMFarmApp: App {
+         }
+         .navigationSplitViewStyle(.balanced)
+         .background(.ultraThinMaterial)
++        .task {
++            #if targetEnvironment(simulator)
++            if ProcessInfo.processInfo.environment["THIMVALE_STUDY"] == "1" {
++                DispatchQueue.global(qos: .userInitiated).async { runComparisonStudy() }
++            }
++            #endif
++        }
+         }        
+     }
+ }
++
++#if targetEnvironment(simulator)
++private func runComparisonStudy() {
++    let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
++    let outputURL = documents.appendingPathComponent("study-results.json")
++    var results: [[String: Any]] = []
++    do {
++        let config = try JSONSerialization.jsonObject(with: Data(contentsOf: documents.appendingPathComponent("thimvale-study.json"))) as! [String: Any]
++        let cases = config["cases"] as! [[String: Any]]
++        for item in cases {
++            for repetition in -1..<4 {
++                do {
++                    var params = ModelAndContextParams.default
++                    params.context = 4096; params.n_threads = 6
++                    params.use_metal = false; params.flash_attn = false
++                    params.n_predict = 128; params.promptFormat = .None
++                    params.add_bos_token = true; params.parse_special_tokens = true
++                    params.save_load_state = false
++                    let loadStart = ProcessInfo.processInfo.systemUptime
++                    let ai = AI(_modelPath: item["path"] as! String, _chatName: "simulator-study")
++                    ai.initModel(.LLama_gguf, contextParams: params)
++                    guard let model = ai.model else { throw ModelLoadError.modelLoadError }
++                    model.sampleParams.temp = 0
++                    model.sampleParams.repeat_penalty = 1
++                    model.sampleParams.n_batch = 256
++                    try model.load_model()
++                    let loadMS = (ProcessInfo.processInfo.systemUptime - loadStart) * 1000
++                    var count = 0; var promptCount = 0; var first = 0.0; var last = 0.0
++                    let start = ProcessInfo.processInfo.systemUptime
++                    let answer = try model.Predict(item["prompt"] as! String, { _, _ in
++                        let now = ProcessInfo.processInfo.systemUptime
++                        if count == 0 { first = now }
++                        count += 1; last = now
++                        return count >= 128
++                    }, infoCallback: { key, value in if key == "itc" { promptCount = value as? Int ?? 0 } })
++                    results.append(["app": "LLMFarm", "model": item["id"]!, "repetition": repetition,
++                        "loadMS": loadMS, "promptTokens": promptCount, "generatedTokens": count,
++                        "firstTokenMS": (first - start) * 1000, "streamTokensPerSecond": Double(count - 1) / (last - first),
++                        "totalMS": (ProcessInfo.processInfo.systemUptime - start) * 1000,
++                        "thermalState": ProcessInfo.processInfo.thermalState.rawValue, "output": answer, "status": "ok"])
++                } catch {
++                    results.append(["app": "LLMFarm", "model": item["id"]!, "repetition": repetition, "status": "failed", "error": String(describing: error)])
++                    break
++                }
++                try JSONSerialization.data(withJSONObject: results, options: [.prettyPrinted, .sortedKeys]).write(to: outputURL, options: .atomic)
++            }
++        }
++        try JSONSerialization.data(withJSONObject: results, options: [.prettyPrinted, .sortedKeys]).write(to: outputURL, options: .atomic)
++    } catch { print("STUDY_ERROR \(error)") }
++    print("STUDY_COMPLETE")
++}
++#endif

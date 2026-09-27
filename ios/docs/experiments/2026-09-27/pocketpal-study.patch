@@ -1,0 +1,66 @@
+diff --git a/src/__automation__/screens/BenchmarkRunnerScreen.tsx b/src/__automation__/screens/BenchmarkRunnerScreen.tsx
+index 8dfee1e..795a5c8 100644
+--- a/src/__automation__/screens/BenchmarkRunnerScreen.tsx
++++ b/src/__automation__/screens/BenchmarkRunnerScreen.tsx
+@@ -9,6 +9,7 @@ import {
+   type LlamaContext,
+ } from 'llama.rn';
+ import {observer} from 'mobx-react';
++import {runComparisonStudy} from '../study';
+ 
+ import {modelStore} from '../../store';
+ import NativeHardwareInfo from '../../specs/NativeHardwareInfo';
+@@ -1084,6 +1085,7 @@ export const BenchmarkRunnerScreen: React.FC<BenchmarkRunnerScreenProps> =
+       // bundle and the CI grep "must be present" check would falsely pass.
+       console.log(`[${BENCH_RUN_MATRIX}] starting matrix run`);
+       try {
++        if (await runComparisonStudy()) { setStatus('study-complete'); return; }
+         const cfg = await (__loadConfig ?? loadConfig)();
+         await (__runner ?? runMatrix)(cfg, setStatus, setLastCell);
+       } catch (e) {
+diff --git a/src/__automation__/study.ts b/src/__automation__/study.ts
+new file mode 100644
+index 0000000..00f4c61
+--- /dev/null
++++ b/src/__automation__/study.ts
+@@ -0,0 +1,40 @@
++// Local simulator-only comparison harness; not part of the upstream release.
++import {initLlama} from 'llama.rn';
++const RNFS = require('@dr.pogodin/react-native-fs');
++export async function runComparisonStudy(): Promise<boolean> {
++  const configPath = `${RNFS.DocumentDirectoryPath}/thimvale-study.json`;
++  if (!(await RNFS.exists(configPath))) return false;
++  const config = JSON.parse(await RNFS.readFile(configPath, 'utf8'));
++  const results: any[] = [];
++  for (const item of config.cases) {
++    for (let repetition = -1; repetition < config.measuredRepetitions; repetition++) {
++      let context;
++      try {
++        const loadStart = performance.now();
++        context = await initLlama({model: item.path, n_ctx: 4096, n_batch: 256,
++          n_ubatch: 128, n_threads: 6, n_gpu_layers: 0, devices: ['CPU'], no_gpu_devices: true, use_mmap: true,
++          use_mlock: false, cache_type_k: 'f16', cache_type_v: 'f16', flash_attn_type: 'auto'});
++        const loadMS = performance.now() - loadStart;
++        let first = 0, last = 0, callbacks = 0;
++        const events: any[] = [];
++        const start = performance.now();
++        const completion = await context.completion({prompt: item.prompt, n_predict: item.tokenLimit ?? config.maxTokens,
++          temperature: 0, penalty_repeat: 1.1, penalty_last_n: 64, seed: 42, cache_prompt: false}, event => {
++            const now = performance.now();
++            events.push({token: event.token, atMS: now - start});
++            if (!event.token) return;
++            if (!callbacks) first = now;
++            callbacks++; last = now;
++          });
++        results.push({app: 'PocketPal', model: item.id, repetition, loadMS, isGpuEnabled: context.gpu, reasonNoGPU: context.reasonNoGPU,
++          firstTokenMS: first - start, totalMS: performance.now() - start,
++          callbacks, streamTokensPerSecond: (callbacks - 1) * 1000 / (last - first),
++          completion, events, status: 'ok'});
++      } catch (error) {
++        results.push({app: 'PocketPal', model: item.id, repetition, status: 'failed', error: String(error)});
++      } finally { if (context) await context.release(); }
++      await RNFS.writeFile(`${RNFS.DocumentDirectoryPath}/study-results.json`, JSON.stringify(results, null, 2), 'utf8');
++    }
++  }
++  return true;
++}
