@@ -1,0 +1,19 @@
+{
+  "reviewedOn": "2026-09-27",
+  "sourceURL": "https://artificialanalysis.ai/hardware-inference-stack/mobile-phones",
+  "methodologyURL": "https://artificialanalysis.ai/methodology/mobile-device-benchmark-set",
+  "device": "iPhone 17 Pro",
+  "contextTokens": 16384,
+  "prefillTokens": 1024,
+  "outputTokens": 256,
+  "quantization": "Q4_K_M",
+  "caveat": "Published AA / Liquid AI results, not Thimvale measurements. Reasoning modes and 16K evaluation context differ from this app's non-thinking, 4K setup. Speed excludes model loading, image encoding, tools, and retrieval. Memory and compatibility still depend on the device and file.",
+  "picks": [
+    {"id":"balanced","modelID":"liquid25-26","title":"Balanced","reason":"Near the top mobile score with much faster generation than the quality-first pick. A good starting point for chat and file questions.","score":62.6,"reasoning":true,"tokensPerSecond":37.167797088623,"endToEndSeconds":7.9985908203125,"peakMemoryBytes":2269465088,"benchmarkSlug":"lfm2-5-2-6b-q4km","modelSourceURL":"https://huggingface.co/LiquidAI/LFM2.5-2.6B-GGUF"},
+    {"id":"quick","modelID":"liquid25-12-instruct","title":"Quick replies","reason":"A smaller non-thinking model for short conversations and lighter-memory phones. Less capable on difficult questions.","score":42.5,"reasoning":false,"tokensPerSecond":84.0732650756836,"endToEndSeconds":3.61629760742188,"peakMemoryBytes":1066845760,"benchmarkSlug":"lfm2-5-1-2b-instruct-q4km","modelSourceURL":"https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF"},
+    {"id":"compact","modelID":"minicpm5-1","title":"Small download","reason":"A compact alternative with a strong speed result. Its published quality score uses reasoning mode; that is not an app accuracy guarantee.","score":44.7,"reasoning":true,"tokensPerSecond":102.110946655273,"endToEndSeconds":2.89206982421875,"peakMemoryBytes":994772544,"benchmarkSlug":"minicpm5-1b-q4km","modelSourceURL":"https://huggingface.co/openbmb/MiniCPM5-1B-GGUF"},
+    {"id":"vision","modelID":"qwen35-4","title":"Text and images","reason":"A capable 4B-class option with image support. Image input also needs its matching vision file; the benchmark below is text-only.","score":58.6,"reasoning":true,"tokensPerSecond":20.0324668884277,"endToEndSeconds":15.162806640625,"peakMemoryBytes":4056190720,"benchmarkSlug":"qwen3-5-4b-q4km","modelSourceURL":"https://huggingface.co/Qwen/Qwen3.5-4B"},
+    {"id":"quality","modelID":"nanbeige42-3","title":"Quality first","reason":"The highest 16K mobile score in this review. Its generation is slower than the balanced pick, and it needs more memory.","score":63.2,"reasoning":true,"tokensPerSecond":14.259669303894,"endToEndSeconds":21.372283203125,"peakMemoryBytes":3232041984,"benchmarkSlug":"nanbeige4-2-3b-q4_k_m","modelSourceURL":"https://huggingface.co/Nanbeige/Nanbeige4.2-3B"},
+    {"id":"headroom","modelID":"ling3-tiny","title":"Higher RAM","reason":"Fast published generation with a competitive score. Tiny refers to active compute: all 7.9B parameters still occupy storage and memory.","score":59.2,"reasoning":true,"tokensPerSecond":54.5604476928711,"endToEndSeconds":5.73240478515625,"peakMemoryBytes":5297213952,"benchmarkSlug":"ling-3-0-tiny-q4km","modelSourceURL":"https://huggingface.co/inclusionAI/Ling-3.0-tiny"}
+  ]
+}

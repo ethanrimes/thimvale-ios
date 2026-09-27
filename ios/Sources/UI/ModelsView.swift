@@ -15,6 +15,7 @@ struct ModelsView: View {
     @State private var searched = false
     @State private var repositoryPrompt = false
     @State private var repository = ""
+    @State private var recommendationID: String?
     @FocusState private var searchFocused: Bool
     private var visible: [ModelEntry] {
         let all = scope == "Hugging Face" ? hubResults : state.models
@@ -71,19 +72,12 @@ struct ModelsView: View {
                     if !state.activeJobs.isEmpty {
                         VStack(spacing: 10) { ForEach(state.activeJobs.filter { $0.kind != .wikipedia }) { job in DownloadRow(center: state.downloads, job: job) } }
                     }
-                    if scope == "Discover", !visionOnly, sizeFilter == "All sizes", family == "All", query.isEmpty, let recommended = state.models.first {
-                        Button { selected = recommended } label: {
-                            Card {
-                                VStack(alignment: .leading, spacing: 14) {
-                                    HStack { Eyebrow(text: "Suggested model"); Spacer(); Image(systemName: "iphone").foregroundStyle(Palette.accent) }
-                                    HStack(spacing: 13) {
-                                        FamilyIcon(family: recommended.family)
-                                        VStack(alignment: .leading, spacing: 5) { Text(recommended.name + " · " + recommended.parameters).font(.title3.weight(.semibold)); Text("\(recommended.parameters) parameters · GGUF").font(.caption).foregroundStyle(Palette.muted) }
-                                    }
-                                    HStack { Text(recommended.isDownloaded ? "Downloaded" : "View model").font(.subheadline.weight(.medium)); Spacer(); Image(systemName: "arrow.right") }.foregroundStyle(Palette.accent)
-                                }
-                            }
-                        }.buttonStyle(.plain)
+                    if scope == "Discover", !visionOnly, sizeFilter == "All sizes", family == "All", query.isEmpty,
+                       let recommendations = ModelRecommendations.current,
+                       let pick = recommendations.picks.first(where: { $0.id == recommendationID })
+                        ?? recommendations.defaultPick(memoryBytes: ProcessInfo.processInfo.physicalMemory, models: state.models),
+                       let model = state.models.first(where: { $0.id == pick.modelID }) {
+                        recommendationCard(recommendations, pick: pick, model: model)
                     }
                     if hubSearching { ProgressView("Searching Hugging Face…").frame(maxWidth: .infinity).padding() }
                     else if visible.isEmpty {
@@ -119,6 +113,44 @@ struct ModelsView: View {
                     }
                     Button("Cancel", role: .cancel) {}
                 }
+        }
+    }
+    private func recommendationCard(_ recommendations: ModelRecommendations, pick: ModelRecommendations.Pick, model: ModelEntry) -> some View {
+        Card {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    Eyebrow(text: "Recommended")
+                    Spacer()
+                    Menu {
+                        ForEach(recommendations.picks.filter { pick in state.models.contains { $0.id == pick.modelID } }) { option in
+                            Button(option.title) { recommendationID = option.id }
+                        }
+                    } label: {
+                        Label(pick.title, systemImage: "chevron.up.chevron.down").font(.subheadline)
+                    }.accessibilityIdentifier("recommendationRole")
+                }
+                HStack(spacing: 13) {
+                    FamilyIcon(family: model.family)
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(model.name + " · " + model.parameters).font(.title3.weight(.semibold))
+                        Text("\(model.minimumMemoryGB)+ GB RAM suggested").font(.caption).foregroundStyle(Palette.muted)
+                    }
+                }
+                Text(pick.reason).font(.subheadline).foregroundStyle(Palette.muted)
+                Button { selected = model } label: {
+                    HStack { Text(model.isDownloaded ? "View downloaded model" : "View model"); Spacer(); Image(systemName: "arrow.right") }.font(.subheadline.weight(.medium))
+                }.accessibilityIdentifier("recommendedModel")
+                DisclosureGroup("Benchmark details · \(recommendations.reviewedOn)") {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Artificial Analysis mobile score: \(pick.score, specifier: "%.1f") / 100 · \(pick.reasoning ? "reasoning" : "non-reasoning")")
+                        Text("Published \(recommendations.device) test: \(pick.tokensPerSecond, specifier: "%.1f") tokens/sec · \(pick.endToEndSeconds, specifier: "%.1f") seconds for \(recommendations.outputTokens) output tokens after a \(recommendations.prefillTokens)-token prompt. \(recommendations.quantization), 16K evaluation context.")
+                        Text(recommendations.caveat)
+                        Link("Mobile leaderboard", destination: recommendations.sourceURL)
+                        Link("How the score is measured", destination: recommendations.methodologyURL)
+                        Link("Model and license", destination: pick.modelSourceURL)
+                    }.font(.caption).foregroundStyle(Palette.muted).padding(.top, 8)
+                }.font(.caption).accessibilityIdentifier("recommendationEvidence")
+            }
         }
     }
     private func searchHub() {
