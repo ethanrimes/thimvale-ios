@@ -40,12 +40,14 @@
 		88D85E5A551E0E47E778863F /* KnowledgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81CF209069C4E8357772FDC6 /* KnowledgeView.swift */; };
 		8DA430B8DA2617A4709A5F8F /* ExperimentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CFE0AD6B2DBFF9A84F3CBFA /* ExperimentTests.swift */; };
 		928EA2BB9F441E138E7B6D3E /* WikipediaBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DCD4B665EE48392978E32E /* WikipediaBrowserView.swift */; };
+		935B9A32E52398B4DF90101C /* ModelRecommendationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A94411E5F5C50FCF05FEB4D /* ModelRecommendationTests.swift */; };
 		937D40969F660B148AFE7DB7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF77756BFA5D937486BD4BAB /* Accelerate.framework */; };
 		9E45272FF9E05A52265DFD51 /* RegressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C397F5A5FFFB1B1106466AE /* RegressionTests.swift */; };
 		A09FEBBC97FC2460C4DC62C3 /* ChatAttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264546E92718CBCCE76B9CD1 /* ChatAttachmentTests.swift */; };
 		A26F78BFB1B22FC88E8C7B3B /* NaturalLanguage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B530C020F7FC7DA6E3D19E24 /* NaturalLanguage.framework */; };
 		AB75D618DC92BE58FED597DD /* SecureWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517AD785AE11E50416C7FFB4 /* SecureWorkspace.swift */; };
 		B32F16606DC041F7EDEE2556 /* UITestFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C207699C99A875193347D66 /* UITestFixtures.swift */; };
+		B8A2F10924ADAE9080CD3A7E /* model-recommendations.json in Resources */ = {isa = PBXBuildFile; fileRef = F1E40A46B3A76312C556CB22 /* model-recommendations.json */; };
 		BAE17EDB9B02D141E7229945 /* KnowledgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DEC295E5CE3BF0222AB00B3 /* KnowledgeService.swift */; };
 		BAEF36566C68FA224EEB16C3 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1875DEFDEAC8968B4914DB84 /* libc++.tbd */; };
 		C0B1370C1F3E7EA5744EEDC6 /* llama.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CCBCAB99D251C969E4C52435 /* llama.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -58,6 +60,7 @@
 		CE4B7D725E3314E74AD064C1 /* ModelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0FCF291A58466FE3B6E696 /* ModelsView.swift */; };
 		CF8090F947E668BC5F4943C4 /* CoreKiwix.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A44C74D1648428BFDA710B9 /* CoreKiwix.xcframework */; };
 		DBF0ACD3E56D7AF8BB952FC5 /* ChatAttachmentReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FAAEA82C10691634B198BD9 /* ChatAttachmentReader.swift */; };
+		E3F287D34DD96639CF4B79D7 /* ModelRecommendations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A177E47E80E0D8A6A845E423 /* ModelRecommendations.swift */; };
 		E4A8C45439D744F408E19EA5 /* SessionAndStreamingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A3FE24B08D8D347952B733 /* SessionAndStreamingTests.swift */; };
 		EADEC2F25BC54E710A838D79 /* AppPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0FEA8A1215DF3AED84DC1A /* AppPaths.swift */; };
 		EBB920453BDB652960B70400 /* LocalFileKnowledgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C111AD6C077AB0C7411796D9 /* LocalFileKnowledgeTests.swift */; };
@@ -127,6 +130,7 @@
 		7404B208B8B9FB271D2D90BE /* EvidencePrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvidencePrompt.swift; sourceTree = "<group>"; };
 		81CF209069C4E8357772FDC6 /* KnowledgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeView.swift; sourceTree = "<group>"; };
 		82DCD4B665EE48392978E32E /* WikipediaBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikipediaBrowserView.swift; sourceTree = "<group>"; };
+		8A94411E5F5C50FCF05FEB4D /* ModelRecommendationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelRecommendationTests.swift; sourceTree = "<group>"; };
 		8C269832E889657954C23231 /* ModelHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelHub.swift; sourceTree = "<group>"; };
 		8E86637CAFBCA4757E53E81B /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
 		90A3FE24B08D8D347952B733 /* SessionAndStreamingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionAndStreamingTests.swift; sourceTree = "<group>"; };
@@ -137,6 +141,7 @@
 		9C91105DFB4EEB360E87F9E7 /* WikipediaReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikipediaReaderTests.swift; sourceTree = "<group>"; };
 		9D40E84D3F9CA8EB8012F9BD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A0A1BDC320026EAD1B1CCD56 /* NativeIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeIntegrationTests.swift; sourceTree = "<group>"; };
+		A177E47E80E0D8A6A845E423 /* ModelRecommendations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelRecommendations.swift; sourceTree = "<group>"; };
 		A48EBE4B3AC78E66344EE9AE /* ThimvaleUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ThimvaleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A93EF4DC07071C760DA35FED /* NavigationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTests.swift; sourceTree = "<group>"; };
 		B134A241D35ECD6C4262B24B /* WikipediaDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikipediaDiscovery.swift; sourceTree = "<group>"; };
@@ -159,6 +164,7 @@
 		E3C9BDEF2D0458641A26200B /* PocketNative.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PocketNative.h; sourceTree = "<group>"; };
 		EA02E1C3496B6A882DED7E15 /* EvidenceSelectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvidenceSelectionTests.swift; sourceTree = "<group>"; };
 		EC98974FB0C819C37B580FA3 /* WikipediaReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikipediaReader.swift; sourceTree = "<group>"; };
+		F1E40A46B3A76312C556CB22 /* model-recommendations.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "model-recommendations.json"; sourceTree = "<group>"; };
 		F495D8D1E827A37C96F198DF /* AppNotices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNotices.swift; sourceTree = "<group>"; };
 		FF77756BFA5D937486BD4BAB /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -193,6 +199,7 @@
 				B4FECAAE4D7FB0F96F7F67EE /* InferenceService.swift */,
 				4DEC295E5CE3BF0222AB00B3 /* KnowledgeService.swift */,
 				8C269832E889657954C23231 /* ModelHub.swift */,
+				A177E47E80E0D8A6A845E423 /* ModelRecommendations.swift */,
 				B134A241D35ECD6C4262B24B /* WikipediaDiscovery.swift */,
 				EC98974FB0C819C37B580FA3 /* WikipediaReader.swift */,
 				5E06820ED2F9C39AE34CF4CF /* WikipediaUpdates.swift */,
@@ -216,6 +223,7 @@
 				EA02E1C3496B6A882DED7E15 /* EvidenceSelectionTests.swift */,
 				4CFE0AD6B2DBFF9A84F3CBFA /* ExperimentTests.swift */,
 				C111AD6C077AB0C7411796D9 /* LocalFileKnowledgeTests.swift */,
+				8A94411E5F5C50FCF05FEB4D /* ModelRecommendationTests.swift */,
 				A0A1BDC320026EAD1B1CCD56 /* NativeIntegrationTests.swift */,
 				C762D7A0EB5F4FC204A5D54D /* PromptCacheTests.swift */,
 				90A3FE24B08D8D347952B733 /* SessionAndStreamingTests.swift */,
@@ -247,6 +255,15 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		359AAB89EC52077246E6327C /* shared */ = {
+			isa = PBXGroup;
+			children = (
+				F1E40A46B3A76312C556CB22 /* model-recommendations.json */,
+			);
+			name = shared;
+			path = ../shared;
+			sourceTree = "<group>";
+		};
 		4004058BA8C9573C5759D1ED = {
 			isa = PBXGroup;
 			children = (
@@ -254,6 +271,7 @@
 				31028C82AA37E45AC573A9ED /* LICENSES */,
 				0E5169A6500B8ACD43891B9D /* Integration */,
 				4B59957AD4963CB70266F655 /* Resources */,
+				359AAB89EC52077246E6327C /* shared */,
 				5116A263ECF386088F713C2D /* Sources */,
 				CFE01ED9FD204705CCCC07E7 /* UI */,
 				FC1A4DB9891E73E49544E73F /* Frameworks */,
@@ -452,6 +470,7 @@
 				F81354AE3557E44AC75C9EE8 /* LICENSE in Resources */,
 				1E5A234BF41352B089A3F3A3 /* LICENSES in Resources */,
 				C9EC1CD7444859D1B9B0B16A /* PrivacyInfo.xcprivacy in Resources */,
+				B8A2F10924ADAE9080CD3A7E /* model-recommendations.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,6 +500,7 @@
 				017584AA614C1648DF76D085 /* KnowledgeStore.swift in Sources */,
 				88D85E5A551E0E47E778863F /* KnowledgeView.swift in Sources */,
 				C758DA912A3775068904A46D /* ModelHub.swift in Sources */,
+				E3F287D34DD96639CF4B79D7 /* ModelRecommendations.swift in Sources */,
 				EE1445F67DEBA92CDA29B3F3 /* ModelSession.swift in Sources */,
 				CE4B7D725E3314E74AD064C1 /* ModelsView.swift in Sources */,
 				529ADA47ACAEBA62CEC402B3 /* Permissions.swift in Sources */,
@@ -506,6 +526,7 @@
 				594DC7CC1A5BE14D08FE9C91 /* EvidenceSelectionTests.swift in Sources */,
 				8DA430B8DA2617A4709A5F8F /* ExperimentTests.swift in Sources */,
 				EBB920453BDB652960B70400 /* LocalFileKnowledgeTests.swift in Sources */,
+				935B9A32E52398B4DF90101C /* ModelRecommendationTests.swift in Sources */,
 				128171F3ED72F46F5C2DAD66 /* NativeIntegrationTests.swift in Sources */,
 				F9AC0133BDB12A866E3ECF06 /* PromptCacheTests.swift in Sources */,
 				E4A8C45439D744F408E19EA5 /* SessionAndStreamingTests.swift in Sources */,

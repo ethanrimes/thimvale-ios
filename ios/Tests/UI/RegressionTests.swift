@@ -25,6 +25,34 @@ private extension XCUIElement {
         return app
     }
 
+    func testModelRecommendationsShowRolesAndEvidence() throws {
+        let app = try makeApp()
+        app.selectMainTab("Models")
+        let role = app.buttons["recommendationRole"]
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)))
+        XCTAssertTrue(role.waitForExistence(timeout: 5))
+        XCTAssertTrue(role.isHittable)
+        let pickerScreenshot = XCTAttachment(screenshot: app.screenshot())
+        pickerScreenshot.name = "Model recommendations"
+        pickerScreenshot.lifetime = .keepAlways
+        add(pickerScreenshot)
+        role.tap()
+        app.buttons["Quality first"].tap()
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS %@", "Nanbeige 4.2")).firstMatch.exists)
+        app.buttons["recommendationEvidence"].tap()
+        let caveat = app.staticTexts.containing(NSPredicate(format: "label CONTAINS %@", "not Thimvale measurements")).firstMatch
+        for _ in 0..<3 where !caveat.isHittable {
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55)))
+        }
+        XCTAssertTrue(caveat.isHittable)
+        let evidenceScreenshot = XCTAttachment(screenshot: app.screenshot())
+        evidenceScreenshot.name = "Benchmark sources and limitations"
+        evidenceScreenshot.lifetime = .keepAlways
+        add(evidenceScreenshot)
+    }
+
     func testMissingModelPreservesDraft() throws {
         let app = try makeApp()
         let input = app.textFields["messageInput"]

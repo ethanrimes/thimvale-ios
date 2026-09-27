@@ -22,6 +22,8 @@ targets:
     sources:
       - Sources
       - Resources
+      - path: ../shared/model-recommendations.json
+        buildPhase: resources
       - path: LICENSES
         buildPhase: resources
         type: folder
