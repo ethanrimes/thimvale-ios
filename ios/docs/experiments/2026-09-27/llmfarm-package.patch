@@ -1,0 +1,15 @@
+diff --git a/Package.swift b/Package.swift
+index b1a9aa1..f322496 100755
+--- a/Package.swift
++++ b/Package.swift
+@@ -32,8 +32,8 @@ let package = Package(
+     targets: [
+             .binaryTarget(
+                 name: "llama",
+-//                path: "../llama_cpu.xcframework"
+-                path: "./llama.cpp/build-apple/llama.xcframework"
++                path: "../llama_cpu.xcframework"
++//                path: "./llama.cpp/build-apple/llama.xcframework"
+             ),
+             .target(
+                 name: "llmfarm_core",

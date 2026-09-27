@@ -1,0 +1,115 @@
+{
+  "metric": "stream callbacks after the first / elapsed first-to-last callback seconds",
+  "warmups_excluded": true,
+  "summaries": [
+    {
+      "model": "gemma3-1b-q4",
+      "app": "LLMFarm",
+      "samples": 4,
+      "promptTokens": 244,
+      "outputTokens": 128,
+      "median_stream_tokens_per_second": 12.043605621355088,
+      "min_stream_tokens_per_second": 11.263923653697452,
+      "max_stream_tokens_per_second": 12.666225035828933,
+      "median_first_token_ms": 5221.021354198456,
+      "median_load_ms": 315.1457916828804
+    },
+    {
+      "model": "gemma3-1b-q4",
+      "app": "PocketPal",
+      "samples": 4,
+      "promptTokens": 244,
+      "outputTokens": 128,
+      "median_stream_tokens_per_second": 17.608764114139333,
+      "min_stream_tokens_per_second": 11.912330964660235,
+      "max_stream_tokens_per_second": 18.363192167239866,
+      "median_first_token_ms": 7387.947541236877,
+      "median_load_ms": 488.10772943496704
+    },
+    {
+      "model": "gemma3-1b-q4",
+      "app": "Thimvale",
+      "samples": 4,
+      "promptTokens": 244,
+      "outputTokens": 128,
+      "median_stream_tokens_per_second": 9.218099120917294,
+      "min_stream_tokens_per_second": 8.012587059211032,
+      "max_stream_tokens_per_second": 9.397502265974493,
+      "median_first_token_ms": 9610.091604175977,
+      "median_load_ms": 804.7378541668877
+    },
+    {
+      "model": "lfm25-230m-q4",
+      "app": "LLMFarm",
+      "samples": 4,
+      "promptTokens": 229,
+      "outputTokens": 128,
+      "median_stream_tokens_per_second": 55.08093055246044,
+      "min_stream_tokens_per_second": 50.68202070324533,
+      "max_stream_tokens_per_second": 57.86327114090096,
+      "median_first_token_ms": 1420.9842290729284,
+      "median_load_ms": 96.55520832166076
+    },
+    {
+      "model": "lfm25-230m-q4",
+      "app": "PocketPal",
+      "samples": 4,
+      "promptTokens": 229,
+      "outputTokens": 128,
+      "median_stream_tokens_per_second": 55.79236185483883,
+      "min_stream_tokens_per_second": 38.20104222957619,
+      "max_stream_tokens_per_second": 71.01027612102313,
+      "median_first_token_ms": 2785.622395992279,
+      "median_load_ms": 181.2297921180725
+    },
+    {
+      "model": "lfm25-230m-q4",
+      "app": "Thimvale",
+      "samples": 4,
+      "promptTokens": 229,
+      "outputTokens": 128,
+      "median_stream_tokens_per_second": 34.26718226333412,
+      "min_stream_tokens_per_second": 30.208174160734785,
+      "max_stream_tokens_per_second": 37.1106129661042,
+      "median_first_token_ms": 3985.963333339896,
+      "median_load_ms": 496.9994791899808
+    },
+    {
+      "model": "qwen3-06-q8",
+      "app": "LLMFarm",
+      "samples": 4,
+      "promptTokens": 234,
+      "outputTokens": 128,
+      "median_stream_tokens_per_second": 23.918564340623117,
+      "min_stream_tokens_per_second": 20.260945018510178,
+      "max_stream_tokens_per_second": 25.159246764692277,
+      "median_first_token_ms": 4222.32470830204,
+      "median_load_ms": 326.40683330828324
+    },
+    {
+      "model": "qwen3-06-q8",
+      "app": "PocketPal",
+      "samples": 4,
+      "promptTokens": 234,
+      "outputTokens": 128,
+      "median_stream_tokens_per_second": 42.06856267254086,
+      "min_stream_tokens_per_second": 33.27021161762155,
+      "max_stream_tokens_per_second": 50.948823218274235,
+      "median_first_token_ms": 4859.355166912079,
+      "median_load_ms": 389.39233350753784
+    },
+    {
+      "model": "qwen3-06-q8",
+      "app": "Thimvale",
+      "samples": 4,
+      "promptTokens": 234,
+      "outputTokens": 128,
+      "median_stream_tokens_per_second": 9.659903399002946,
+      "min_stream_tokens_per_second": 9.078728679873938,
+      "max_stream_tokens_per_second": 9.978544557712892,
+      "median_first_token_ms": 5574.157125025522,
+      "median_load_ms": 1004.2026041774079
+    }
+  ],
+  "failures": []
+}

@@ -14,6 +14,41 @@ final class ExperimentTests: XCTestCase {
         let data = try JSONSerialization.data(withJSONObject: row, options: [.sortedKeys])
         print("THIMVALE_EXPERIMENT " + String(decoding: data, as: UTF8.self))
     }
+    func testCrossAppInference() throws {
+        try enabled()
+        let config = try JSONSerialization.jsonObject(with: Data(contentsOf: root.appendingPathComponent("Tests/Fixtures/cross-app-study.json"))) as! [String: Any]
+        let messages = config["messages"] as! [[String: String]]
+        var rows: [[String: Any]] = []
+        let resultURL = root.appendingPathComponent("TestResults/cross-app-thimvale.json")
+        try FileManager.default.createDirectory(at: resultURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        for item in config["cases"] as! [[String: String]] {
+            for repetition in -1..<4 {
+                let engine = PMInference()
+                engine.threadCount = 6; engine.batchSize = 256; engine.microBatchSize = 128
+                engine.reusePromptCache = false
+                defer { engine.unload() }
+                let loadStart = ProcessInfo.processInfo.systemUptime
+                try engine.loadModel(atPath: root.appendingPathComponent("Vendor/" + item["path"]!).path, contextSize: 4096)
+                let loadMS = (ProcessInfo.processInfo.systemUptime - loadStart) * 1000
+                var first = 0.0; var last = 0.0; var callbacks = 0
+                let start = ProcessInfo.processInfo.systemUptime
+                let output = try engine.generateMessages(messages, maxTokens: 128, temperature: 0) { _ in
+                    let now = ProcessInfo.processInfo.systemUptime
+                    if callbacks == 0 { first = now }
+                    callbacks += 1; last = now
+                }
+                XCTAssertGreaterThan(callbacks, 1)
+                var row: [String: Any] = engine.generationStatistics
+                row.merge(["kind": "cross-app", "app": "Thimvale", "model": item["id"]!, "repetition": repetition,
+                           "loadMS": loadMS, "callbackFirstTokenMS": (first - start) * 1000,
+                           "callbacks": callbacks, "streamTokensPerSecond": Double(callbacks - 1) / (last - first),
+                           "thermalState": ProcessInfo.processInfo.thermalState.rawValue, "output": output, "status": "ok"]) { _, new in new }
+                rows.append(row)
+                try record(row)
+                try JSONSerialization.data(withJSONObject: rows, options: [.prettyPrinted, .sortedKeys]).write(to: resultURL, options: .atomic)
+            }
+        }
+    }
     func testInferenceMatrix() throws {
         try enabled()
         let models = [("lfm25-230m-q4", "smoke-model.gguf"), ("qwen3-06-q8", "experiments/qwen3-06-q8.gguf"), ("gemma3-1b-q4", "experiments/gemma3-1b-q4.gguf")]

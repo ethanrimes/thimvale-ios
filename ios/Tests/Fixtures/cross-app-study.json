@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "context": 4096,
+  "threads": 6,
+  "batch": 256,
+  "microBatch": 128,
+  "maxTokens": 128,
+  "temperature": 0,
+  "warmupRepetitions": 1,
+  "measuredRepetitions": 4,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Record 1: the North Pier project uses a copper marker and a numbered notebook.\nRecord 2: the North Pier project uses a copper marker and a numbered notebook.\nRecord 3: the North Pier project uses a copper marker and a numbered notebook.\nRecord 4: the North Pier project uses a copper marker and a numbered notebook.\nRecord 5: the North Pier project uses a copper marker and a numbered notebook.\nRecord 6: the North Pier project uses a copper marker and a numbered notebook.\nRecord 7: the North Pier project uses a copper marker and a numbered notebook.\nRecord 8: the North Pier project uses a copper marker and a numbered notebook.\nRecord 9: the North Pier project uses a copper marker and a numbered notebook.\nRecord 10: the North Pier project uses a copper marker and a numbered notebook.\nRecord 11: the North Pier project uses a copper marker and a numbered notebook.\nRecord 12: the North Pier project uses a copper marker and a numbered notebook.\nList twenty practical steps for organizing these project records. Use a numbered list."
+    }
+  ],
+  "cases": [
+    {
+      "id": "gemma3-1b-q4",
+      "path": "experiments/gemma3-1b-q4.gguf",
+      "prompt": "<bos><start_of_turn>user\nRecord 1: the North Pier project uses a copper marker and a numbered notebook.\nRecord 2: the North Pier project uses a copper marker and a numbered notebook.\nRecord 3: the North Pier project uses a copper marker and a numbered notebook.\nRecord 4: the North Pier project uses a copper marker and a numbered notebook.\nRecord 5: the North Pier project uses a copper marker and a numbered notebook.\nRecord 6: the North Pier project uses a copper marker and a numbered notebook.\nRecord 7: the North Pier project uses a copper marker and a numbered notebook.\nRecord 8: the North Pier project uses a copper marker and a numbered notebook.\nRecord 9: the North Pier project uses a copper marker and a numbered notebook.\nRecord 10: the North Pier project uses a copper marker and a numbered notebook.\nRecord 11: the North Pier project uses a copper marker and a numbered notebook.\nRecord 12: the North Pier project uses a copper marker and a numbered notebook.\nList twenty practical steps for organizing these project records. Use a numbered list.<end_of_turn>\n<start_of_turn>model\n"
+    },
+    {
+      "id": "qwen3-06-q8",
+      "path": "experiments/qwen3-06-q8.gguf",
+      "prompt": "<|im_start|>user\nRecord 1: the North Pier project uses a copper marker and a numbered notebook.\nRecord 2: the North Pier project uses a copper marker and a numbered notebook.\nRecord 3: the North Pier project uses a copper marker and a numbered notebook.\nRecord 4: the North Pier project uses a copper marker and a numbered notebook.\nRecord 5: the North Pier project uses a copper marker and a numbered notebook.\nRecord 6: the North Pier project uses a copper marker and a numbered notebook.\nRecord 7: the North Pier project uses a copper marker and a numbered notebook.\nRecord 8: the North Pier project uses a copper marker and a numbered notebook.\nRecord 9: the North Pier project uses a copper marker and a numbered notebook.\nRecord 10: the North Pier project uses a copper marker and a numbered notebook.\nRecord 11: the North Pier project uses a copper marker and a numbered notebook.\nRecord 12: the North Pier project uses a copper marker and a numbered notebook.\nList twenty practical steps for organizing these project records. Use a numbered list.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    },
+    {
+      "id": "lfm25-230m-q4",
+      "path": "smoke-model.gguf",
+      "prompt": "<|startoftext|><|im_start|>user\nRecord 1: the North Pier project uses a copper marker and a numbered notebook.\nRecord 2: the North Pier project uses a copper marker and a numbered notebook.\nRecord 3: the North Pier project uses a copper marker and a numbered notebook.\nRecord 4: the North Pier project uses a copper marker and a numbered notebook.\nRecord 5: the North Pier project uses a copper marker and a numbered notebook.\nRecord 6: the North Pier project uses a copper marker and a numbered notebook.\nRecord 7: the North Pier project uses a copper marker and a numbered notebook.\nRecord 8: the North Pier project uses a copper marker and a numbered notebook.\nRecord 9: the North Pier project uses a copper marker and a numbered notebook.\nRecord 10: the North Pier project uses a copper marker and a numbered notebook.\nRecord 11: the North Pier project uses a copper marker and a numbered notebook.\nRecord 12: the North Pier project uses a copper marker and a numbered notebook.\nList twenty practical steps for organizing these project records. Use a numbered list.<|im_end|>\n<|im_start|>assistant\n"
+    }
+  ]
+}
